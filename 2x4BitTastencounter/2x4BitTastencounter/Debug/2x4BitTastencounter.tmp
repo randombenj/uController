@@ -1,0 +1,32 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.1.52</VERSION>
+ <DEVICE>"ATmega2560"</DEVICE>
+ <WORKING_DIR>C:\Users\Beni\Documents\Atmel Studio\6.1\2x4BitTastencounter\2x4BitTastencounter\Debug</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include</DIR>
+  <DIR></DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\2x4BitTastencounter\2x4BitTastencounter\2x4BitTastencounter.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\2x4BitTastencounter\2x4BitTastencounter\Debug/2x4BitTastencounter.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>2x4BitTastencounter.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>2x4BitTastencounter.map</FILE>
+  <FILE>2x4BitTastencounter.lss</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <Reset><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\2x4BitTastencounter\2x4BitTastencounter\2x4BitTastencounter.asm</FILE><LINE>50</LINE></Reset>
+  <Main><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\2x4BitTastencounter\2x4BitTastencounter\2x4BitTastencounter.asm</FILE><LINE>58</LINE></Main>
+  <While><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\2x4BitTastencounter\2x4BitTastencounter\2x4BitTastencounter.asm</FILE><LINE>63</LINE></While>
+  <While_false><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\2x4BitTastencounter\2x4BitTastencounter\2x4BitTastencounter.asm</FILE><LINE>78</LINE></While_false>
+  <Else><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\2x4BitTastencounter\2x4BitTastencounter\2x4BitTastencounter.asm</FILE><LINE>76</LINE></Else>
+  <IncHighByte><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\2x4BitTastencounter\2x4BitTastencounter\2x4BitTastencounter.asm</FILE><LINE>73</LINE></IncHighByte>
+  <IncHighByteEnd><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\2x4BitTastencounter\2x4BitTastencounter\2x4BitTastencounter.asm</FILE><LINE>75</LINE></IncHighByteEnd>
+ </LABELS>
+</ASSEMBLER_INFO>

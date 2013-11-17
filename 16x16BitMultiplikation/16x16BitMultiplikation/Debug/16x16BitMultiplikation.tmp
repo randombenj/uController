@@ -1,0 +1,35 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.1.52</VERSION>
+ <DEVICE>"ATmega2560"</DEVICE>
+ <WORKING_DIR>C:\Users\Beni\Documents\Atmel Studio\6.1\16x16BitMultiplikation\16x16BitMultiplikation\Debug</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include</DIR>
+  <DIR></DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\16x16BitMultiplikation\16x16BitMultiplikation\16x16BitMultiplikation.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\16x16BitMultiplikation\16x16BitMultiplikation\Debug/16x16BitMultiplikation.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>16x16BitMultiplikation.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>16x16BitMultiplikation.map</FILE>
+  <FILE>16x16BitMultiplikation.lss</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <Reset><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\16x16BitMultiplikation\16x16BitMultiplikation\16x16BitMultiplikation.asm</FILE><LINE>61</LINE></Reset>
+  <Main><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\16x16BitMultiplikation\16x16BitMultiplikation\16x16BitMultiplikation.asm</FILE><LINE>69</LINE></Main>
+  <While><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\16x16BitMultiplikation\16x16BitMultiplikation\16x16BitMultiplikation.asm</FILE><LINE>83</LINE></While>
+  <TestLowByte><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\16x16BitMultiplikation\16x16BitMultiplikation\16x16BitMultiplikation.asm</FILE><LINE>87</LINE></TestLowByte>
+  <TestLowByteEnd><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\16x16BitMultiplikation\16x16BitMultiplikation\16x16BitMultiplikation.asm</FILE><LINE>90</LINE></TestLowByteEnd>
+  <While_false><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\16x16BitMultiplikation\16x16BitMultiplikation\16x16BitMultiplikation.asm</FILE><LINE>120</LINE></While_false>
+  <Else><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\16x16BitMultiplikation\16x16BitMultiplikation\16x16BitMultiplikation.asm</FILE><LINE>113</LINE></Else>
+  <ElseIncLWHB><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\16x16BitMultiplikation\16x16BitMultiplikation\16x16BitMultiplikation.asm</FILE><LINE>99</LINE></ElseIncLWHB>
+  <ElseIncHWLB><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\16x16BitMultiplikation\16x16BitMultiplikation\16x16BitMultiplikation.asm</FILE><LINE>104</LINE></ElseIncHWLB>
+  <ElseIncHWHB><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\16x16BitMultiplikation\16x16BitMultiplikation\16x16BitMultiplikation.asm</FILE><LINE>109</LINE></ElseIncHWHB>
+ </LABELS>
+</ASSEMBLER_INFO>

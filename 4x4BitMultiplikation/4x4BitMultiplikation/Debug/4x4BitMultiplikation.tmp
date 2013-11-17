@@ -1,0 +1,30 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.1.52</VERSION>
+ <DEVICE>"ATmega2560"</DEVICE>
+ <WORKING_DIR>C:\Users\Beni\Documents\Atmel Studio\6.1\4x4BitMultiplikation\4x4BitMultiplikation\Debug</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include</DIR>
+  <DIR></DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\4x4BitMultiplikation\4x4BitMultiplikation\4x4BitMultiplikation.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\4x4BitMultiplikation\4x4BitMultiplikation\Debug/4x4BitMultiplikation.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>4x4BitMultiplikation.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>4x4BitMultiplikation.map</FILE>
+  <FILE>4x4BitMultiplikation.lss</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <Reset><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\4x4BitMultiplikation\4x4BitMultiplikation\4x4BitMultiplikation.asm</FILE><LINE>51</LINE></Reset>
+  <Main><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\4x4BitMultiplikation\4x4BitMultiplikation\4x4BitMultiplikation.asm</FILE><LINE>59</LINE></Main>
+  <While><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\4x4BitMultiplikation\4x4BitMultiplikation\4x4BitMultiplikation.asm</FILE><LINE>68</LINE></While>
+  <While_false><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\4x4BitMultiplikation\4x4BitMultiplikation\4x4BitMultiplikation.asm</FILE><LINE>77</LINE></While_false>
+  <Else><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\4x4BitMultiplikation\4x4BitMultiplikation\4x4BitMultiplikation.asm</FILE><LINE>74</LINE></Else>
+ </LABELS>
+</ASSEMBLER_INFO>

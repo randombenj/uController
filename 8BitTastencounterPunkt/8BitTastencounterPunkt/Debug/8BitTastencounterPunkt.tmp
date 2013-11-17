@@ -1,0 +1,31 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.1.52</VERSION>
+ <DEVICE>"ATmega2560"</DEVICE>
+ <WORKING_DIR>C:\Users\Beni\Documents\Atmel Studio\6.1\8BitTastencounterPunkt\8BitTastencounterPunkt\Debug</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include</DIR>
+  <DIR></DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\8BitTastencounterPunkt\8BitTastencounterPunkt\8BitTastencounterPunkt.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\8BitTastencounterPunkt\8BitTastencounterPunkt\Debug/8BitTastencounterPunkt.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>8BitTastencounterPunkt.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>8BitTastencounterPunkt.map</FILE>
+  <FILE>8BitTastencounterPunkt.lss</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <Reset><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\8BitTastencounterPunkt\8BitTastencounterPunkt\8BitTastencounterPunkt.asm</FILE><LINE>48</LINE></Reset>
+  <Main><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\8BitTastencounterPunkt\8BitTastencounterPunkt\8BitTastencounterPunkt.asm</FILE><LINE>56</LINE></Main>
+  <While><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\8BitTastencounterPunkt\8BitTastencounterPunkt\8BitTastencounterPunkt.asm</FILE><LINE>61</LINE></While>
+  <End_While><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\8BitTastencounterPunkt\8BitTastencounterPunkt\8BitTastencounterPunkt.asm</FILE><LINE>74</LINE></End_While>
+  <Else><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\8BitTastencounterPunkt\8BitTastencounterPunkt\8BitTastencounterPunkt.asm</FILE><LINE>72</LINE></Else>
+  <ShiftPunktLeft><FILE>C:\Users\Beni\Documents\Atmel Studio\6.1\8BitTastencounterPunkt\8BitTastencounterPunkt\8BitTastencounterPunkt.asm</FILE><LINE>70</LINE></ShiftPunktLeft>
+ </LABELS>
+</ASSEMBLER_INFO>
