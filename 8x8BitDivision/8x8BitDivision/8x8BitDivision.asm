@@ -68,7 +68,7 @@ Main:	                            ; Main function
         CLR     result              ;   <result> = $00
         CLR     mpr                 ;   <mpr> = $00
 
-        TST     dividend            ;   if <dividend> == 0
+        TST     divisor             ;   if <divisor> == 0
         BREQ    DevByZero           ;     "devide by zero"
 
     While:                          ;   While 

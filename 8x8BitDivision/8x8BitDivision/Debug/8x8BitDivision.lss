@@ -1,8 +1,8 @@
 
-AVRASM ver. 2.1.52  C:\Users\Beni\Documents\Atmel Studio\6.1\8x8BitDivision\8x8BitDivision\8x8BitDivision.asm Sun Nov 17 13:51:10 2013
+AVRASM ver. 2.1.52  C:\Users\Beni\Documents\GitHub\uController\8x8BitDivision\8x8BitDivision\8x8BitDivision.asm Sun Nov 17 19:09:26 2013
 
 [builtin](2): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
-C:\Users\Beni\Documents\Atmel Studio\6.1\8x8BitDivision\8x8BitDivision\8x8BitDivision.asm(24): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
+C:\Users\Beni\Documents\GitHub\uController\8x8BitDivision\8x8BitDivision\8x8BitDivision.asm(24): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
                  
                  ;===============================================================================
                  
@@ -1954,12 +1954,12 @@ C:\Users\Beni\Documents\Atmel Studio\6.1\8x8BitDivision\8x8BitDivision\8x8BitDiv
 00000b 2733              CLR     result              ;   <result> = $00
 00000c 2700              CLR     mpr                 ;   <mpr> = $00
                  
-00000d 2311              TST     dividend            ;   if <dividend> == 0
-00000e f059              BREQ    DevByZero           ;     throw "devide by zero"
+00000d 2322              TST     divisor             ;   if <divisor> == 0
+00000e f059              BREQ    DevByZero           ;     "devide by zero"
                  
                      While:                          ;   While 
 00000f 2311              TST     dividend            ;    <dividend> == 0
-000010 f049              BREQ    EndWhile
+000010 f049              BREQ    EndWhile            ;    Goto: EndWhile
                  
 000011 9488              CLC                         ;     Clear <c-bit>
 000012 0f33              LSL     result              ;     <result> = <result> << 1
@@ -2002,7 +2002,7 @@ counted separately from r26..r31 here.
 "ATmega2560" register use summary:
 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 r5 :   0 r6 :   0 r7 :   0 
 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 r13:   0 r14:   0 r15:   0 
-r16:  12 r17:   4 r18:   3 r19:   3 r20:   0 r21:   0 r22:   0 r23:   0 
+r16:  12 r17:   3 r18:   4 r19:   3 r20:   0 r21:   0 r22:   0 r23:   0 
 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 r29:   0 r30:   0 r31:   0 
 x  :   0 y  :   0 z  :   0 
 Registers used: 4 out of 35 (11.4%)
