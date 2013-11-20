@@ -1,6 +1,6 @@
-uController
+µController
 ===========
-uController Kurs zum lernen von Assembler Sprache.
+µController Kurs zum lernen von Assembler Sprache.
 
-<b>Entwicklungsumgebung:</b> AVR Studio 6.1
-<b>uController:</b> STK600 atmega2560 
+**Entwicklungsumgebung:** AVR Studio 6.1  
+**µController:** STK600 atmega2560 
