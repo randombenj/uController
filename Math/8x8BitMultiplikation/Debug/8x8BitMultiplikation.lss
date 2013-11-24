@@ -1,8 +1,8 @@
 
-AVRASM ver. 2.1.52  C:\Users\Beni\Documents\Atmel Studio\6.1\8x8BitMultiplikation\8x8BitMultiplikation\8x8BitMultiplikation.asm Sat Nov 02 18:24:33 2013
+AVRASM ver. 2.1.52  C:\Users\Benj\workspace\GitHub\uController\Math\8x8BitMultiplikation\8x8BitMultiplikation.asm Sun Nov 24 19:03:18 2013
 
 [builtin](2): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
-C:\Users\Beni\Documents\Atmel Studio\6.1\8x8BitMultiplikation\8x8BitMultiplikation\8x8BitMultiplikation.asm(24): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
+C:\Users\Benj\workspace\GitHub\uController\Math\8x8BitMultiplikation\8x8BitMultiplikation.asm(24): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
                  
                  ;===============================================================================
                  
@@ -1922,10 +1922,11 @@ C:\Users\Beni\Documents\Atmel Studio\6.1\8x8BitMultiplikation\8x8BitMultiplikati
                  
                  ;--- Variablen ---
                  .def 	mpr	        = R16		; Multifunktionsregister
-                 .def    zahl1       = R20       ; 1. Zahl
-                 .def    zahl2       = R21       ; 2. Zahl
-                 .def    res_lb      = R22       ; Low Byte des Resultats
-                 .def    res_hb      = R23       ; High Byte des Resultats
+                 .def    zahl1_lb    = R20       ; 1. Zahl Low Byte
+                 .def    zahl1_hb    = R21       ; 1. Zahl Hight Byte
+                 .def    zahl2       = R22       ; 2. Zahl
+                 .def    res_lb      = R23       ; Low Byte des Resultats
+                 .def    res_hb      = R24       ; High Byte des Resultats
                  
                  
                  
@@ -1943,28 +1944,26 @@ C:\Users\Beni\Documents\Atmel Studio\6.1\8x8BitMultiplikation\8x8BitMultiplikati
                  
                  ;--- Hauptprogramm ---	
                  Main:                               ; Main Function
-000005 2766              CLR     res_lb              ;  Low Byte des Resultat = $00
-000006 2777              CLR     res_hb              ;  Hight Byte des Resultats = $00
-000007 2744              CLR     zahl1               ;  Zahl1 = $00
-000008 2755              CLR     zahl2               ;  Zahl2 = $00
-000009 2700              CLR     mpr                 ;  mpr = $00
-00000a 6144              SBR     zahl1, $14          ;  Zahl1 = 20
-00000b 615e              SBR     zahl2, $1E          ;  Zahl2 = 30
+000005 2777              CLR     res_lb              ;  Low Byte des Resultat = $00
+000006 2788              CLR     res_hb              ;  Hight Byte des Resultats = $00
+000007 2744              CLR     zahl1_lb            ;  Zahl1 = $00
+000008 2766              CLR     zahl2               ;  Zahl2 = $00
+000009 2755              CLR     zahl1_hb            ;  Zahl1 High Byte = $00
+00000a 6144              SBR     zahl1_lb, $14       ;  Zahl1 Low Byte = 20
+00000b 616e              SBR     zahl2, $1E          ;  Zahl2 = 30
                      While:                          ;  While
-00000c 2355              TST     zahl2               ;  zahl2 > 0
-00000d f049              BREQ    While_false         ;  Wenn true dann nicht mehr loopen
-00000e 9556              LSR     zahl2               ;   Rotiere zahl2 nach rechts
-00000f f420              BRCC    Else                ;   Wenn carry = 0 dann zu else
-000010 0f70              ADD     res_hb, mpr         ;    High-Byte um mpr erhöhen
-000011 0f64              ADD     res_lb, zahl1       ;    Dem resultat um zahl1 erhöhen
-000012 f408              BRCC    Else                ;    Wenn z = 0 dann zu else
-000013 9573              INC     res_hb              ;     Sonst High-Byte inkrementieren
+00000c 2366              TST     zahl2               ;  zahl2 > 0
+00000d f039              BREQ    EndWhile            ;  Wenn true dann nicht mehr loopen
+00000e 9566              LSR     zahl2               ;   Rotiere zahl2 nach rechts
+00000f f410              BRCC    Else                ;   Wenn carry = 0 dann zu else
+000010 0f74              ADD     res_lb, zahl1_lb    ;    Dem resultat um zahl1 LB erhöhen
+000011 1f85              ADC     res_hb, zahl1_hb    ;    High-Byte um Zahl1 High Byte erhöhen + carry
                     Else:                            ;   else
-000014 0f44              LSL     zahl1               ;  schiebe zahl1 nach links
-000015 1f00              ROL     mpr                 ;  Rotiere mpr nach links.
-000016 cff5              RJMP    While               ;  Loop
-                    While_false:                     ;  ende der While schlaufe
-000017 cfed      		RJMP	Main				; Endloschlaufe
+000012 0f44              LSL     zahl1_lb            ;  schiebe zahl1 nach links
+000013 1f55              ROL     zahl1_hb            ;  Rotiere mpr nach links.
+000014 cff7              RJMP    While               ;  Loop
+                    EndWhile:                        ;  ende der While schlaufe
+000015 cfef      		RJMP	Main				; Endloschlaufe
                          		
                  
                  
@@ -1988,15 +1987,15 @@ counted separately from r26..r31 here.
 "ATmega2560" register use summary:
 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 r5 :   0 r6 :   0 r7 :   0 
 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 r13:   0 r14:   0 r15:   0 
-r16:   7 r17:   0 r18:   0 r19:   0 r20:   4 r21:   4 r22:   2 r23:   3 
-r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 r29:   0 r30:   0 r31:   0 
+r16:   4 r17:   0 r18:   0 r19:   0 r20:   4 r21:   3 r22:   4 r23:   2 
+r24:   2 r25:   0 r26:   0 r27:   0 r28:   0 r29:   0 r30:   0 r31:   0 
 x  :   0 y  :   0 z  :   0 
-Registers used: 5 out of 35 (14.3%)
+Registers used: 6 out of 35 (17.1%)
 
 "ATmega2560" instruction use summary:
-.lds  :   0 .sts  :   0 adc   :   0 add   :   2 adiw  :   0 and   :   0 
+.lds  :   0 .sts  :   0 adc   :   1 add   :   1 adiw  :   0 and   :   0 
 andi  :   0 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
-brcc  :   2 brcs  :   0 break :   0 breq  :   1 brge  :   0 brhc  :   0 
+brcc  :   1 brcs  :   0 break :   0 breq  :   1 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
 brne  :   0 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
 brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   0 cbr   :   0 
@@ -2004,7 +2003,7 @@ clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   6 cls   :   0
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   0 cpc   :   0 
 cpi   :   0 cpse  :   0 dec   :   0 eicall:   0 eijmp :   0 elpm  :   0 
 eor   :   0 fmul  :   0 fmuls :   0 fmulsu:   0 icall :   0 ijmp  :   0 
-in    :   0 inc   :   1 jmp   :   0 ld    :   0 ldd   :   0 ldi   :   0 
+in    :   0 inc   :   0 jmp   :   0 ld    :   0 ldd   :   0 ldi   :   0 
 lds   :   0 lpm   :   0 lsl   :   1 lsr   :   1 mov   :   0 movw  :   0 
 mul   :   0 muls  :   0 mulsu :   0 neg   :   0 nop   :   0 or    :   0 
 ori   :   0 out   :   2 pop   :   0 push  :   0 rcall :   0 ret   :   0 
@@ -2019,7 +2018,7 @@ Instructions used: 13 out of 116 (11.2%)
 "ATmega2560" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x000030     48      0     48  262144   0.0%
+[.cseg] 0x000000 0x00002c     44      0     44  262144   0.0%
 [.dseg] 0x000200 0x000200      0      0      0    8192   0.0%
 [.eseg] 0x000000 0x000000      0      0      0    4096   0.0%
 

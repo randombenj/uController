@@ -93,22 +93,10 @@ Main:                               ; Main Function
         ROR     zahl2_lb            ;   Rotiere zahl2_lb nach rechts
         BRCC    Else                ;   Wenn carry = 0 dann zu else
 
-        ADD     res_lw_lb, zahl1_lw_lb;  LWLB resultat um LWLB Zahl1 erhöhen
-        BRCC    ElseIncLWHB         ;    if false don't increment LWHB of result
-        INC     res_lw_hb           ;     Increment LWHB of result
-   ElseIncLWHB:                     ;    Else
-
-        ADD     res_lw_hb, zahl1_lw_hb;  LWHB resultat um LWHB zahl1 erhönen.
-        BRCC    ElseIncHWLB         ;    Dem resultat um zahl1 erhöhen
-        INC     res_hw_lb           ;     Increment HWLB of result
-   ElseIncHWLB:                     ;    Else
-
-        ADD     res_hw_lb, zahl1_hw_lb; HWLB resultat um HWLB zahl1 erhönen.
-        BRCC    ElseIncHWHB         ;    Dem resultat um zahl1 erhöhen
-        INC     res_hw_hb           ;     Increment HWHB of result
-   ElseIncHWHB:                     ;    Else
-
-        ADD     res_hw_hb, zahl1_hw_hb; HWHB resultat um HWHB zahl1 erhöhen
+        ADD     res_lw_lb, zahl1_lw_lb; LWLB resultat um LWLB Zahl1 erhöhen
+        ADC     res_lw_hb, zahl1_lw_hb; LWHB resultat um LWHB zahl1 erhönen + Carry
+        ADC     res_hw_lb, zahl1_hw_lb; HWLB resultat um HWLB zahl1 erhönen + Carry
+        ADC     res_hw_hb, zahl1_hw_hb; HWHB resultat um HWHB zahl1 erhöhen + Carry
         
    Else:
         LSL     zahl1_lw_lb         ;   schiebe zahl1 nach links
@@ -118,7 +106,4 @@ Main:                               ; Main Function
 
         RJMP    While               ;  Loop
    While_false:                     ;  ende der While schlaufe
-		RJMP	Main				; Endloschlaufe	
-
-
-
+		RJMP	Main				; Endloschlaufe

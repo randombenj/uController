@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.52  C:\Users\Beni\Documents\Atmel Studio\6.1\8x8BitMultiplikation\8x8BitMultiplikation\8x8BitMultiplikation.asm Sat Nov 02 18:24:33 2013
+AVRASM ver. 2.1.52  C:\Users\Benj\workspace\GitHub\uController\Math\8x8BitMultiplikation\8x8BitMultiplikation.asm Sun Nov 24 19:03:18 2013
 
 
 EQU  SIGNATURE_000 0000001e
@@ -1365,11 +1365,12 @@ EQU  LED_D        00000004
 EQU  SWITCH       00000009
 EQU  SWITCH_D     0000000a
 DEF  mpr          r16
-DEF  zahl1        r20
-DEF  zahl2        r21
-DEF  res_lb       r22
-DEF  res_hb       r23
+DEF  zahl1_lb     r20
+DEF  zahl1_hb     r21
+DEF  zahl2        r22
+DEF  res_lb       r23
+DEF  res_hb       r24
 CSEG Main         00000005
 CSEG While        0000000c
-CSEG While_false  00000017
-CSEG Else         00000014
+CSEG EndWhile     00000015
+CSEG Else         00000012

@@ -36,10 +36,11 @@
 
 ;--- Variablen ---
 .def 	mpr	        = R16		; Multifunktionsregister
-.def    zahl1       = R20       ; 1. Zahl
-.def    zahl2       = R21       ; 2. Zahl
-.def    res_lb      = R22       ; Low Byte des Resultats
-.def    res_hb      = R23       ; High Byte des Resultats
+.def    zahl1_lb    = R20       ; 1. Zahl Low Byte
+.def    zahl1_hb    = R21       ; 1. Zahl Hight Byte
+.def    zahl2       = R22       ; 2. Zahl
+.def    res_lb      = R23       ; Low Byte des Resultats
+.def    res_hb      = R24       ; High Byte des Resultats
 
 
 
@@ -59,25 +60,23 @@ Reset:	SER	    mpr			        ; Output:= LED
 Main:                               ; Main Function
         CLR     res_lb              ;  Low Byte des Resultat = $00
         CLR     res_hb              ;  Hight Byte des Resultats = $00
-        CLR     zahl1               ;  Zahl1 = $00
+        CLR     zahl1_lb            ;  Zahl1 = $00
         CLR     zahl2               ;  Zahl2 = $00
-        CLR     mpr                 ;  mpr = $00
-        SBR     zahl1, $14          ;  Zahl1 = 20
+        CLR     zahl1_hb            ;  Zahl1 High Byte = $00
+        SBR     zahl1_lb, $14       ;  Zahl1 Low Byte = 20
         SBR     zahl2, $1E          ;  Zahl2 = 30
     While:                          ;  While
         TST     zahl2               ;  zahl2 > 0
-        BREQ    While_false         ;  Wenn true dann nicht mehr loopen
+        BREQ    EndWhile            ;  Wenn true dann nicht mehr loopen
         LSR     zahl2               ;   Rotiere zahl2 nach rechts
         BRCC    Else                ;   Wenn carry = 0 dann zu else
-        ADD     res_hb, mpr         ;    High-Byte um mpr erhöhen
-        ADD     res_lb, zahl1       ;    Dem resultat um zahl1 erhöhen
-        BRCC    Else                ;    Wenn z = 0 dann zu else
-        INC     res_hb              ;     Sonst High-Byte inkrementieren
+        ADD     res_lb, zahl1_lb    ;    Dem resultat um zahl1 LB erhöhen
+        ADC     res_hb, zahl1_hb    ;    High-Byte um Zahl1 High Byte erhöhen + carry
    Else:                            ;   else
-        LSL     zahl1               ;  schiebe zahl1 nach links
-        ROL     mpr                 ;  Rotiere mpr nach links.
+        LSL     zahl1_lb            ;  schiebe zahl1 nach links
+        ROL     zahl1_hb            ;  Rotiere mpr nach links.
         RJMP    While               ;  Loop
-   While_false:                     ;  ende der While schlaufe
+   EndWhile:                        ;  ende der While schlaufe
 		RJMP	Main				; Endloschlaufe
         		
 
