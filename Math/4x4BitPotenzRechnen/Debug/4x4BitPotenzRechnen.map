@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.52  C:\Users\Beni\Documents\GitHub\uController\4x4BitPotenzRechnen\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm Sun Nov 17 20:03:52 2013
+AVRASM ver. 2.1.52  C:\Users\Benj\workspace\GitHub\uController\Math\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm Sun Nov 24 19:43:11 2013
 
 
 EQU  SIGNATURE_000 0000001e
@@ -1376,15 +1376,17 @@ DEF  res_lw_hb    r25
 DEF  res_hw_lb    r26
 DEF  res_hw_hb    r27
 DEF  exp          r28
-DEF  base         r29
+DEF  base_lb      r29
+DEF  base_hb      r30
 CSEG Main         00000009
 CSEG ExpNotZero   00000018
-CSEG End_WhilePOW 00000023
-CSEG BaseNotZero  0000001b
-CSEG WhilePOW     0000001b
-CSEG Mult         00000024
-CSEG While        00000028
-CSEG TestLowByte  0000002b
-CSEG TestLowByteEnd 0000002d
-CSEG While_false  00000039
-CSEG Else         00000034
+CSEG End_WhilePOW 00000035
+CSEG BaseNotZero  0000001c
+CSEG WhilePOW     0000001c
+CSEG SQRBase      00000025
+CSEG Mult         00000036
+CSEG While        00000040
+CSEG TestLowByte  00000043
+CSEG TestLowByteEnd 00000045
+CSEG While_false  00000051
+CSEG Else         0000004c

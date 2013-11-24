@@ -27,15 +27,15 @@
     <eraseonlaunchrule>0</eraseonlaunchrule>
     <AsfFrameworkConfig>
       <framework-data xmlns="">
-  <options />
-  <configurations />
-  <files />
-  <documentation help="" />
-  <offline-documentation help="" />
-  <dependencies>
-    <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.11.0" />
-  </dependencies>
-</framework-data>
+        <options />
+        <configurations />
+        <files />
+        <documentation help="" />
+        <offline-documentation help="" />
+        <dependencies>
+          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.11.0" />
+        </dependencies>
+      </framework-data>
     </AsfFrameworkConfig>
     <avrtool>com.atmel.avrdbg.tool.simulator</avrtool>
     <com_atmel_avrdbg_tool_simulator>
@@ -55,16 +55,16 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <ToolchainSettings>
       <AvrAssembler>
-  <avrasm.assembler.general.IncludeFile>(%24IncludeFile)</avrasm.assembler.general.IncludeFile>
-</AvrAssembler>
+        <avrasm.assembler.general.IncludeFile>(%24IncludeFile)</avrasm.assembler.general.IncludeFile>
+      </AvrAssembler>
     </ToolchainSettings>
     <OutputType>Executable</OutputType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
       <AvrAssembler>
-  <avrasm.assembler.general.IncludeFile>(%24IncludeFile)</avrasm.assembler.general.IncludeFile>
-</AvrAssembler>
+        <avrasm.assembler.general.IncludeFile>(%24IncludeFile)</avrasm.assembler.general.IncludeFile>
+      </AvrAssembler>
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
@@ -72,6 +72,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="4x4BitPotenzRechnen.asm">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="4x4BitPotenzRechnenEinfach.asm">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AVR_Header.asm">

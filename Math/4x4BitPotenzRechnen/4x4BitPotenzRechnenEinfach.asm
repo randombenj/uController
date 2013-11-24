@@ -1,7 +1,7 @@
 ;===============================================================================
 ;- Programm:			4x4BitPotenzRechnen
 ;-
-;- Dateinname:		    4x4BitPotenzRechnen.asm
+;- Dateinname:		    4x4BitPotenzRechnenEinfach.asm
 ;- Version:			    1.0
 ;- Autor:			    Benj Fassbind
 ;-
@@ -14,7 +14,7 @@
 ;-
 ;- Entwicklungsablauf:
 ;- Ver: Datum:	Autor:   Entwicklungsschritt:                         Zeit:
-;- 1.0  24.11.13  FAB    Ganzes Programm erstellt				           Min.
+;- 1.0  01.01.13  FAB    Ganzes Programm erstellt				           Min.
 ;-
 ;-										Totalzeit:	 Min.
 ;-
@@ -53,8 +53,7 @@
 .def    res_hw_hb	   = R27    ; High Word High Byte Resultat
 
 .def    exp            = R28    ; Exponent
-.def    base_lb        = R29    ; Die Basis LB
-.def    base_hb        = R30    ; Die Basis HB
+.def    base           = R29    ; Die Basis
 
 ;------------------------------------------------------------------------------
 ; Hauptprogramm
@@ -86,18 +85,18 @@ Main:		                        ; Main Function
         CLR     zahl1_hw_lb         ;  HWLB = 0
         CLR     zahl1_hw_hb         ;  HWHB = 0*/
 
-        CLR     zahl2_lb            ;  Zahl2 = 0
-        CLR     zahl2_hb            ;  Zahl2 = 0
+        CLR     zahl2_lb
+        CLR     zahl2_hb
 
         LDI     exp, $02            ;  Exponent = 2
-        LDI     base_lb, $04        ;  Basis = 4
+        LDI     base, $04           ;  Basis = 4
 
         TST     exp                 ;  if exp != 0
         BRNE    ExpNotZero          ;   Goto: ExpZero
         RJMP    End_WhilePOW        ;   Calculated Power
     ExpNotZero:                     ;  Exponent ist nicht 0
         
-        TST     exp                 ;  if base != 0
+        TST     base                ;  if base != 0
         BRNE    BaseNotZero         ;   Goto: BaseNotZero
         CLR     res_lw_lb           ;   Resultat = 0
         RJMP    End_WhilePOW        ;   Calculated Power
@@ -106,42 +105,16 @@ Main:		                        ; Main Function
     WhilePOW:                       ;  While loop
         TST     exp                 ;  If exp == 0
         BREQ    End_WhilePOW        ;  Goto End_WhilePOW
-        LSR     exp                 ;  exp nach Rechts schieben
-        BRCC    SQRBase             ;  if carry-bit == 0 GoTo: SQRBase
-        MOV     zahl1_lw_lb, res_lw_lb; Zahl1 = Resultat
-        MOV     zahl1_lw_hb, res_lw_hb; Zahl1 = Resultat
+        DEC     exp                 ;   Exponent dekrementieren
 
-        MOV     zahl2_lb, base_lb   ;   Zahl2 = Basis
-        MOV     zahl2_hb, base_hb   ;   Zahl2 = Basis
+        MOV     zahl1_lw_lb, res_lw_lb; LWLB Zahl1 = LWLB Resultat
+        MOV     zahl1_lw_hb, res_lw_hb; LWHB Zahl1 = LWHB Resultat
 
-        RCALL   Mult                ;   Resultat = Resultat * Basis
-        
-    SQRBase:
-        // Das Resultat auf dem Stack sichern (weil Mult in Resultat schrieb)
-        PUSH    res_hw_hb        
-        PUSH    res_hw_lb        
-        PUSH    res_lw_hb        
-        PUSH    res_lw_lb   
+        MOV     zahl2_lb, base      ;   Zahl2 = basis
 
-        MOV     zahl1_lw_lb, base_lb; Zahl1 = basis
-        MOV     zahl1_lw_hb, base_hb; Zahl1 = basis
+        RCALL   Mult                ;   resultat = resultat * basis
 
-        MOV     zahl2_lb, base_lb   ; Zahl2 = basis
-        MOV     zahl2_hb, base_hb   ; Zahl2 = basis
-
-        RCALL   Mult                ; Basis = Basis * Basis
-
-        MOV     base_lb, res_lw_lb  ; Resultat = Basis
-        MOV     base_hb, res_lw_hb  ; Resultat = Basis
-
-        // Das Resultat vom Stack laden (weil Mult in Resultat schrieb)
-        POP     res_lw_lb
-        POP     res_lw_hb
-        POP     res_hw_lb
-        POP     res_hw_hb
-
-        RJMP    WhilePOW
-
+        RJMP    WhilePOW            ;   Goto WhilePOW
     End_WhilePOW:                   ;  End of While Loop
         RJMP    Main                ; Endless Loop
 
@@ -152,20 +125,12 @@ Main:		                        ; Main Function
 ;------------------------------------------------------------------------------
 
 
-Mult:								; Multiplication Function
+Mult:								; Multiplication function Function
 
-        // Parameter auf dem Stack sichern (call by Value)
-        PUSH    zahl1_lw_lb        
-        PUSH    zahl1_lw_hb        
-        PUSH    zahl1_hw_lb        
-        PUSH    zahl1_hw_hb        
-        PUSH    zahl2_lb
-        PUSH    zahl2_hb
-
-        CLR     res_hw_hb           ;  Resultat = 0
-        CLR     res_hw_lb           ;  Resultat = 0
-        CLR     res_lw_hb           ;  Resultat = 0
-        CLR     res_lw_lb           ;  Resultat = 0
+        CLR     res_hw_hb           ;  Resultat = 1
+        CLR     res_hw_lb           ;  Resultat = 1
+        CLR     res_lw_hb           ;  Resultat = 1
+        CLR     res_lw_lb           ;  Resultat = 1
 
     While:                          ;  While
         TST     zahl2_hb            ;  zahl2_lb > 0
@@ -193,13 +158,5 @@ Mult:								; Multiplication Function
 
         RJMP    While               ;  Loop
    While_false:                     ;  ende der While schlaufe
-        
-        // Parameter wieder vom Stack laden (call by value)
-        POP     zahl2_hb
-        POP     zahl2_lb
-        POP     zahl1_hw_hb
-        POP     zahl1_hw_lb
-        POP     zahl1_lw_hb
-        POP     zahl1_lw_lb
 
 		RET							; Return

@@ -1,13 +1,14 @@
 
-AVRASM ver. 2.1.52  C:\Users\Beni\Documents\GitHub\uController\4x4BitPotenzRechnen\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm Sun Nov 17 20:03:52 2013
+AVRASM ver. 2.1.52  C:\Users\Benj\workspace\GitHub\uController\Math\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm Sun Nov 24 19:43:11 2013
 
 [builtin](2): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
-C:\Users\Beni\Documents\GitHub\uController\4x4BitPotenzRechnen\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm(25): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
-C:\Users\Beni\Documents\GitHub\uController\4x4BitPotenzRechnen\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm(44): warning: Register r16 already defined by the .DEF directive
-C:\Users\Beni\Documents\GitHub\uController\4x4BitPotenzRechnen\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm(52): warning: Register r26 already defined by the .DEF directive
-C:\Users\Beni\Documents\GitHub\uController\4x4BitPotenzRechnen\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm(53): warning: Register r27 already defined by the .DEF directive
-C:\Users\Beni\Documents\GitHub\uController\4x4BitPotenzRechnen\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm(55): warning: Register r28 already defined by the .DEF directive
-C:\Users\Beni\Documents\GitHub\uController\4x4BitPotenzRechnen\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm(56): warning: Register r29 already defined by the .DEF directive
+C:\Users\Benj\workspace\GitHub\uController\Math\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm(25): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
+C:\Users\Benj\workspace\GitHub\uController\Math\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm(44): warning: Register r16 already defined by the .DEF directive
+C:\Users\Benj\workspace\GitHub\uController\Math\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm(52): warning: Register r26 already defined by the .DEF directive
+C:\Users\Benj\workspace\GitHub\uController\Math\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm(53): warning: Register r27 already defined by the .DEF directive
+C:\Users\Benj\workspace\GitHub\uController\Math\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm(55): warning: Register r28 already defined by the .DEF directive
+C:\Users\Benj\workspace\GitHub\uController\Math\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm(56): warning: Register r29 already defined by the .DEF directive
+C:\Users\Benj\workspace\GitHub\uController\Math\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm(57): warning: Register r30 already defined by the .DEF directive
                  
                  ;===============================================================================
                  
@@ -1862,7 +1863,7 @@ C:\Users\Beni\Documents\GitHub\uController\4x4BitPotenzRechnen\4x4BitPotenzRechn
                  ;-
                  ;- Entwicklungsablauf:
                  ;- Ver: Datum:	Autor:   Entwicklungsschritt:                         Zeit:
-                 ;- 1.0  01.01.13  FAB    Ganzes Programm erstellt				           Min.
+                 ;- 1.0  24.11.13  FAB    Ganzes Programm erstellt				           Min.
                  ;-
                  ;-										Totalzeit:	 Min.
                  ;-
@@ -1944,7 +1945,8 @@ C:\Users\Beni\Documents\GitHub\uController\4x4BitPotenzRechnen\4x4BitPotenzRechn
                  .def    res_hw_hb	   = R27    ; High Word High Byte Resultat
                  
                  .def    exp            = R28    ; Exponent
-                 .def    base           = R29    ; Die Basis
+                 .def    base_lb        = R29    ; Die Basis LB
+                 .def    base_hb        = R30    ; Die Basis HB
                  
                  ;------------------------------------------------------------------------------
                  ; Hauptprogramm
@@ -1980,33 +1982,58 @@ C:\Users\Beni\Documents\GitHub\uController\4x4BitPotenzRechnen\4x4BitPotenzRechn
 000012 2777              CLR     zahl2_hb
                  
 000013 e0c2              LDI     exp, $02            ;  Exponent = 2
-000014 e0d0              LDI     base, $00           ;  Basis = 4
+000014 e0d4              LDI     base_lb, $04        ;  Basis = 4
                  
 000015 23cc              TST     exp                 ;  if exp != 0
 000016 f409              BRNE    ExpNotZero          ;   Goto: ExpZero
-000017 c00b              RJMP    End_WhilePOW        ;   Calculated Power
+000017 c01d              RJMP    End_WhilePOW        ;   Calculated Power
                      ExpNotZero:                     ;  Exponent ist nicht 0
                          
-000018 23dd              TST     base                ;  if base != 0
-000019 f409              BRNE    BaseNotZero         ;   Goto: BaseNotZero
+000018 23cc              TST     exp                 ;  if base != 0
+000019 f411              BRNE    BaseNotZero         ;   Goto: BaseNotZero
 00001a 2788              CLR     res_lw_lb           ;   Resultat = 0
+00001b c019              RJMP    End_WhilePOW        ;   Calculated Power
                      BaseNotZero:                    ;  Basis ist nicht 0
                  
                      WhilePOW:                       ;  While loop
-00001b 23cc              TST     exp                 ;  If exp == 0
-00001c f031              BREQ    End_WhilePOW        ;  Goto End_WhilePOW
-00001d 95ca              DEC     exp                 ;   Exponent dekrementieren
+00001c 23cc              TST     exp                 ;  If exp == 0
+00001d f0b9              BREQ    End_WhilePOW        ;  Goto End_WhilePOW
+00001e 95c6              LSR     exp
+00001f f428              BRCC    SQRBase
+000020 2f48              MOV     zahl1_lw_lb, res_lw_lb
+000021 2f59              MOV     zahl1_lw_hb, res_lw_hb
                  
-00001e 2f48              MOV     zahl1_lw_lb, res_lw_lb; LWLB Zahl1 = LWLB Resultat
-00001f 2f59              MOV     zahl1_lw_hb, res_lw_hb; LWHB Zahl1 = LWHB Resultat
+000022 2f6d              MOV     zahl2_lb, base_lb
+000023 2f7e              MOV     zahl2_hb, base_hb
                  
-000020 2f6d              MOV     zahl2_lb, base      ;   Zahl2 = basis
+000024 d011              RCALL   Mult
+                         
+                     SQRBase:
+000025 93bf              PUSH    res_hw_hb        
+000026 93af              PUSH    res_hw_lb        
+000027 939f              PUSH    res_lw_hb        
+000028 938f              PUSH    res_lw_lb   
                  
-000021 d002              RCALL   Mult
+000029 2f4d              MOV     zahl1_lw_lb, base_lb
+00002a 2f5e              MOV     zahl1_lw_hb, base_hb
                  
-000022 cff8              RJMP    WhilePOW            ;   Goto WhilePOW
+00002b 2f6d              MOV     zahl2_lb, base_lb
+00002c 2f7e              MOV     zahl2_hb, base_hb
+                 
+00002d d008              RCALL   Mult
+                 
+00002e 2fd8              MOV     base_lb, res_lw_lb
+00002f 2fe9              MOV     base_hb, res_lw_hb
+                 
+000030 918f              POP     res_lw_lb
+000031 919f              POP     res_lw_hb
+000032 91af              POP     res_hw_lb
+000033 91bf              POP     res_hw_hb
+                 
+000034 cfe7              RJMP    WhilePOW
+                 
                      End_WhilePOW:                   ;  End of While Loop
-000023 cfe5              RJMP    Main                ; Endless Loop
+000035 cfd3              RJMP    Main                ; Endless Loop
                  
                  
                  
@@ -2015,39 +2042,55 @@ C:\Users\Beni\Documents\GitHub\uController\4x4BitPotenzRechnen\4x4BitPotenzRechn
                  ;------------------------------------------------------------------------------
                  
                  
-                 Mult:								; Multiplication function Function
+                 Mult:								; Multiplication Function
                  
-000024 27bb              CLR     res_hw_hb           ;  Resultat = 1
-000025 27aa              CLR     res_hw_lb           ;  Resultat = 1
-000026 2799              CLR     res_lw_hb           ;  Resultat = 1
-000027 2788              CLR     res_lw_lb           ;  Resultat = 1
+000036 934f              PUSH    zahl1_lw_lb        
+000037 935f              PUSH    zahl1_lw_hb        
+000038 930f              PUSH    zahl1_hw_lb        
+000039 931f              PUSH    zahl1_hw_hb        
+                 
+00003a 936f              PUSH    zahl2_lb
+00003b 937f              PUSH    zahl2_hb
+                 
+00003c 27bb              CLR     res_hw_hb           ;  Resultat = 0
+00003d 27aa              CLR     res_hw_lb           ;  Resultat = 0
+00003e 2799              CLR     res_lw_hb           ;  Resultat = 0
+00003f 2788              CLR     res_lw_lb           ;  Resultat = 0
                  
                      While:                          ;  While
-000028 2377              TST     zahl2_hb            ;  zahl2_lb > 0
-000029 f009              BREQ    TestLowByte         ;  Wenn true gehe teste das Low Byte
-00002a c002              RJMP    TestLowByteEnd      ;  Wenn false dann nicht weiter prüfen
+000040 2377              TST     zahl2_hb            ;  zahl2_lb > 0
+000041 f009              BREQ    TestLowByte         ;  Wenn true gehe teste das Low Byte
+000042 c002              RJMP    TestLowByteEnd      ;  Wenn false dann nicht weiter prüfen
                     TestLowByte:                     ;  TestLowByte
-00002b 2366              TST     zahl2_lb            ;  zahl2_lb > 0
-00002c f061              BREQ    While_false         ;  Wenn true dann nicht mehr loopen
+000043 2366              TST     zahl2_lb            ;  zahl2_lb > 0
+000044 f061              BREQ    While_false         ;  Wenn true dann nicht mehr loopen
                     TestLowByteEnd:                  ;  Ende der prüfung
                  
-00002d 9576              LSR     zahl2_hb            ;   schiebe zahl2_hb nach rechts
-00002e 9567              ROR     zahl2_lb            ;   Rotiere zahl2_lb nach rechts
-00002f f420              BRCC    Else                ;   Wenn carry = 0 dann zu else
+000045 9576              LSR     zahl2_hb            ;   schiebe zahl2_hb nach rechts
+000046 9567              ROR     zahl2_lb            ;   Rotiere zahl2_lb nach rechts
+000047 f420              BRCC    Else                ;   Wenn carry = 0 dann zu else
                  
-000030 0f84              ADD     res_lw_lb, zahl1_lw_lb; LWLB resultat um LWLB Zahl1 erhöhen
-000031 1f95              ADC     res_lw_hb, zahl1_lw_hb; LWHB resultat um LWHB zahl1 erhönen + Carry
-000032 1fa0              ADC     res_hw_lb, zahl1_hw_lb; HWLB resultat um HWLB zahl1 erhönen + Carry
-000033 1fb1              ADC     res_hw_hb, zahl1_hw_hb; HWHB resultat um HWHB zahl1 erhöhen + Carry
+000048 0f84              ADD     res_lw_lb, zahl1_lw_lb; LWLB resultat um LWLB Zahl1 erhöhen
+000049 1f95              ADC     res_lw_hb, zahl1_lw_hb; LWHB resultat um LWHB zahl1 erhönen + Carry
+00004a 1fa0              ADC     res_hw_lb, zahl1_hw_lb; HWLB resultat um HWLB zahl1 erhönen + Carry
+00004b 1fb1              ADC     res_hw_hb, zahl1_hw_hb; HWHB resultat um HWHB zahl1 erhöhen + Carry
                          
                     Else:
-000034 0f44              LSL     zahl1_lw_lb         ;   schiebe zahl1 nach links
-000035 1f55              ROL     zahl1_lw_hb         ;   schiebe zahl1 nach links
-000036 1f00              ROL     zahl1_hw_lb         ;   schiebe zahl1 nach links
-000037 1f11              ROL     zahl1_hw_hb         ;   Rotiere zahl1 nach links.
+00004c 0f44              LSL     zahl1_lw_lb         ;   schiebe zahl1 nach links
+00004d 1f55              ROL     zahl1_lw_hb         ;   schiebe zahl1 nach links
+00004e 1f00              ROL     zahl1_hw_lb         ;   schiebe zahl1 nach links
+00004f 1f11              ROL     zahl1_hw_hb         ;   Rotiere zahl1 nach links.
                  
-000038 cfef              RJMP    While               ;  Loop
+000050 cfef              RJMP    While               ;  Loop
                     While_false:                     ;  ende der While schlaufe
+                         
+000051 917f              POP     zahl2_hb
+000052 916f              POP     zahl2_lb
+                         
+000053 911f              POP     zahl1_hw_hb
+000054 910f              POP     zahl1_hw_lb
+000055 915f              POP     zahl1_lw_hb
+000056 914f              POP     zahl1_lw_lb
                  
 
 
@@ -2068,39 +2111,39 @@ counted separately from r26..r31 here.
 "ATmega2560" register use summary:
 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 r5 :   0 r6 :   0 r7 :   0 
 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 r13:   0 r14:   0 r15:   0 
-r16:  11 r17:   3 r18:   0 r19:   0 r20:   4 r21:   4 r22:   4 r23:   3 
-r24:   5 r25:   4 r26:   3 r27:   3 r28:   4 r29:   3 r30:   0 r31:   0 
+r16:  13 r17:   5 r18:   0 r19:   0 r20:   7 r21:   7 r22:   7 r23:   7 
+r24:   8 r25:   7 r26:   5 r27:   5 r28:   5 r29:   5 r30:   4 r31:   0 
 x  :   0 y  :   0 z  :   0 
-Registers used: 12 out of 35 (34.3%)
+Registers used: 13 out of 35 (37.1%)
 
 "ATmega2560" instruction use summary:
 .lds  :   0 .sts  :   0 adc   :   3 add   :   1 adiw  :   0 and   :   0 
 andi  :   0 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
-brcc  :   1 brcs  :   0 break :   0 breq  :   3 brge  :   0 brhc  :   0 
+brcc  :   2 brcs  :   0 break :   0 breq  :   3 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
 brne  :   2 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
 brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   0 cbr   :   0 
 clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :  15 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   0 cpc   :   0 
-cpi   :   0 cpse  :   0 dec   :   1 eicall:   0 eijmp :   0 elpm  :   0 
+cpi   :   0 cpse  :   0 dec   :   0 eicall:   0 eijmp :   0 elpm  :   0 
 eor   :   0 fmul  :   0 fmuls :   0 fmulsu:   0 icall :   0 ijmp  :   0 
 in    :   0 inc   :   0 jmp   :   0 ld    :   0 ldd   :   0 ldi   :   5 
-lds   :   0 lpm   :   0 lsl   :   1 lsr   :   1 mov   :   3 movw  :   0 
+lds   :   0 lpm   :   0 lsl   :   1 lsr   :   2 mov   :  10 movw  :   0 
 mul   :   0 muls  :   0 mulsu :   0 neg   :   0 nop   :   0 or    :   0 
-ori   :   0 out   :   4 pop   :   0 push  :   0 rcall :   1 ret   :   1 
-reti  :   0 rjmp  :   6 rol   :   3 ror   :   1 sbc   :   0 sbci  :   0 
+ori   :   0 out   :   4 pop   :  10 push  :  10 rcall :   2 ret   :   1 
+reti  :   0 rjmp  :   7 rol   :   3 ror   :   1 sbc   :   0 sbci  :   0 
 sbi   :   0 sbic  :   0 sbis  :   0 sbiw  :   0 sbr   :   0 sbrc  :   0 
 sbrs  :   0 sec   :   0 seh   :   0 sei   :   0 sen   :   0 ser   :   1 
 ses   :   0 set   :   0 sev   :   0 sez   :   0 sleep :   0 spm   :   0 
 st    :   0 std   :   0 sts   :   0 sub   :   0 subi  :   0 swap  :   0 
 tst   :   5 wdr   :   0 
-Instructions used: 19 out of 116 (16.4%)
+Instructions used: 20 out of 116 (17.2%)
 
 "ATmega2560" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x000074    116      0    116  262144   0.0%
+[.cseg] 0x000000 0x0000b0    176      0    176  262144   0.1%
 [.dseg] 0x000200 0x000200      0      0      0    8192   0.0%
 [.eseg] 0x000000 0x000000      0      0      0    4096   0.0%
 
-Assembly complete, 0 errors, 5 warnings
+Assembly complete, 0 errors, 6 warnings
