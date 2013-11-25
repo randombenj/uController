@@ -1,8 +1,8 @@
 
-AVRASM ver. 2.1.52  C:\Users\Beni\Documents\Atmel Studio\6.1\4x4BitMultiplikation\4x4BitMultiplikation\4x4BitMultiplikation.asm Sun Oct 20 11:03:32 2013
+AVRASM ver. 2.1.52  C:\Users\Benj\Documents\Atmel Studio\6.1\Math\4x4BitMultiplikation\4x4BitMultiplikation.asm Sun Nov 24 17:54:25 2013
 
 [builtin](2): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
-C:\Users\Beni\Documents\Atmel Studio\6.1\4x4BitMultiplikation\4x4BitMultiplikation\4x4BitMultiplikation.asm(25): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
+C:\Users\Benj\Documents\Atmel Studio\6.1\Math\4x4BitMultiplikation\4x4BitMultiplikation.asm(25): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
                  
                  ;******************************************************************************
                  
@@ -1944,7 +1944,7 @@ C:\Users\Beni\Documents\Atmel Studio\6.1\4x4BitMultiplikation\4x4BitMultiplikati
                  ;*** Hauptprogramm ***	
                  Main:								; Main Programm
 000005 b109      		IN		mpr, SWITCH			;  Switches einlesen
-000006 9500              COM     mpr
+000006 9500              COM     mpr                 ;  stk600 spezifisch
 000007 2711              CLR     res                 ;  Resultat = $00
 000008 2f20              MOV     zahl1, mpr          ;  zahl1 = mpr
 000009 702f              CBR     zahl1, $F0          ;  Nur 1. 4 bits gebraucht
@@ -1961,7 +1961,7 @@ C:\Users\Beni\Documents\Atmel Studio\6.1\4x4BitMultiplikation\4x4BitMultiplikati
 000012 1f22              ROL     zahl1               ;  Rotiere zahl1 nach rechts
 000013 cff9              RJMP    While               ;  Loop
                     While_false:                     ;  ende der While schlaufe
-000014 9510              COM     res
+000014 9510              COM     res                 ;  stk600 spezifisch
 000015 b915              OUT     LED, res            ;  Resultat ausgeben
 
 
