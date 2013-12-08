@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Atmel Studio Solution File, Format Version 11.00
 Project("{18226A42-8477-4023-8AD2-40C49DA407C9}") = "WXMS", "WXMS\WXMS.asmproj", "{35984E84-F5B1-4D24-A763-E49809F4531D}"
 EndProject
+Project("{18226A42-8477-4023-8AD2-40C49DA407C9}") = "W100US", "W100US\W100US.asmproj", "{42AAE69F-7F81-4941-9930-3D389B28A5C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AVR = Debug|AVR
@@ -13,6 +15,10 @@ Global
 		{35984E84-F5B1-4D24-A763-E49809F4531D}.Debug|AVR.Build.0 = Debug|AVR
 		{35984E84-F5B1-4D24-A763-E49809F4531D}.Release|AVR.ActiveCfg = Release|AVR
 		{35984E84-F5B1-4D24-A763-E49809F4531D}.Release|AVR.Build.0 = Release|AVR
+		{42AAE69F-7F81-4941-9930-3D389B28A5C6}.Debug|AVR.ActiveCfg = Debug|AVR
+		{42AAE69F-7F81-4941-9930-3D389B28A5C6}.Debug|AVR.Build.0 = Debug|AVR
+		{42AAE69F-7F81-4941-9930-3D389B28A5C6}.Release|AVR.ActiveCfg = Release|AVR
+		{42AAE69F-7F81-4941-9930-3D389B28A5C6}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
