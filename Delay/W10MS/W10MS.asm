@@ -1,19 +1,19 @@
 ;===============================================================================
-;- Programm:		    W100US
+;- Programm:		
 ;-
-;- Dateinname:		    W100US.asm
+;- Dateinname:		    .asm
 ;- Version:			    1.0
 ;- Autor:			    Benj Fassbind
 ;-
 ;- Verwendungszweck:	uP-Schulung
 ;-
 ;- Beschreibung:
-;-	ATMega2560@8MHz Delay schlaufe von 100 mikro Sekunden	
+;-		
 ;-				
 ;-
 ;- Entwicklungsablauf:
 ;- Ver: Datum:	Autor:   Entwicklungsschritt:                         Zeit:
-;- 1.0  8.12.13  FAB    Ganzes Programm erstellt				           Min.
+;- 1.0  01.01.13  FAB    Ganzes Programm erstellt				           Min.
 ;-
 ;-										Totalzeit:	 Min.
 ;-
@@ -24,6 +24,7 @@
 .include "m2560def.inc"
 
 		RJMP	Reset
+
 
 
 
@@ -57,17 +58,64 @@ Reset:	SER	    mpr			        ; Output:= LED
 
 
 ;--- Hauptprogramm ---	
-Main:		                        ; function Main():
-        
-        RCALL   W100US              ;   W100US()
-
-        RJMP    Main                ; GoTo: Main()
-
+Main:		
+		RCALL	W10MS
+		
+		RJMP	Main
 
 
 ;------------------------------------------------------------------------------
 ; Unterprogramme
 ;------------------------------------------------------------------------------
+W10MS:								; function W10MS():
+		PUSH    mpr                 ;   save <mpr> to stack
+        IN      mpr, SREG           ;   <mpr> = <SREG>
+        PUSH    mpr                 ;   save <SREG> to stack
+
+        LDI     mpr, $0A            ;   <mpr> = 195
+
+    W10MS_LOOP01:                   ;   LOOP:
+        RCALL   W1MS                ;     wait 1 clock 
+        DEC     mpr                 ;     <mpr>--
+        BRNE    W10MS_LOOP01        ;   if <mpr> > 0: LOOP
+
+        // this is needed for accuracy
+        NOP
+
+        POP     mpr                 ;   loat <SREG> from stack
+        OUT     SREG, mpr           ;   <SREG> = <mpr>
+        POP     mpr                 ;   load <mpr> from stack
+
+        RET                         ; return <void>
+
+
+W1MS:								; function W1MS():
+
+        PUSH    mpr                 ;   save <mpr> to stack
+        IN      mpr, SREG           ;   <mpr> = <SREG>
+        PUSH    mpr                 ;   save <SREG> to stack
+
+		LDI		mpr, $63			;   <mp> = 99
+
+	W1MS_LOOP01:					;	LOOP:
+		RCALL	W100US				;     W100US()		
+		DEC		mpr                 ;     <mpr>--
+		BRNE	W1MS_LOOP01			;   if mpr > 0: GoTo: W1MS_LOOP01
+		
+		LDI		mpr, $79			;   <mpr> = 120
+
+	W1MS_LOOP02:                  	;   LOOP:
+        NOP                         ;     wait 1 clock 
+        DEC     mpr                 ;     <mpr>--
+        BRNE    W1MS_LOOP02       	;   if <mpr> > 0: LOOP	
+
+		POP     mpr                 ;   loat <SREG> from stack
+        OUT     SREG, mpr           ;   <SREG> = <mpr>
+        POP     mpr                 ;   load <mpr> from stack
+
+		RET                         ; return <void>
+
+
 W100US:                             ; function W100US():
 
         PUSH    mpr                 ;   save <mpr> to stack
@@ -76,10 +124,10 @@ W100US:                             ; function W100US():
 
         LDI     mpr, $C3            ;   <mpr> = 195
 
-    LOOP:                           ;   LOOP:
+    W100US_LOOP01:                  ;   LOOP:
         NOP                         ;     wait 1 clock 
         DEC     mpr                 ;     <mpr>--
-        BRNE    LOOP                ;   if <mpr> > 0: LOOP
+        BRNE    W100US_LOOP01       ;   if <mpr> > 0: LOOP
 
         // this is needed for accuracy
         NOP

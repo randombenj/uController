@@ -1,8 +1,8 @@
 
-AVRASM ver. 2.1.52  C:\Users\Beni\Documents\GitHub\uController\Delay\WXMS\WXMS.asm Mon Dec 09 21:00:51 2013
+AVRASM ver. 2.1.52  C:\Users\Beni\Documents\GitHub\uController\Delay\W1MS\W1MS.asm Mon Dec 09 21:04:15 2013
 
 [builtin](2): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
-C:\Users\Beni\Documents\GitHub\uController\Delay\WXMS\WXMS.asm(25): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
+C:\Users\Beni\Documents\GitHub\uController\Delay\W1MS\W1MS.asm(24): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
                  
                  ;===============================================================================
                  
@@ -1842,17 +1842,16 @@ C:\Users\Beni\Documents\GitHub\uController\Delay\WXMS\WXMS.asm(25): Including fi
                  
                  ; ***** END OF FILE ******************************************************
                  
-                 ;- Programm:		    WXMS
+                 ;- Programm:		
                  ;-
-                 ;- Dateinname:		    WXMS.asm
+                 ;- Dateinname:		    .asm
                  ;- Version:			    1.0
                  ;- Autor:			    Benj Fassbind
                  ;-
                  ;- Verwendungszweck:	uP-Schulung
                  ;-
                  ;- Beschreibung:
-                 ;-	Ist eine Funktion welche X Milli-Sekunden wartet.
-                 ;-  X: anzahl Millisekunden (0-255)	
+                 ;-		
                  ;-				
                  ;-
                  ;- Entwicklungsablauf:
@@ -1914,6 +1913,7 @@ C:\Users\Beni\Documents\GitHub\uController\Delay\WXMS\WXMS.asm(25): Including fi
                  
                  
                  
+                 
                  ;--- Konstanten ---
                  .equ	LED		    = PORTB		; Ausgabeport fuer LED
                  .equ	LED_D	    = DDRB		; Daten Direction Port fuer LED
@@ -1923,9 +1923,6 @@ C:\Users\Beni\Documents\GitHub\uController\Delay\WXMS\WXMS.asm(25): Including fi
                  
                  ;--- Variablen ---
                  .def 	mpr	        = R16		; Multifunktionsregister
-                 .def    ms          = R17       ; Anzahl Millisekunden
-                 .def    ms1         = R18       ; counter für 1 milli sekunde
-                 .def    count       = R19       ; counter
                  
                  
                  
@@ -1945,49 +1942,65 @@ C:\Users\Beni\Documents\GitHub\uController\Delay\WXMS\WXMS.asm(25): Including fi
 000007 e201      		LDI	    mpr, HIGH(RAMEND)
 000008 bf0e      		OUT	    SPH,mpr
                  
-000009 e011              LDI     ms, $01             ;   <ms> = $0F
                  
                  ;--- Hauptprogramm ---	
-                 Main:		                        ; [Main()] funtion
-00000a b915              OUT     LED, ms
+                 Main:		
+000009 d001      		RCALL	W1MS
+                 		
+00000a cffe      		RJMP	Main
                  
-00000b d002              RCALL   W1MS                ;   WXMS(<ms>)
-                 
-00000c 1f11              ROL     ms
-00000d cffc              RJMP    Main                ; GoTo: Main
                  
                  ;------------------------------------------------------------------------------
                  ; Unterprogramme
                  ;------------------------------------------------------------------------------
-                 W1MS:                               ; [W1MS()] function
+                 W1MS:								; function W1MS():
                  
-00000e 930f              PUSH    mpr                 ;   save <mpr> on stack
-00000f b70f              IN      mpr, SREG           ;   <mpr> = *<SREG>
-000010 930f              PUSH    mpr                 ;   save *<SREG> on stack
+00000b 930f              PUSH    mpr                 ;   save <mpr> to stack
+00000c b70f              IN      mpr, SREG           ;   <mpr> = <SREG>
+00000d 930f              PUSH    mpr                 ;   save <SREG> to stack
                  
-000011 e120              LDI     ms1, $10            
-                     WAIT:        
+00000e e603      		LDI		mpr, $63			;   <mp> = 99
                  
-000012 ef08              LDI     mpr, $F8            ;   <mpr> = 248
-                     W248US:                         ;     W1US label
-000013 0000              NOP                         ;     no operation (1)
+                 	W1MS_LOOP01:					;	LOOP:
+00000f d00a      		RCALL	W100US				;     W100US()		
+000010 950a      		DEC		mpr                 ;     <mpr>--
+000011 f7e9      		BRNE	W1MS_LOOP01			;   if mpr > 0: GoTo: W1MS_LOOP01
+                 		
+000012 e709      		LDI		mpr, $79			;   <mpr> = 120
+                 
+                 	W1MS_LOOP02:                  	;   LOOP:
+000013 0000              NOP                         ;     wait 1 clock 
 000014 950a              DEC     mpr                 ;     <mpr>--
-000015 f7e9              BRNE    W248US              ;    if <z-bit> == 0: GoTo: W248US
+000015 f7e9              BRNE    W1MS_LOOP02       	;   if <mpr> > 0: LOOP	
                  
-000016 952a              DEC     ms1
-000017 f7d1              BRNE    WAIT
+000016 910f      		POP     mpr                 ;   loat <SREG> from stack
+000017 bf0f              OUT     SREG, mpr           ;   <SREG> = <mpr>
+000018 910f              POP     mpr                 ;   load <mpr> from stack
                  
-000018 e00f              LDI     mpr, $0F            ;   <mpr> = 20 > 3 us
-                     W20US2:                         ;     W1US label
-000019 0000              NOP                         ;     no operation (1)
-00001a 950a              DEC     mpr                 ;     <mpr>--
-00001b f7e9              BRNE    W20US2              ;    if <z-bit> == 0: GoTo: W20US
+000019 9508      		RET                         ; return <void>
                  
-00001c 910f              POP     mpr                 ;   load *<SREG> from stack
-00001d bf0f              OUT     SREG, mpr           ;   *<SREG> = mpr
-00001e 910f              POP     mpr                 ;   load <mpr> from stack
-00001f 0000              nop
                  
+                 W100US:                             ; function W100US():
+                 
+00001a 930f              PUSH    mpr                 ;   save <mpr> to stack
+00001b b70f              IN      mpr, SREG           ;   <mpr> = <SREG>
+00001c 930f              PUSH    mpr                 ;   save <SREG> to stack
+                 
+00001d ec03              LDI     mpr, $C3            ;   <mpr> = 195
+                 
+                     W100US_LOOP01:                  ;   LOOP:
+00001e 0000              NOP                         ;     wait 1 clock 
+00001f 950a              DEC     mpr                 ;     <mpr>--
+000020 f7e9              BRNE    W100US_LOOP01       ;   if <mpr> > 0: LOOP
+                 
+                         // this is needed for accuracy
+000021 0000              NOP
+                 
+000022 910f              POP     mpr                 ;   loat <SREG> from stack
+000023 bf0f              OUT     SREG, mpr           ;   <SREG> = <mpr>
+000024 910f              POP     mpr                 ;   load <mpr> from stack
+                 
+000025 9508              RET                         ; return <void>
 
 
 RESOURCE USE INFORMATION
@@ -2007,10 +2020,10 @@ counted separately from r26..r31 here.
 "ATmega2560" register use summary:
 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 r5 :   0 r6 :   0 r7 :   0 
 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 r13:   0 r14:   0 r15:   0 
-r16:  18 r17:   3 r18:   2 r19:   0 r20:   0 r21:   0 r22:   0 r23:   0 
+r16:  26 r17:   0 r18:   0 r19:   0 r20:   0 r21:   0 r22:   0 r23:   0 
 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 r29:   0 r30:   0 r31:   0 
 x  :   0 y  :   0 z  :   0 
-Registers used: 3 out of 35 (8.6%)
+Registers used: 1 out of 35 (2.9%)
 
 "ATmega2560" instruction use summary:
 .lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   0 and   :   0 
@@ -2023,22 +2036,22 @@ clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   1 cls   :   0
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   0 cpc   :   0 
 cpi   :   0 cpse  :   0 dec   :   3 eicall:   0 eijmp :   0 elpm  :   0 
 eor   :   0 fmul  :   0 fmuls :   0 fmulsu:   0 icall :   0 ijmp  :   0 
-in    :   1 inc   :   0 jmp   :   0 ld    :   0 ldd   :   0 ldi   :   6 
+in    :   2 inc   :   0 jmp   :   0 ld    :   0 ldd   :   0 ldi   :   5 
 lds   :   0 lpm   :   0 lsl   :   0 lsr   :   0 mov   :   0 movw  :   0 
 mul   :   0 muls  :   0 mulsu :   0 neg   :   0 nop   :   3 or    :   0 
-ori   :   0 out   :   6 pop   :   2 push  :   2 rcall :   1 ret   :   1 
-reti  :   0 rjmp  :   2 rol   :   1 ror   :   0 sbc   :   0 sbci  :   0 
+ori   :   0 out   :   6 pop   :   4 push  :   4 rcall :   2 ret   :   2 
+reti  :   0 rjmp  :   2 rol   :   0 ror   :   0 sbc   :   0 sbci  :   0 
 sbi   :   0 sbic  :   0 sbis  :   0 sbiw  :   0 sbr   :   0 sbrc  :   0 
 sbrs  :   0 sec   :   0 seh   :   0 sei   :   0 sen   :   0 ser   :   1 
 ses   :   0 set   :   0 sev   :   0 sez   :   0 sleep :   0 spm   :   0 
 st    :   0 std   :   0 sts   :   0 sub   :   0 subi  :   0 swap  :   0 
 tst   :   0 wdr   :   0 
-Instructions used: 14 out of 116 (12.1%)
+Instructions used: 13 out of 116 (11.2%)
 
 "ATmega2560" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x000042     66      0     66  262144   0.0%
+[.cseg] 0x000000 0x00004c     76      0     76  262144   0.0%
 [.dseg] 0x000200 0x000200      0      0      0    8192   0.0%
 [.eseg] 0x000000 0x000000      0      0      0    4096   0.0%
 

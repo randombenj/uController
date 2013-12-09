@@ -4,17 +4,17 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>6.1</ProjectVersion>
     <ToolchainName>com.Atmel.AVRAssembler</ToolchainName>
-    <ProjectGuid>{42aae69f-7f81-4941-9930-3d389b28a5c6}</ProjectGuid>
+    <ProjectGuid>{d25d4f82-59ae-4c13-a9e8-79fb3abcd368}</ProjectGuid>
     <avrdeviceseries>none</avrdeviceseries>
     <avrdevice>ATmega2560</avrdevice>
     <OutputFileName>$(MSBuildProjectName)</OutputFileName>
     <OutputFileExtension>.obj</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
     <Language>ASSEMBLY</Language>
-    <AssemblyName>W100US</AssemblyName>
-    <Name>W100US</Name>
-    <RootNamespace>W100US</RootNamespace>
-    <EntryFile>$(MSBuildProjectDirectory)\W100US.asm</EntryFile>
+    <AssemblyName>W1MS</AssemblyName>
+    <Name>W1MS</Name>
+    <RootNamespace>W1MS</RootNamespace>
+    <EntryFile>$(MSBuildProjectDirectory)\W1MS.asm</EntryFile>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
@@ -39,39 +39,24 @@
       </ToolNumber>
       <ToolName xmlns="">Simulator</ToolName>
     </com_atmel_avrdbg_tool_simulator>
-    <AsfFrameworkConfig>
-      <framework-data xmlns="">
-  <options />
-  <configurations />
-  <files />
-  <documentation help="" />
-  <offline-documentation help="" />
-  <dependencies>
-    <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.11.0" />
-  </dependencies>
-</framework-data>
-    </AsfFrameworkConfig>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <ToolchainSettings>
       <AvrAssembler>
-        <avrasm.assembler.general.IncludeFile>(%24IncludeFile)</avrasm.assembler.general.IncludeFile>
-      </AvrAssembler>
+  <avrasm.assembler.general.IncludeFile>(%24IncludeFile)</avrasm.assembler.general.IncludeFile>
+</AvrAssembler>
     </ToolchainSettings>
     <OutputType>Executable</OutputType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
       <AvrAssembler>
-        <avrasm.assembler.general.IncludeFile>(%24IncludeFile)</avrasm.assembler.general.IncludeFile>
-      </AvrAssembler>
+  <avrasm.assembler.general.IncludeFile>(%24IncludeFile)</avrasm.assembler.general.IncludeFile>
+</AvrAssembler>
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AVR_Header.asm">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="W100US.asm">
+    <Compile Include="W1MS.asm">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

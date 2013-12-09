@@ -1,17 +1,17 @@
 <ASSEMBLER_INFO>
  <VERSION>2.1.52</VERSION>
  <DEVICE>"ATmega2560"</DEVICE>
- <WORKING_DIR>C:\Users\Benj\workspace\GitHub\uController\Delay\WXMS\Debug</WORKING_DIR>
+ <WORKING_DIR>C:\Users\Beni\Documents\GitHub\uController\Delay\WXMS\Debug</WORKING_DIR>
  <INCLUDE_PATH>
   <DIR>C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include</DIR>
   <DIR></DIR>
  </INCLUDE_PATH>
- <SOURCE_FILE>C:\Users\Benj\workspace\GitHub\uController\Delay\WXMS\WXMS.asm</SOURCE_FILE>
+ <SOURCE_FILE>C:\Users\Beni\Documents\GitHub\uController\Delay\WXMS\WXMS.asm</SOURCE_FILE>
  <INCLUDED_FILES>
   <FILE>C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc</FILE>
  </INCLUDED_FILES>
  <OBJECT_FILES>
-  <FILE>C:\Users\Benj\workspace\GitHub\uController\Delay\WXMS\Debug/WXMS.obj</FILE>
+  <FILE>C:\Users\Beni\Documents\GitHub\uController\Delay\WXMS\Debug/WXMS.obj</FILE>
  </OBJECT_FILES>
  <HEX_FILES>
   <FILE>WXMS.hex</FILE>
@@ -21,11 +21,11 @@
   <FILE>WXMS.lss</FILE>
  </OUTPUT_FILES>
  <LABELS>
-  <Reset><FILE>C:\Users\Benj\workspace\GitHub\uController\Delay\WXMS\WXMS.asm</FILE><LINE>51</LINE></Reset>
-  <Main><FILE>C:\Users\Benj\workspace\GitHub\uController\Delay\WXMS\WXMS.asm</FILE><LINE>65</LINE></Main>
-  <W1MS><FILE>C:\Users\Benj\workspace\GitHub\uController\Delay\WXMS\WXMS.asm</FILE><LINE>76</LINE></W1MS>
-  <WAIT><FILE>C:\Users\Benj\workspace\GitHub\uController\Delay\WXMS\WXMS.asm</FILE><LINE>83</LINE></WAIT>
-  <W248US><FILE>C:\Users\Benj\workspace\GitHub\uController\Delay\WXMS\WXMS.asm</FILE><LINE>86</LINE></W248US>
-  <W20US2><FILE>C:\Users\Benj\workspace\GitHub\uController\Delay\WXMS\WXMS.asm</FILE><LINE>95</LINE></W20US2>
+  <Reset><FILE>C:\Users\Beni\Documents\GitHub\uController\Delay\WXMS\WXMS.asm</FILE><LINE>51</LINE></Reset>
+  <Main><FILE>C:\Users\Beni\Documents\GitHub\uController\Delay\WXMS\WXMS.asm</FILE><LINE>65</LINE></Main>
+  <W1MS><FILE>C:\Users\Beni\Documents\GitHub\uController\Delay\WXMS\WXMS.asm</FILE><LINE>76</LINE></W1MS>
+  <WAIT><FILE>C:\Users\Beni\Documents\GitHub\uController\Delay\WXMS\WXMS.asm</FILE><LINE>83</LINE></WAIT>
+  <W248US><FILE>C:\Users\Beni\Documents\GitHub\uController\Delay\WXMS\WXMS.asm</FILE><LINE>86</LINE></W248US>
+  <W20US2><FILE>C:\Users\Beni\Documents\GitHub\uController\Delay\WXMS\WXMS.asm</FILE><LINE>95</LINE></W20US2>
  </LABELS>
 </ASSEMBLER_INFO>
