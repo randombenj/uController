@@ -1,8 +1,8 @@
 
-AVRASM ver. 2.1.52  C:\Users\Beni\Documents\GitHub\uController\Delay\W1MS\W1MS.asm Sat Dec 14 16:32:57 2013
+AVRASM ver. 2.1.52  C:\Users\Beni\Documents\GitHub\uController\Delay\W1S\W1S.asm Sat Dec 14 17:02:47 2013
 
 [builtin](2): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
-C:\Users\Beni\Documents\GitHub\uController\Delay\W1MS\W1MS.asm(24): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
+C:\Users\Beni\Documents\GitHub\uController\Delay\W1S\W1S.asm(24): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
                  
                  ;===============================================================================
                  
@@ -1842,16 +1842,16 @@ C:\Users\Beni\Documents\GitHub\uController\Delay\W1MS\W1MS.asm(24): Including fi
                  
                  ; ***** END OF FILE ******************************************************
                  
-                 ;- Programm:		
+                 ;- Programm:		    W1S
                  ;-
-                 ;- Dateinname:		    .asm
+                 ;- Dateinname:		    W1S.asm
                  ;- Version:			    1.0
                  ;- Autor:			    Benj Fassbind
                  ;-
                  ;- Verwendungszweck:	uP-Schulung
                  ;-
                  ;- Beschreibung:
-                 ;-		
+                 ;-	Delay for 1 Second	
                  ;-				
                  ;-
                  ;- Entwicklungsablauf:
@@ -1944,65 +1944,170 @@ C:\Users\Beni\Documents\GitHub\uController\Delay\W1MS\W1MS.asm(24): Including fi
                  
                  
                  ;--- Hauptprogramm ---	
-                 Main:		
-000009 d001      		RCALL	W1MS
-                 		
-00000a cffe      		RJMP	Main
+                 Main:	                            ; Main() function
+000009 d001              RCALL   W1S                 ;   W1S()
+00000a cffe              RJMP    Main                ; GoTo: Main	
+                 
                  
                  
                  ;------------------------------------------------------------------------------
                  ; Unterprogramme
                  ;------------------------------------------------------------------------------
-                 W1MS:								; function W1MS():
+                 W1S:                                ; W100MS() function
                  
 00000b 930f              PUSH    mpr                 ;   save <mpr> to stack
 00000c b70f              IN      mpr, SREG           ;   <mpr> = <SREG>
 00000d 930f              PUSH    mpr                 ;   save <SREG> to stack
                  
-00000e e009      		LDI		mpr, $09			;   <mp> = 9
+00000e e009              LDI     mpr, $09            ;   <mpr> = 10
                  
-                 	W1MS_LOOP01:					;	LOOP:
-00000f d00c      		RCALL	W100US				;     W100US()		
-000010 950a      		DEC		mpr                 ;     <mpr>--
-000011 f7e9      		BRNE	W1MS_LOOP01			;   if mpr > 0: GoTo: W1MS_LOOP01
+                     W1S_LOOP01:                     ;   LOOP:
+00000f d013              RCALL   W100MS              ;     W10MS()
+000010 950a              DEC     mpr                 ;     <mpr>--
+000011 f7e9              BRNE    W1S_LOOP01          ;   if <mpr> > 0: LOOP
+                 
+                 
+000012 e009              LDI     mpr, $09            ;   <mpr> = 10
+                 
+                     W1S_LOOP02:                     ;   LOOP:
+000013 d026              RCALL   W10MS               ;     W10MS()
+000014 950a              DEC     mpr                 ;     <mpr>--
+000015 f7e9              BRNE    W1S_LOOP02          ;   if <mpr> > 0: LOOP
+                 
+000016 e009              LDI     mpr, $09            ;   <mpr> = 10
+                     W1S_LOOP03:                 	;   LOOP:
+000017 d031              RCALL   W1MS                ;     W1MS()
+000018 d041              RCALL   W100US              ;     W100US()
+000019 950a              DEC     mpr                 ;     <mpr>--
+00001a f7e1              BRNE    W1S_LOOP03      	;   if <mpr> > 0: LOOP	
+                 
+00001b ea0f              LDI		mpr, $AF			;   <mpr> = 120
+                 	W1S_LOOP04:                 	;   LOOP:
+00001c 0000              NOP                         ;     wait 1 clock 
+00001d 950a              DEC     mpr                 ;     <mpr>--
+00001e f7e9              BRNE    W1S_LOOP04      	;   if <mpr> > 0: LOOP	
+                 
+00001f 910f              POP     mpr                 ;   loat <SREG> from stack
+000020 bf0f              OUT     SREG, mpr           ;   <SREG> = <mpr>
+000021 910f              POP     mpr                 ;   load <mpr> from stack
+                 
+000022 9508              RET                         ; return <void>
+                 
+                 
+                 W100MS:                             ; W100MS() function
+                 
+000023 930f              PUSH    mpr                 ;   save <mpr> to stack
+000024 b70f              IN      mpr, SREG           ;   <mpr> = <SREG>
+000025 930f              PUSH    mpr                 ;   save <SREG> to stack
+                 
+000026 e009              LDI     mpr, $09            ;   <mpr> = 10
+                 
+                     W100MS_LOOP01:                  ;   LOOP:
+000027 d012              RCALL   W10MS               ;     W10MS()
+000028 950a              DEC     mpr                 ;     <mpr>--
+000029 f7e9              BRNE    W100MS_LOOP01       ;   if <mpr> > 0: LOOP
+                 
+00002a e009              LDI     mpr, $09            ;   <mpr> = 10
+                     W100MS_LOOP02:                	;   LOOP:
+00002b d01d              RCALL   W1MS                ;     W1MS()
+00002c d02d              RCALL   W100US              ;     W100US()
+00002d 950a              DEC     mpr                 ;     <mpr>--
+00002e f7e1              BRNE    W100MS_LOOP02      	;   if <mpr> > 0: LOOP	
+                 
+00002f eb05              LDI		mpr, $B5			;   <mpr> = 120
+                 	W100MS_LOOP03:                 	;   LOOP:
+000030 0000              NOP                         ;     wait 1 clock 
+000031 950a              DEC     mpr                 ;     <mpr>--
+000032 f7e9              BRNE    W100MS_LOOP03      	;   if <mpr> > 0: LOOP	
+                         
+                         // this is needed for accuracy
+000033 0000              NOP                         ;  wait 1 clock
+000034 0000              NOP                         ;  wait 1 clock
+000035 0000              NOP                         ;  wait 1 clock
+                 
+000036 910f              POP     mpr                 ;   loat <SREG> from stack
+000037 bf0f              OUT     SREG, mpr           ;   <SREG> = <mpr>
+000038 910f              POP     mpr                 ;   load <mpr> from stack
+                 
+000039 9508              RET                         ; return <void>
+                 
+                 
+                 W10MS:								; function W1MS():
+                 
+00003a 930f              PUSH    mpr                 ;   save <mpr> to stack
+00003b b70f              IN      mpr, SREG           ;   <mpr> = <SREG>
+00003c 930f              PUSH    mpr                 ;   save <SREG> to stack
+                 
+00003d e603      		LDI		mpr, $63			;   <mp> = 99
+                 
+                 	W10MS_LOOP01:					;	LOOP:
+00003e d01b      		RCALL	W100US				;     W100US()		
+00003f 950a      		DEC		mpr                 ;     <mpr>--
+000040 f7e9      		BRNE	W10MS_LOOP01		;   if mpr > 0: GoTo: W1MS_LOOP01
                  
                  		// this is needed for accuracy
-000012 eb0c      		LDI		mpr, $BC			;   <mpr> = 188
+000041 e709      		LDI		mpr, $79			;   <mpr> = 120
+                 	W10MS_LOOP02:                  	;   LOOP:
+000042 0000              NOP                         ;     wait 1 clock 
+000043 950a              DEC     mpr                 ;     <mpr>--
+000044 f7e9              BRNE    W10MS_LOOP02       	;   if <mpr> > 0: LOOP	
+                 
+000045 910f      		POP     mpr                 ;   loat <SREG> from stack
+000046 bf0f              OUT     SREG, mpr           ;   <SREG> = <mpr>
+000047 910f              POP     mpr                 ;   load <mpr> from stack
+                 
+000048 9508      		RET                         ; return <void>
+                 
+                 
+                 W1MS:								; function W1MS():
+                 
+000049 930f              PUSH    mpr                 ;   save <mpr> to stack
+00004a b70f              IN      mpr, SREG           ;   <mpr> = <SREG>
+00004b 930f              PUSH    mpr                 ;   save <SREG> to stack
+                 
+00004c e009      		LDI		mpr, $09			;   <mp> = 9
+                 
+                 	W1MS_LOOP01:					;	LOOP:
+00004d d00c      		RCALL	W100US				;     W100US()		
+00004e 950a      		DEC		mpr                 ;     <mpr>--
+00004f f7e9      		BRNE	W1MS_LOOP01			;   if mpr > 0: GoTo: W1MS_LOOP01
+                 
+                 		// this is needed for accuracy
+000050 eb0c      		LDI		mpr, $BC			;   <mpr> = 188
                  	W1MS_LOOP02:                  	;   LOOP:
-000013 0000              NOP                         ;     wait 1 clock 
-000014 950a              DEC     mpr                 ;     <mpr>--
-000015 f7e9              BRNE    W1MS_LOOP02       	;   if <mpr> > 0: LOOP
-000016 0000              NOP                         ;   wait 1 clock
-000017 0000              NOP                         ;   wait 1 clock
+000051 0000              NOP                         ;     wait 1 clock 
+000052 950a              DEC     mpr                 ;     <mpr>--
+000053 f7e9              BRNE    W1MS_LOOP02       	;   if <mpr> > 0: LOOP
+000054 0000              NOP                         ;   wait 1 clock
+000055 0000              NOP                         ;   wait 1 clock
                  
-000018 910f      		POP     mpr                 ;   loat <SREG> from stack
-000019 bf0f              OUT     SREG, mpr           ;   <SREG> = <mpr>
-00001a 910f              POP     mpr                 ;   load <mpr> from stack
+000056 910f      		POP     mpr                 ;   loat <SREG> from stack
+000057 bf0f              OUT     SREG, mpr           ;   <SREG> = <mpr>
+000058 910f              POP     mpr                 ;   load <mpr> from stack
                  
-00001b 9508      		RET                         ; return <void>
-                 
+000059 9508      		RET                         ; return <void>
                  
                  W100US:                             ; function W100US():
                  
-00001c 930f              PUSH    mpr                 ;   save <mpr> to stack
-00001d b70f              IN      mpr, SREG           ;   <mpr> = <SREG>
-00001e 930f              PUSH    mpr                 ;   save <SREG> to stack
+00005a 930f              PUSH    mpr                 ;   save <mpr> to stack
+00005b b70f              IN      mpr, SREG           ;   <mpr> = <SREG>
+00005c 930f              PUSH    mpr                 ;   save <SREG> to stack
                  
-00001f ec03              LDI     mpr, $C3            ;   <mpr> = 195
+00005d ec03              LDI     mpr, $C3            ;   <mpr> = 195
                  
                      W100US_LOOP01:                  ;   LOOP:
-000020 0000              NOP                         ;     wait 1 clock 
-000021 950a              DEC     mpr                 ;     <mpr>--
-000022 f7e9              BRNE    W100US_LOOP01       ;   if <mpr> > 0: LOOP
+00005e 0000              NOP                         ;     wait 1 clock 
+00005f 950a              DEC     mpr                 ;     <mpr>--
+000060 f7e9              BRNE    W100US_LOOP01       ;   if <mpr> > 0: LOOP
                  
                          // this is needed for accuracy
-000023 0000              NOP
+000061 0000              NOP
                  
-000024 910f              POP     mpr                 ;   loat <SREG> from stack
-000025 bf0f              OUT     SREG, mpr           ;   <SREG> = <mpr>
-000026 910f              POP     mpr                 ;   load <mpr> from stack
+000062 910f              POP     mpr                 ;   loat <SREG> from stack
+000063 bf0f              OUT     SREG, mpr           ;   <SREG> = <mpr>
+000064 910f              POP     mpr                 ;   load <mpr> from stack
                  
-000027 9508              RET                         ; return <void>
+000065 9508              RET                         ; return <void>
 
 
 RESOURCE USE INFORMATION
@@ -2022,7 +2127,7 @@ counted separately from r26..r31 here.
 "ATmega2560" register use summary:
 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 r5 :   0 r6 :   0 r7 :   0 
 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 r13:   0 r14:   0 r15:   0 
-r16:  26 r17:   0 r18:   0 r19:   0 r20:   0 r21:   0 r22:   0 r23:   0 
+r16:  62 r17:   0 r18:   0 r19:   0 r20:   0 r21:   0 r22:   0 r23:   0 
 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 r29:   0 r30:   0 r31:   0 
 x  :   0 y  :   0 z  :   0 
 Registers used: 1 out of 35 (2.9%)
@@ -2032,16 +2137,16 @@ Registers used: 1 out of 35 (2.9%)
 andi  :   0 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
 brcc  :   0 brcs  :   0 break :   0 breq  :   0 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
-brne  :   3 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
+brne  :  12 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
 brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   0 cbr   :   0 
 clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   1 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   0 cpc   :   0 
-cpi   :   0 cpse  :   0 dec   :   3 eicall:   0 eijmp :   0 elpm  :   0 
+cpi   :   0 cpse  :   0 dec   :  12 eicall:   0 eijmp :   0 elpm  :   0 
 eor   :   0 fmul  :   0 fmuls :   0 fmulsu:   0 icall :   0 ijmp  :   0 
-in    :   2 inc   :   0 jmp   :   0 ld    :   0 ldd   :   0 ldi   :   5 
+in    :   5 inc   :   0 jmp   :   0 ld    :   0 ldd   :   0 ldi   :  14 
 lds   :   0 lpm   :   0 lsl   :   0 lsr   :   0 mov   :   0 movw  :   0 
-mul   :   0 muls  :   0 mulsu :   0 neg   :   0 nop   :   5 or    :   0 
-ori   :   0 out   :   6 pop   :   4 push  :   4 rcall :   2 ret   :   2 
+mul   :   0 muls  :   0 mulsu :   0 neg   :   0 nop   :  11 or    :   0 
+ori   :   0 out   :   9 pop   :  10 push  :  10 rcall :  10 ret   :   5 
 reti  :   0 rjmp  :   2 rol   :   0 ror   :   0 sbc   :   0 sbci  :   0 
 sbi   :   0 sbic  :   0 sbis  :   0 sbiw  :   0 sbr   :   0 sbrc  :   0 
 sbrs  :   0 sec   :   0 seh   :   0 sei   :   0 sen   :   0 ser   :   1 
@@ -2053,7 +2158,7 @@ Instructions used: 13 out of 116 (11.2%)
 "ATmega2560" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x000050     80      0     80  262144   0.0%
+[.cseg] 0x000000 0x0000cc    204      0    204  262144   0.1%
 [.dseg] 0x000200 0x000200      0      0      0    8192   0.0%
 [.eseg] 0x000000 0x000000      0      0      0    4096   0.0%
 

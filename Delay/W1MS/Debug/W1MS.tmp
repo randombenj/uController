@@ -25,8 +25,8 @@
   <Main><FILE>C:\Users\Beni\Documents\GitHub\uController\Delay\W1MS\W1MS.asm</FILE><LINE>61</LINE></Main>
   <W1MS><FILE>C:\Users\Beni\Documents\GitHub\uController\Delay\W1MS\W1MS.asm</FILE><LINE>70</LINE></W1MS>
   <W1MS_LOOP01><FILE>C:\Users\Beni\Documents\GitHub\uController\Delay\W1MS\W1MS.asm</FILE><LINE>78</LINE></W1MS_LOOP01>
-  <W100US><FILE>C:\Users\Beni\Documents\GitHub\uController\Delay\W1MS\W1MS.asm</FILE><LINE>97</LINE></W100US>
+  <W100US><FILE>C:\Users\Beni\Documents\GitHub\uController\Delay\W1MS\W1MS.asm</FILE><LINE>99</LINE></W100US>
   <W1MS_LOOP02><FILE>C:\Users\Beni\Documents\GitHub\uController\Delay\W1MS\W1MS.asm</FILE><LINE>85</LINE></W1MS_LOOP02>
-  <W100US_LOOP01><FILE>C:\Users\Beni\Documents\GitHub\uController\Delay\W1MS\W1MS.asm</FILE><LINE>105</LINE></W100US_LOOP01>
+  <W100US_LOOP01><FILE>C:\Users\Beni\Documents\GitHub\uController\Delay\W1MS\W1MS.asm</FILE><LINE>107</LINE></W100US_LOOP01>
  </LABELS>
 </ASSEMBLER_INFO>

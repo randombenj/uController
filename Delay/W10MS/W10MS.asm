@@ -67,29 +67,7 @@ Main:
 ;------------------------------------------------------------------------------
 ; Unterprogramme
 ;------------------------------------------------------------------------------
-W10MS:								; function W10MS():
-		PUSH    mpr                 ;   save <mpr> to stack
-        IN      mpr, SREG           ;   <mpr> = <SREG>
-        PUSH    mpr                 ;   save <SREG> to stack
-
-        LDI     mpr, $0A            ;   <mpr> = 195
-
-    W10MS_LOOP01:                   ;   LOOP:
-        RCALL   W1MS                ;     wait 1 clock 
-        DEC     mpr                 ;     <mpr>--
-        BRNE    W10MS_LOOP01        ;   if <mpr> > 0: LOOP
-
-        // this is needed for accuracy
-        NOP
-
-        POP     mpr                 ;   loat <SREG> from stack
-        OUT     SREG, mpr           ;   <SREG> = <mpr>
-        POP     mpr                 ;   load <mpr> from stack
-
-        RET                         ; return <void>
-
-
-W1MS:								; function W1MS():
+W10MS:								; function W1MS():
 
         PUSH    mpr                 ;   save <mpr> to stack
         IN      mpr, SREG           ;   <mpr> = <SREG>
@@ -97,17 +75,18 @@ W1MS:								; function W1MS():
 
 		LDI		mpr, $63			;   <mp> = 99
 
-	W1MS_LOOP01:					;	LOOP:
+	W10MS_LOOP01:					;	LOOP:
 		RCALL	W100US				;     W100US()		
 		DEC		mpr                 ;     <mpr>--
-		BRNE	W1MS_LOOP01			;   if mpr > 0: GoTo: W1MS_LOOP01
+		BRNE	W10MS_LOOP01		;   if mpr > 0: GoTo: W1MS_LOOP01
 		
 		LDI		mpr, $79			;   <mpr> = 120
 
-	W1MS_LOOP02:                  	;   LOOP:
+        // this is needed for accuracy
+	W10MS_LOOP02:                  	;   LOOP:
         NOP                         ;     wait 1 clock 
         DEC     mpr                 ;     <mpr>--
-        BRNE    W1MS_LOOP02       	;   if <mpr> > 0: LOOP	
+        BRNE    W10MS_LOOP02       	;   if <mpr> > 0: LOOP	
 
 		POP     mpr                 ;   loat <SREG> from stack
         OUT     SREG, mpr           ;   <SREG> = <mpr>
