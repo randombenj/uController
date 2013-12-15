@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.52  C:\Users\Beni\Documents\GitHub\uController\Delay\WXMS\WXMS.asm Mon Dec 09 21:00:51 2013
+AVRASM ver. 2.1.52  C:\Users\Beni\Documents\GitHub\uController\Delay\WXMS\WXMS.asm Sun Dec 15 11:16:46 2013
 
 
 EQU  SIGNATURE_000 0000001e
@@ -1366,10 +1366,9 @@ EQU  SWITCH       00000009
 EQU  SWITCH_D     0000000a
 DEF  mpr          r16
 DEF  ms           r17
-DEF  ms1          r18
-DEF  count        r19
 CSEG Main         0000000a
-CSEG W1MS         0000000e
-CSEG WAIT         00000012
-CSEG W248US       00000013
-CSEG W20US2       00000019
+CSEG WXMS         0000000e
+CSEG WXMS_LOOP01  00000012
+CSEG WXMS_LOOP02  00000013
+CSEG W100US       0000001d
+CSEG W100US_LOOP01 00000021

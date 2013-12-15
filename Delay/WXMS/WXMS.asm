@@ -38,8 +38,6 @@
 ;--- Variablen ---
 .def 	mpr	        = R16		; Multifunktionsregister
 .def    ms          = R17       ; Anzahl Millisekunden
-.def    ms1         = R18       ; counter für 1 milli sekunde
-.def    count       = R19       ; counter
 
 
 
@@ -65,41 +63,60 @@ Reset:	SER	    mpr			        ; Output:= LED
 Main:		                        ; [Main()] funtion
         OUT     LED, ms
 
-        RCALL   W1MS                ;   WXMS(<ms>)
+        LDI     ms, $FF             ;   <ms> = 1
+        RCALL   WXMS                ;   WXMS(<ms>)
 
-        ROL     ms
         RJMP    Main                ; GoTo: Main
 
 ;------------------------------------------------------------------------------
 ; Unterprogramme
 ;------------------------------------------------------------------------------
-W1MS:                               ; [W1MS()] function
+WXMS:                               ; [WXMS(<ms>)] function
 
         PUSH    mpr                 ;   save <mpr> on stack
         IN      mpr, SREG           ;   <mpr> = *<SREG>
         PUSH    mpr                 ;   save *<SREG> on stack
 
-        LDI     ms1, $10            
-    WAIT:        
+        PUSH    ms                  ;   save <ms> on stack
 
-        LDI     mpr, $F8            ;   <mpr> = 248
-    W248US:                         ;     W1US label
-        NOP                         ;     no operation (1)
-        DEC     mpr                 ;     <mpr>--
-        BRNE    W248US              ;    if <z-bit> == 0: GoTo: W248US
+    WXMS_LOOP01:                    ;   WXMS_LOOP01
+        
+        LDI		mpr, $0A			;     <mp> = 9
+	WXMS_LOOP02:					;	  LOOP:
+		RCALL	W100US				;       W100US()		
+		DEC		mpr                 ;       <mpr>--
+		BRNE	WXMS_LOOP02			;     if mpr > 0: GoTo: W1MS_LOOP01
 
-        DEC     ms1
-        BRNE    WAIT
+        DEC     ms                  ;     <ms>--
+        BRNE    WXMS_LOOP01         ;   if <ms> > 0: GoTo: WXMS_LOOP01
 
-        LDI     mpr, $0F            ;   <mpr> = 20 > 3 us
-    W20US2:                         ;     W1US label
-        NOP                         ;     no operation (1)
-        DEC     mpr                 ;     <mpr>--
-        BRNE    W20US2              ;    if <z-bit> == 0: GoTo: W20US
+        POP     ms                  ;   load <ms> from stack
 
         POP     mpr                 ;   load *<SREG> from stack
         OUT     SREG, mpr           ;   *<SREG> = mpr
         POP     mpr                 ;   load <mpr> from stack
-        nop
+
+        RET                         ; return <void>
+
+
+W100US:                             ; function W100US():
+
+        PUSH    mpr                 ;   save <mpr> to stack
+        IN      mpr, SREG           ;   <mpr> = <SREG>
+        PUSH    mpr                 ;   save <SREG> to stack
+
+        LDI     mpr, $C3            ;   <mpr> = 195
+
+    W100US_LOOP01:                  ;   LOOP:
+        NOP                         ;     wait 1 clock 
+        DEC     mpr                 ;     <mpr>--
+        BRNE    W100US_LOOP01       ;   if <mpr> > 0: LOOP
+
+        // this is needed for accuracy
+        NOP
+
+        POP     mpr                 ;   loat <SREG> from stack
+        OUT     SREG, mpr           ;   <SREG> = <mpr>
+        POP     mpr                 ;   load <mpr> from stack
 
         RET                         ; return <void>
