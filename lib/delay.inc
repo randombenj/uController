@@ -2,7 +2,7 @@
 ; Programm:				delay
 ;
 ; Dateinname:			delay.inc
-; Version:				1.0.0
+; Version:				0.1.0
 ; Autor:				Benj Fassbind
 ;
 ; Verwendungszweck:		uP-Schulung
@@ -20,15 +20,23 @@
 ;
 ; Entwicklungsablauf:
 ; Ver: Datum:	Autor:   Entwicklungsschritt:                         Zeit:
-; 1.0  01.01.13  FAB    Ganzes Programm erstellt				    	Min.
+; 0.1.0  18.12.13  FAB    Ganzes Programm erstellt				    	Min.
 ;
 ;										Totalzeit:	 Min.
 ;
 ; Copyright: Benj Fassbind, Sonneggstrasse 13, 6410 Goldau (2013)
 ;------------------------------------------------------------------------------
 
-;------------------------------------------------------------------------------
-; Unterprogramme
+;===============================================================================
+; Funktion:             W100US
+; Datum:                18.12.13
+; Version:              0.1.0
+;
+; Beschrieb:
+;   Bei 8MHz eine warteschlauffe für 100 mikro-sekunden.
+;
+; Register:
+;  mpr      8bit
 ;------------------------------------------------------------------------------
 W100US:                             ; function W100US():
 
@@ -52,8 +60,16 @@ W100US:                             ; function W100US():
 
         RET                         ; return <void>
 
-;------------------------------------------------------------------------------
-; Unterprogramme
+;===============================================================================
+; Funktion:             W100MS
+; Datum:                18.12.13
+; Version:              0.1.0
+;
+; Beschrieb:
+;   Bei 8MHz eine warteschlauffe für 100 milli-sekunden.
+;
+; Register:
+;  mpr      8bit
 ;------------------------------------------------------------------------------
 W100MS:                             ; W100MS() function
 
@@ -92,8 +108,16 @@ W100MS:                             ; W100MS() function
 
         RET                         ; return <void>
 
-;------------------------------------------------------------------------------
-; Unterprogramme
+;===============================================================================
+; Funktion:             W10MS
+; Datum:                18.12.13
+; Version:              0.1.0
+;
+; Beschrieb:
+;   Bei 8MHz eine warteschlauffe für 10 milli-sekunden.
+;
+; Register:
+;  mpr      8bit
 ;------------------------------------------------------------------------------
 W10MS:								; function W1MS():
 
@@ -122,8 +146,16 @@ W10MS:								; function W1MS():
 
 		RET                         ; return <void>
 
-;------------------------------------------------------------------------------
-; Unterprogramme
+;===============================================================================
+; Funktion:             W1MS
+; Datum:                18.12.13
+; Version:              0.1.0
+;
+; Beschrieb:
+;   Bei 8MHz eine warteschlauffe für 1 milli-sekunden.
+;
+; Register:
+;  mpr      8bit
 ;------------------------------------------------------------------------------
 W1S:                                ; W100MS() function
 
@@ -165,8 +197,16 @@ W1S:                                ; W100MS() function
 
         RET                         ; return <void>
 
-;------------------------------------------------------------------------------
-; Unterprogramme
+;===============================================================================
+; Funktion:             W1S
+; Datum:                18.12.13
+; Version:              0.1.0
+;
+; Beschrieb:
+;   Bei 8MHz eine warteschlauffe für 1 sekunde.
+;
+; Register:
+;  mpr      8bit
 ;------------------------------------------------------------------------------
 W1MS:								; function W1MS():
 
