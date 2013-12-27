@@ -163,7 +163,7 @@ W1S:                                ; W100MS() function
         IN      mpr, SREG           ;   <mpr> = <SREG>
         PUSH    mpr                 ;   save <SREG> to stack
 
-        LDI     mpr, $09            ;   <mpr> = 10
+        LDI     mpr, $09            ;   <mpr> = 9
 
     W1S_LOOP01:                     ;   LOOP:
         RCALL   W100MS              ;     W10MS()
@@ -171,14 +171,14 @@ W1S:                                ; W100MS() function
         BRNE    W1S_LOOP01          ;   if <mpr> > 0: LOOP
 
 
-        LDI     mpr, $09            ;   <mpr> = 10
+        LDI     mpr, $09            ;   <mpr> = 9
 
     W1S_LOOP02:                     ;   LOOP:
         RCALL   W10MS               ;     W10MS()
         DEC     mpr                 ;     <mpr>--
         BRNE    W1S_LOOP02          ;   if <mpr> > 0: LOOP
 
-        LDI     mpr, $09            ;   <mpr> = 10
+        LDI     mpr, $09            ;   <mpr> = 9
     W1S_LOOP03:                 	;   LOOP:
         RCALL   W1MS                ;     W1MS()
         RCALL   W100US              ;     W100US()
