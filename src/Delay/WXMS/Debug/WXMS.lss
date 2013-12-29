@@ -1,8 +1,8 @@
 
-AVRASM ver. 2.1.52  C:\Users\Beni\Documents\GitHub\uController\Delay\WXMS\WXMS.asm Sun Dec 15 11:16:46 2013
+AVRASM ver. 2.1.52  C:\Users\Beni\Documents\GitHub\uController\src\Delay\WXMS\WXMS.asm Sun Dec 29 11:42:19 2013
 
 [builtin](2): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
-C:\Users\Beni\Documents\GitHub\uController\Delay\WXMS\WXMS.asm(25): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
+C:\Users\Beni\Documents\GitHub\uController\src\Delay\WXMS\WXMS.asm(25): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
                  
                  ;===============================================================================
                  
@@ -1967,43 +1967,48 @@ C:\Users\Beni\Documents\GitHub\uController\Delay\WXMS\WXMS.asm(25): Including fi
                  
                      WXMS_LOOP01:                    ;   WXMS_LOOP01
                          
-000012 e00a              LDI		mpr, $0A			;   <mp> = 9
-                 	WXMS_LOOP02:					;	LOOP:
-000013 d009      		RCALL	W100US				;     W100US()		
-000014 950a      		DEC		mpr                 ;     <mpr>--
-000015 f7e9      		BRNE	WXMS_LOOP02			;   if mpr > 0: GoTo: W1MS_LOOP01
+000012 e009              LDI		mpr, $09			;     <mp> = 9
+                 	WXMS_LOOP02:					;	  LOOP:
+000013 d00c      		RCALL	W100US				;       W100US()		
+000014 950a      		DEC		mpr                 ;       <mpr>--
+000015 f7e9      		BRNE	WXMS_LOOP02			;     if mpr > 0: GoTo: W1MS_LOOP02
                  
-000016 951a              DEC     ms                  ;     <ms>--
-000017 f7d1              BRNE    WXMS_LOOP01         ;   if <ms> > 0: GoTo: WXMS_LOOP01
+000016 ef09              LDI     mpr, $F9            ;   <mpr> = 248
+                     WXMS_LOOP03:                    ;   LOOP:
+000017 950a              DEC     mpr                 ;     <mpr>--
+000018 f7f1              BRNE    WXMS_LOOP03         ;   if <mpr> > 0: LOOP
                  
-000018 911f              POP     ms                  ;   load <ms> from stack
+000019 951a              DEC     ms                  ;     <ms>--
+00001a f7b9              BRNE    WXMS_LOOP01         ;   if <ms> > 0: GoTo: WXMS_LOOP01
                  
-000019 910f              POP     mpr                 ;   load *<SREG> from stack
-00001a bf0f              OUT     SREG, mpr           ;   *<SREG> = mpr
-00001b 910f              POP     mpr                 ;   load <mpr> from stack
+00001b 911f              POP     ms                  ;   load <ms> from stack
                  
-00001c 9508              RET                         ; return <void>
+00001c 910f              POP     mpr                 ;   load *<SREG> from stack
+00001d bf0f              OUT     SREG, mpr           ;   *<SREG> = mpr
+00001e 910f              POP     mpr                 ;   load <mpr> from stack
+                 
+00001f 9508              RET                         ; return <void>
                  
                  
                  W100US:                             ; function W100US():
                  
-00001d 930f              PUSH    mpr                 ;   save <mpr> to stack
-00001e b70f              IN      mpr, SREG           ;   <mpr> = <SREG>
-00001f 930f              PUSH    mpr                 ;   save <SREG> to stack
+000020 930f              PUSH    mpr                 ;   save <mpr> to stack
+000021 b70f              IN      mpr, SREG           ;   <mpr> = <SREG>
+000022 930f              PUSH    mpr                 ;   save <SREG> to stack
                  
-000020 ec03              LDI     mpr, $C3            ;   <mpr> = 195
+000023 ec03              LDI     mpr, $C3            ;   <mpr> = 195
                  
                      W100US_LOOP01:                  ;   LOOP:
-000021 0000              NOP                         ;     wait 1 clock 
-000022 950a              DEC     mpr                 ;     <mpr>--
-000023 f7e9              BRNE    W100US_LOOP01       ;   if <mpr> > 0: LOOP
+000024 0000              NOP                         ;     wait 1 clock 
+000025 950a              DEC     mpr                 ;     <mpr>--
+000026 f7e9              BRNE    W100US_LOOP01       ;   if <mpr> > 0: LOOP
                  
                          // this is needed for accuracy
-000024 0000              NOP
+000027 0000              NOP
                  
-000025 910f              POP     mpr                 ;   loat <SREG> from stack
-000026 bf0f              OUT     SREG, mpr           ;   <SREG> = <mpr>
-000027 910f              POP     mpr                 ;   load <mpr> from stack
+000028 910f              POP     mpr                 ;   loat <SREG> from stack
+000029 bf0f              OUT     SREG, mpr           ;   <SREG> = <mpr>
+00002a 910f              POP     mpr                 ;   load <mpr> from stack
                  
 
 
@@ -2024,7 +2029,7 @@ counted separately from r26..r31 here.
 "ATmega2560" register use summary:
 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 r5 :   0 r6 :   0 r7 :   0 
 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 r13:   0 r14:   0 r15:   0 
-r16:  24 r17:   6 r18:   0 r19:   0 r20:   0 r21:   0 r22:   0 r23:   0 
+r16:  26 r17:   6 r18:   0 r19:   0 r20:   0 r21:   0 r22:   0 r23:   0 
 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 r29:   0 r30:   0 r31:   0 
 x  :   0 y  :   0 z  :   0 
 Registers used: 2 out of 35 (5.7%)
@@ -2034,13 +2039,13 @@ Registers used: 2 out of 35 (5.7%)
 andi  :   0 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
 brcc  :   0 brcs  :   0 break :   0 breq  :   0 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
-brne  :   3 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
+brne  :   4 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
 brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   0 cbr   :   0 
 clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   1 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   0 cpc   :   0 
-cpi   :   0 cpse  :   0 dec   :   3 eicall:   0 eijmp :   0 elpm  :   0 
+cpi   :   0 cpse  :   0 dec   :   4 eicall:   0 eijmp :   0 elpm  :   0 
 eor   :   0 fmul  :   0 fmuls :   0 fmulsu:   0 icall :   0 ijmp  :   0 
-in    :   2 inc   :   0 jmp   :   0 ld    :   0 ldd   :   0 ldi   :   6 
+in    :   2 inc   :   0 jmp   :   0 ld    :   0 ldd   :   0 ldi   :   7 
 lds   :   0 lpm   :   0 lsl   :   0 lsr   :   0 mov   :   0 movw  :   0 
 mul   :   0 muls  :   0 mulsu :   0 neg   :   0 nop   :   2 or    :   0 
 ori   :   0 out   :   7 pop   :   5 push  :   5 rcall :   2 ret   :   2 
@@ -2055,7 +2060,7 @@ Instructions used: 13 out of 116 (11.2%)
 "ATmega2560" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x000052     82      0     82  262144   0.0%
+[.cseg] 0x000000 0x000058     88      0     88  262144   0.0%
 [.dseg] 0x000200 0x000200      0      0      0    8192   0.0%
 [.eseg] 0x000000 0x000000      0      0      0    4096   0.0%
 

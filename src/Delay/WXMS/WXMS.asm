@@ -81,11 +81,18 @@ WXMS:                               ; [WXMS(<ms>)] function
 
     WXMS_LOOP01:                    ;   WXMS_LOOP01
         
-        LDI		mpr, $0A			;     <mp> = 9
+        LDI		mpr, $09			;     <mp> = 9
 	WXMS_LOOP02:					;	  LOOP:
 		RCALL	W100US				;       W100US()		
 		DEC		mpr                 ;       <mpr>--
-		BRNE	WXMS_LOOP02			;     if mpr > 0: GoTo: W1MS_LOOP01
+		BRNE	WXMS_LOOP02			;     if mpr > 0: GoTo: W1MS_LOOP02
+
+        LDI     mpr, $F9            ;   <mpr> = 248
+    WXMS_LOOP03:                    ;   LOOP:
+        DEC     mpr                 ;     <mpr>--
+        BRNE    WXMS_LOOP03         ;   if <mpr> > 0: LOOP
+
+        NOP                         ;   no-operation
 
         DEC     ms                  ;     <ms>--
         BRNE    WXMS_LOOP01         ;   if <ms> > 0: GoTo: WXMS_LOOP01

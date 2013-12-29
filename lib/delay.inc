@@ -1,28 +1,28 @@
 ;===============================================================================
-; Programm:				delay
+; Programm:                 delay
 ;
-; Dateinname:			delay.inc
-; Version:				0.1.0
-; Autor:				Benj Fassbind
+; Dateinname:               delay.inc
+; Version:                  0.1.0
+; Autor:                    Benj Fassbind
 ;
-; Verwendungszweck:		uP-Schulung
+; Verwendungszweck:         uP-Schulung
 ;
 ; Beschreibung:
 ;  
 ;  Delay loops for various times:
-;				
-;	- W100US
-;	- W1MS
-;	- W10MS
-;	- W100MS
-;	- W1S
-;	- WXMS
+;                
+;    - W100US
+;    - W1MS
+;    - W10MS
+;    - W100MS
+;    - W1S
+;    - WXMS
 ;
 ; Entwicklungsablauf:
-; Ver: Datum:	Autor:   Entwicklungsschritt:                         Zeit:
-; 0.1.0  18.12.13  FAB    Ganzes Programm erstellt				    	Min.
+; Ver: Datum:    Autor:   Entwicklungsschritt:                         Zeit:
+; 0.1.0  18.12.13  FAB    Ganzes Programm erstellt                        Min.
 ;
-;										Totalzeit:	 Min.
+;                                        Totalzeit:     Min.
 ;
 ; Copyright: Benj Fassbind, Sonneggstrasse 13, 6410 Goldau (2013)
 ;------------------------------------------------------------------------------
@@ -85,17 +85,17 @@ W100MS:                             ; W100MS() function
         BRNE    W100MS_LOOP01       ;   if <mpr> > 0: LOOP
 
         LDI     mpr, $09            ;   <mpr> = 10
-    W100MS_LOOP02:                	;   LOOP:
+    W100MS_LOOP02:                  ;   LOOP:
         RCALL   W1MS                ;     W1MS()
         RCALL   W100US              ;     W100US()
         DEC     mpr                 ;     <mpr>--
-        BRNE    W100MS_LOOP02      	;   if <mpr> > 0: LOOP	
+        BRNE    W100MS_LOOP02       ;   if <mpr> > 0: LOOP    
 
-        LDI		mpr, $B5			;   <mpr> = 120
-	W100MS_LOOP03:                 	;   LOOP:
+        LDI        mpr, $B5         ;   <mpr> = 120
+    W100MS_LOOP03:                  ;   LOOP:
         NOP                         ;     wait 1 clock 
         DEC     mpr                 ;     <mpr>--
-        BRNE    W100MS_LOOP03      	;   if <mpr> > 0: LOOP	
+        BRNE    W100MS_LOOP03       ;   if <mpr> > 0: LOOP    
         
         // this is needed for accuracy
         NOP                         ;  wait 1 clock
@@ -119,45 +119,45 @@ W100MS:                             ; W100MS() function
 ; Register:
 ;  mpr      8bit
 ;------------------------------------------------------------------------------
-W10MS:								; function W1MS():
+W10MS:                              ; function W10MS():
 
         PUSH    mpr                 ;   save <mpr> to stack
         IN      mpr, SREG           ;   <mpr> = <SREG>
         PUSH    mpr                 ;   save <SREG> to stack
 
-		LDI		mpr, $63			;   <mp> = 99
+        LDI        mpr, $63         ;   <mp> = 99
 
-	W10MS_LOOP01:					;	LOOP:
-		RCALL	W100US				;     W100US()		
-		DEC		mpr                 ;     <mpr>--
-		BRNE	W10MS_LOOP01		;   if mpr > 0: GoTo: W1MS_LOOP01
-		
-		LDI		mpr, $79			;   <mpr> = 120
+    W10MS_LOOP01:                   ;    LOOP:
+        RCALL    W100US             ;     W100US()        
+        DEC        mpr              ;     <mpr>--
+        BRNE    W10MS_LOOP01        ;   if mpr > 0: GoTo: W1MS_LOOP01
+        
+        LDI        mpr, $79         ;   <mpr> = 120
 
         // this is needed for accuracy
-	W10MS_LOOP02:                  	;   LOOP:
+    W10MS_LOOP02:                   ;   LOOP:
         NOP                         ;     wait 1 clock 
         DEC     mpr                 ;     <mpr>--
-        BRNE    W10MS_LOOP02       	;   if <mpr> > 0: LOOP	
+        BRNE    W10MS_LOOP02        ;   if <mpr> > 0: LOOP    
 
-		POP     mpr                 ;   loat <SREG> from stack
+        POP     mpr                 ;   loat <SREG> from stack
         OUT     SREG, mpr           ;   <SREG> = <mpr>
         POP     mpr                 ;   load <mpr> from stack
 
-		RET                         ; return <void>
+        RET                         ; return <void>
 
 ;===============================================================================
-; Funktion:             W1MS
+; Funktion:             W1S
 ; Datum:                18.12.13
 ; Version:              0.1.0
 ;
 ; Beschrieb:
-;   Bei 8MHz eine warteschlauffe für 1 milli-sekunden.
+;   Bei 8MHz eine warteschlauffe für 1 sekunden.
 ;
 ; Register:
 ;  mpr      8bit
 ;------------------------------------------------------------------------------
-W1S:                                ; W100MS() function
+W1S:                                ; W1S() function
 
         PUSH    mpr                 ;   save <mpr> to stack
         IN      mpr, SREG           ;   <mpr> = <SREG>
@@ -179,17 +179,17 @@ W1S:                                ; W100MS() function
         BRNE    W1S_LOOP02          ;   if <mpr> > 0: LOOP
 
         LDI     mpr, $09            ;   <mpr> = 9
-    W1S_LOOP03:                 	;   LOOP:
+    W1S_LOOP03:                     ;   LOOP:
         RCALL   W1MS                ;     W1MS()
         RCALL   W100US              ;     W100US()
         DEC     mpr                 ;     <mpr>--
-        BRNE    W1S_LOOP03      	;   if <mpr> > 0: LOOP	
+        BRNE    W1S_LOOP03          ;   if <mpr> > 0: LOOP    
 
-        LDI		mpr, $AF			;   <mpr> = 120
-	W1S_LOOP04:                 	;   LOOP:
+        LDI        mpr, $AF         ;   <mpr> = 120
+    W1S_LOOP04:                     ;   LOOP:
         NOP                         ;     wait 1 clock 
         DEC     mpr                 ;     <mpr>--
-        BRNE    W1S_LOOP04      	;   if <mpr> > 0: LOOP	
+        BRNE    W1S_LOOP04          ;   if <mpr> > 0: LOOP    
 
         POP     mpr                 ;   loat <SREG> from stack
         OUT     SREG, mpr           ;   <SREG> = <mpr>
@@ -198,40 +198,88 @@ W1S:                                ; W100MS() function
         RET                         ; return <void>
 
 ;===============================================================================
-; Funktion:             W1S
+; Funktion:             W1MS
 ; Datum:                18.12.13
 ; Version:              0.1.0
 ;
 ; Beschrieb:
-;   Bei 8MHz eine warteschlauffe für 1 sekunde.
+;   Bei 8MHz eine warteschlauffe für 1 milli-sekunde.
 ;
 ; Register:
 ;  mpr      8bit
 ;------------------------------------------------------------------------------
-W1MS:								; function W1MS():
+W1MS:                               ; function W1MS():
 
         PUSH    mpr                 ;   save <mpr> to stack
         IN      mpr, SREG           ;   <mpr> = <SREG>
         PUSH    mpr                 ;   save <SREG> to stack
 
-		LDI		mpr, $09			;   <mp> = 9
+        LDI        mpr, $09         ;   <mp> = 9
 
-	W1MS_LOOP01:					;	LOOP:
-		RCALL	W100US				;     W100US()		
-		DEC		mpr                 ;     <mpr>--
-		BRNE	W1MS_LOOP01			;   if mpr > 0: GoTo: W1MS_LOOP01
+    W1MS_LOOP01:                    ;    LOOP:
+        RCALL    W100US             ;     W100US()        
+        DEC        mpr              ;     <mpr>--
+        BRNE    W1MS_LOOP01         ;   if mpr > 0: GoTo: W1MS_LOOP01
 
-		// this is needed for accuracy
-		LDI		mpr, $BC			;   <mpr> = 188
-	W1MS_LOOP02:                  	;   LOOP:
+        // this is needed for accuracy
+        LDI        mpr, $BC         ;   <mpr> = 188
+    W1MS_LOOP02:                    ;   LOOP:
         NOP                         ;     wait 1 clock 
         DEC     mpr                 ;     <mpr>--
-        BRNE    W1MS_LOOP02       	;   if <mpr> > 0: LOOP
+        BRNE    W1MS_LOOP02         ;   if <mpr> > 0: LOOP
         NOP                         ;   wait 1 clock
         NOP                         ;   wait 1 clock
 
-		POP     mpr                 ;   loat <SREG> from stack
+        POP     mpr                 ;   loat <SREG> from stack
         OUT     SREG, mpr           ;   <SREG> = <mpr>
         POP     mpr                 ;   load <mpr> from stack
 
-		RET                         ; return <void>
+        RET                         ; return <void>
+
+
+;===============================================================================
+; Funktion:             WXMS
+; Datum:                29.12.13
+; Version:              0.1.0
+;
+; Beschrieb:
+;   Bei 8MHz eine warteschlauffe für X milli-sekunden.
+;   !! mommentan noch ungenau
+;
+; Register:
+;  mpr      8bit
+;  ms       8bit -> anzahl millisekunden verzögerung
+;------------------------------------------------------------------------------
+WXMS:                               ; [WXMS(<ms>)] function
+
+        PUSH    mpr                 ;   save <mpr> on stack
+        IN      mpr, SREG           ;   <mpr> = *<SREG>
+        PUSH    mpr                 ;   save *<SREG> on stack
+
+        PUSH    ms                  ;   save <ms> on stack
+
+    WXMS_LOOP01:                    ;   WXMS_LOOP01
+        
+        LDI        mpr, $09         ;     <mp> = 9
+    WXMS_LOOP02:                    ;      LOOP:
+        RCALL    W100US             ;       W100US()        
+        DEC        mpr              ;       <mpr>--
+        BRNE    WXMS_LOOP02         ;     if mpr > 0: GoTo: W1MS_LOOP02
+
+        LDI     mpr, $F9            ;   <mpr> = 248
+    WXMS_LOOP03:                    ;   LOOP:
+        DEC     mpr                 ;     <mpr>--
+        BRNE    WXMS_LOOP03         ;   if <mpr> > 0: LOOP
+
+        NOP                         ;   no-operation
+
+        DEC     ms                  ;     <ms>--
+        BRNE    WXMS_LOOP01         ;   if <ms> > 0: GoTo: WXMS_LOOP01
+
+        POP     ms                  ;   load <ms> from stack
+
+        POP     mpr                 ;   load *<SREG> from stack
+        OUT     SREG, mpr           ;   *<SREG> = mpr
+        POP     mpr                 ;   load <mpr> from stack
+
+        RET                         ; return <void>
