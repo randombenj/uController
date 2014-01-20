@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Atmel Studio Solution File, Format Version 11.00
-Project("{18226A42-8477-4023-8AD2-40C49DA407C9}") = "Clock", "Clock\Clock.asmproj", "{D93AEF33-323D-4D25-A3F7-75D08005CBEF}"
+Project("{18226A42-8477-4023-8AD2-40C49DA407C9}") = "DateTimeClock", "Clock\DateTimeClock.asmproj", "{D93AEF33-323D-4D25-A3F7-75D08005CBEF}"
 EndProject
-Project("{18226A42-8477-4023-8AD2-40C49DA407C9}") = "BCD-Clock", "BSD-Clock\BCD-Clock.asmproj", "{B88501A2-AFF4-4E46-885C-07E8495716EE}"
+Project("{18226A42-8477-4023-8AD2-40C49DA407C9}") = "BCD-Clock", "BCD-Clock\BCD-Clock.asmproj", "{B88501A2-AFF4-4E46-885C-07E8495716EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
