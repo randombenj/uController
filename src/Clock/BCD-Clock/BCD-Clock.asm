@@ -13,7 +13,7 @@
 ;-
 ;- Entwicklungsablauf:
 ;- Ver: Datum:	Autor:   Entwicklungsschritt:                         Zeit:
-;- 1.0  13.01.14  FAB    Ganzes Programm erstellt				        90   Min.
+;- 1.0  01.01.13  FAB    Ganzes Programm erstellt				        90   Min.
 ;-
 ;-										Totalzeit:	 Min.
 ;-
@@ -63,7 +63,7 @@ Reset:	SER	    mpr			        ; Output:= LED
 ;--- Hauptprogramm ---	
 Main:   	                        ; Main() function
 
-        RCALL   W10MS             ;   W100US()
+        RCALL   W100US             ;   W100US()
         
         INC     bcd                 ;   <bcd> ++
         
@@ -73,21 +73,16 @@ Main:   	                        ; Main() function
 		RJMP	Main_ENDIF01		;    GoTo: Main_ENDIF01
 		
 		SUBI	bcd, -$06			;     <bcd[HB]> inkrementieren
-		
-		CPI		bcd, $A0		    ;     if <bcd> == $A0:
-		BRNE	Main_ENDIF01		;      GoTo: Main_ENDIF01
+
+        CPI		bcd, $60		    ;     if <bcd> == $61:
+		BRNE	Main_ENDIF02		;      GoTo: Main_ENDIF01
 		
 		CLR		bcd					;    <bcd> = $00
 			
 	Main_ENDIF01:					;   Main_ENDIF01
+
 		
 		COM		bcd
-        OUT     LED, bcd         ;   <bcd> auf <SWITCH> ausgeben
+        OUT     LED, bcd            ;   <bcd> auf <SWITCH> ausgeben
 		COM		bcd
         RJMP    Main                ; Endless loop
-
-
-
-;------------------------------------------------------------------------------
-; Unterprogramme
-;------------------------------------------------------------------------------

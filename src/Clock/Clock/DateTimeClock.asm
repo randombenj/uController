@@ -1,14 +1,15 @@
 ;===============================================================================
-;- Programm:		
+;- Programm:		    DateTimeClock
 ;-
-;- Dateinname:		    .asm
+;- Dateinname:		    DateTimeClock.asm
 ;- Version:			    1.0
 ;- Autor:			    Benj Fassbind
 ;-
 ;- Verwendungszweck:	uP-Schulung
 ;-
 ;- Beschreibung:
-;-		
+;-	
+;-  Eine Zeit-Datums Uhr mit folgenden werten	
 ;-				
 ;-
 ;- Entwicklungsablauf:
@@ -25,6 +26,9 @@
 
 		RJMP	Reset
 
+;--- Include-Files ---
+.include "H:\uQ\git\16.12.13\uController-master\lib\delay.inc"
+
 
 
 ;--- Konstanten ---
@@ -37,6 +41,17 @@
 ;--- Variablen ---
 .def 	mpr	        = R16		; Multifunktionsregister
 
+;-- Zeit Variablen ---
+.def    hh          = R17       ; Stunden Register
+.def    mm          = R18       ; Minuten Register
+.def    ss          = R19       ; Sekunden Register
+
+.def    DD          = R20       ; Tag Register    
+.def    MM          = R21       ; Monat Register
+.def    YY          = R22       ; Jahr Register
+
+.def    KW          = R23       ; KalenderWoche Register
+.def    WD          = R24       ; WochenTag Register    
 
 
 ;------------------------------------------------------------------------------
@@ -57,10 +72,21 @@ Reset:	SER	    mpr			        ; Output:= LED
 
 
 ;--- Hauptprogramm ---	
-Main:		
+Main:		                        ;  [Main()] function
+        
+        RCALL   W100US              ;    W100US()
+        RCALL   DT_Handle           ;    DT_Handle()
 
-
+        RJMP    Main                ;  Endless Loop    
 
 ;------------------------------------------------------------------------------
 ; Unterprogramme
 ;------------------------------------------------------------------------------
+DT_Handle:                          ;  [DT_Handle()] function
+        
+        
+
+        RET                         ;  RETURN: <void>
+
+
+
