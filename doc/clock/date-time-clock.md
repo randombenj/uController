@@ -38,8 +38,8 @@ These are the required register names:
 .def    ss          = R19       ; seconds register
 
 .def    DD          = R20       ; day register    
-.def    MM          = R21       ; month register
-.def    YY          = R22       ; year register (two digits)
+.def    MO          = R21       ; month register (because non key sensitive)
+.def    YY          = R22       ; year register (two digits > 2000-2099)
 
 .def    Www         = R23       ; calender week register (W01-W53)
 .def    D           = R24       ; week day register (1-7)
