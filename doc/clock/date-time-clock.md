@@ -28,10 +28,10 @@ everithing else will be calculated in "DT_Handle".
 ###register names
 
 These are the required register names:
-(8-bit registers)
+(8-bit registers) [ISO 8601](http://en.wikipedia.org/wiki/ISO_8601)
 
-```assembly
-;-- Date-time variables ([ISO 8601](http://en.wikipedia.org/wiki/ISO_8601)) ---
+```nasm
+;-- Date-time variables (ISO 8601: http://en.wikipedia.org/wiki/ISO_8601) ---
 
 .def    hh          = R17       ; houers register
 .def    mm          = R18       ; minutes register
@@ -50,7 +50,7 @@ These are the required register names:
 To use the date-time-clock you must user your own "sleep-one-second" function.
 In this case I used the **W1S** function from my delay.inc file.
 
-```assembly
+```nasm
 ;--- main function ---	
 Main:		                        ;  [Main()] function
         
