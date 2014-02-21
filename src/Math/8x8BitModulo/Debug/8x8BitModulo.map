@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.52  C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm Fri Feb 21 22:32:18 2014
+AVRASM ver. 2.1.52  C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\8x8BitModulo\8x8BitModulo.asm Fri Feb 21 22:37:38 2014
 
 
 EQU  SIGNATURE_000 0000001e
@@ -1359,34 +1359,20 @@ EQU  URXC3addr    0000006c
 EQU  UDRE3addr    0000006e
 EQU  UTXC3addr    00000070
 EQU  INT_VECTORS_SIZE 00000072
-CSEG Reset        00000001
+CSEG Reset        00000017
+CSEG DIV          00000001
+DEF  dividend     r17
+DEF  divisor      r18
+DEF  mpr          r16
+DEF  result       r19
+CSEG DevByZero    00000013
+CSEG While        00000008
+CSEG EndWhile     00000013
+CSEG EndSub       00000012
 EQU  LED          00000005
 EQU  LED_D        00000004
 EQU  SWITCH       00000009
 EQU  SWITCH_D     0000000a
-DEF  mpr          r16
-DEF  zahl1_lw_lb  r20
-DEF  zahl1_lw_hb  r21
-DEF  zahl1_hw_lb  r16
-DEF  zahl1_hw_hb  r17
-DEF  zahl2_lb     r22
-DEF  zahl2_hb     r23
-DEF  res_lw_lb    r24
-DEF  res_lw_hb    r25
-DEF  res_hw_lb    r26
-DEF  res_hw_hb    r27
-DEF  exp          r28
-DEF  base_lb      r29
-DEF  base_hb      r30
-CSEG Main         00000009
-CSEG ExpNotZero   00000018
-CSEG End_WhilePOW 00000035
-CSEG BaseNotZero  0000001c
-CSEG WhilePOW     0000001c
-CSEG SQRBase      00000025
-CSEG Mult         00000036
-CSEG While        00000040
-CSEG TestLowByte  00000043
-CSEG TestLowByteEnd 00000045
-CSEG While_false  00000051
-CSEG Else         0000004c
+CSEG Main         0000001f
+CSEG MOD          00000024
+CSEG MOD_ENDIF01  0000002d

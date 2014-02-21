@@ -120,6 +120,23 @@ DT_Handle:                          ;  [DT_Handle()] function
     DT_Handle_ENDIF1:               ;  DT_Handle_ENDIF1
         RET                         ;  RETURN: <void>
 
+GET_D:                              ;  [GET_D(<dd>, <MM>, <YY>)] function
+        // stack saving: ---        
+        PUSH    dd                  ;  save <dd> on stack
+        PUSH    MO                  ;  save <MO> on stack
+        PUSH    YY                  ;  save <YY> on stack
+        PUSH    mpr                 ;  save <mpr> on stack
+
+        LDI     mpr, $05            ;  <mpr> = 05 > set century
+        ADD     YY, YY              ;  <YY> = <YY> *2
+
+
+        // stack loading: ---
+        POP     mpr                 ;  load <mpr> from stack
+        POP     YY                  ;  load <YY> from stack
+        POP     MO                  ;  load <MO> from stack
+        POP     dd                  ;  load <dd> from stack
+
 
 DT_MM:                              ;  [DT_MM(<DD>)] function
         // Stack saving: ---

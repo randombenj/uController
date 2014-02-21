@@ -1,0 +1,35 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.1.52</VERSION>
+ <DEVICE>"ATmega2560"</DEVICE>
+ <WORKING_DIR>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\8x8BitModulo\Debug</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include</DIR>
+  <DIR></DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\8x8BitModulo\8x8BitModulo.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc</FILE>
+  <FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\lib\math.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\8x8BitModulo\Debug/8x8BitModulo.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>8x8BitModulo.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>8x8BitModulo.map</FILE>
+  <FILE>8x8BitModulo.lss</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <Reset><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\8x8BitModulo\8x8BitModulo.asm</FILE><LINE>51</LINE></Reset>
+  <DIV><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\lib\math.inc</FILE><LINE>38</LINE></DIV>
+  <DevByZero><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\lib\math.inc</FILE><LINE>68</LINE></DevByZero>
+  <While><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\lib\math.inc</FILE><LINE>50</LINE></While>
+  <EndWhile><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\lib\math.inc</FILE><LINE>67</LINE></EndWhile>
+  <EndSub><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\lib\math.inc</FILE><LINE>65</LINE></EndSub>
+  <Main><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\8x8BitModulo\8x8BitModulo.asm</FILE><LINE>64</LINE></Main>
+  <MOD><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\8x8BitModulo\8x8BitModulo.asm</FILE><LINE>79</LINE></MOD>
+  <MOD_ENDIF01><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\8x8BitModulo\8x8BitModulo.asm</FILE><LINE>94</LINE></MOD_ENDIF01>
+ </LABELS>
+</ASSEMBLER_INFO>

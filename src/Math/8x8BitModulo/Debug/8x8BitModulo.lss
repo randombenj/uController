@@ -1,14 +1,9 @@
 
-AVRASM ver. 2.1.52  C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm Fri Feb 21 22:32:18 2014
+AVRASM ver. 2.1.52  C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\8x8BitModulo\8x8BitModulo.asm Fri Feb 21 22:37:38 2014
 
 [builtin](2): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
-C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm(25): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
-C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm(44): warning: Register r16 already defined by the .DEF directive
-C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm(52): warning: Register r26 already defined by the .DEF directive
-C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm(53): warning: Register r27 already defined by the .DEF directive
-C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm(55): warning: Register r28 already defined by the .DEF directive
-C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm(56): warning: Register r29 already defined by the .DEF directive
-C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\4x4BitPotenzRechnen\4x4BitPotenzRechnen.asm(57): warning: Register r30 already defined by the .DEF directive
+C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\8x8BitModulo\8x8BitModulo.asm(24): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
+C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\8x8BitModulo\8x8BitModulo.asm(29): Including file 'C:\Users\Beni\Documents\GitHub\uControllerNew\uController\lib\math.inc'
                  
                  ;===============================================================================
                  
@@ -1848,22 +1843,21 @@ C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\4x4BitPotenzR
                  
                  ; ***** END OF FILE ******************************************************
                  
-                 ;- Programm:			4x4BitPotenzRechnen
+                 ;- Programm:		    8x8BitDivision
                  ;-
-                 ;- Dateinname:		    4x4BitPotenzRechnen.asm
+                 ;- Dateinname:		    8x8BitDivision.asm
                  ;- Version:			    1.0
                  ;- Autor:			    Benj Fassbind
                  ;-
                  ;- Verwendungszweck:	uP-Schulung
                  ;-
                  ;- Beschreibung:
-                 ;-  Dieses Programm berechnet die Potenz zwier 4-Bit zahlen.
-                 ;-	> Also max: 15^15 = 	
+                 ;-	Das Programm führt eine Division zwischen zwei 8 Bit Zahlen durch.	
                  ;-				
                  ;-
                  ;- Entwicklungsablauf:
                  ;- Ver: Datum:	Autor:   Entwicklungsschritt:                         Zeit:
-                 ;- 1.0  24.11.13  FAB    Ganzes Programm erstellt				           Min.
+                 ;- 1.0  17.11.13  FAB    Ganzes Programm erstellt				           Min.
                  ;-
                  ;-										Totalzeit:	 Min.
                  ;-
@@ -1916,10 +1910,85 @@ C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\4x4BitPotenzR
                  
                  ; ***** END OF FILE ******************************************************
                  
-000000 c000      		RJMP	Reset
                  
+000000 c016      		RJMP	Reset
                  
+                 .include "C:\Users\Beni\Documents\GitHub\uControllerNew\uController\lib\math.inc"
                  
+                 ; Programm:                 math
+                 ;
+                 ; Dateinname:               math.inc
+                 ; Version:                  0.1.0
+                 ; Autor:                    Benj Fassbind
+                 ;
+                 ; Verwendungszweck:         uP-Schulung
+                 ;
+                 ; Beschreibung:
+                 ;  
+                 ;  Various math operations.
+                 ;   - 8/8 bit divison
+                 ;
+                 ; Entwicklungsablauf:
+                 ; Ver: Datum:    Autor:   Entwicklungsschritt:                         Zeit:
+                 ; 0.1.0  18.12.13  FAB    Ganzes Programm erstellt                        Min.
+                 ;
+                 ;                                        Totalzeit:     Min.
+                 ;
+                 ; Copyright: Benj Fassbind, Sonneggstrasse 13, 6410 Goldau (2013)
+                 ;------------------------------------------------------------------------------
+                 
+                 ;===============================================================================
+                 ; Funktion:             DIV
+                 ; Datum:                21.2.2014
+                 ; Version:              0.1.0
+                 ;
+                 ; Beschrieb:
+                 ;   8/8 bit division mit 8 bit ausgabe.
+                 ;
+                 ; Register:
+                 ;  mpr      8bit
+                 ;  dividend 8bit
+                 ;  divisor  8bit
+                 ;  result   8bit
+                 ;------------------------------------------------------------------------------
+                 DIV:
+                         // stack speichern: ---
+000001 931f              PUSH    dividend            ;   <dividend> auf stack speichern
+000002 932f              PUSH    divisor             ;   <dividend> divisor auf stack speichern
+000003 930f              PUSH    mpr                 ;   <mpr> auf stack speichern
+                 
+000004 2733              CLR     result              ;   <result> = $00
+000005 2700              CLR     mpr                 ;   <mpr> = $00
+                 
+000006 2322              TST     divisor             ;   if <divisor> == 0
+000007 f059              BREQ    DevByZero           ;     "devide by zero"
+                 
+                     While:                          ;   While 
+000008 2311              TST     dividend            ;    <dividend> == 0
+000009 f049              BREQ    EndWhile            ;    Goto: EndWhile
+                 
+00000a 9488              CLC                         ;     Clear <c-bit>
+00000b 0f33              LSL     result              ;     <result> = <result> << 1
+                 
+00000c 0f11              LSL     dividend            ;     <dividend> = <dividend> << 1
+00000d 1f00              ROL     mpr                 ;     Rotate <mpr> Right
+                         
+00000e 1702              CP      mpr, divisor        ;     <mpr> >= <divisor>
+00000f f010              BRLO    EndSub              ;      Goto: EndSub
+                 
+000010 9533              INC     result              ;         <result> = <result> << 1
+000011 1b02              SUB     mpr, divisor        ;         <mpr> = <mpr> - <divisor>
+                     EndSub:                         ;       EndSub
+000012 cff5              RJMP    While               ;     Loop  
+                     EndWhile:                       ;   End While loop
+                   DevByZero:                        ;   Devide by zero
+                 
+                         // stack laden: ---
+000013 910f              POP     mpr                 ;   <mpr> von stack laden
+000014 912f              POP     divisor             ;   <dividend> von stack laden
+000015 911f              POP     dividend            ;   <dividend> von stack laden
+                 
+000016 9508      
                  ;--- Konstanten ---
                  .equ	LED		    = PORTB		; Ausgabeport fuer LED
                  .equ	LED_D	    = DDRB		; Daten Direction Port fuer LED
@@ -1929,170 +1998,71 @@ C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\4x4BitPotenzR
                  
                  ;--- Variablen ---
                  .def 	mpr	        = R16		; Multifunktionsregister
+                 .def    dividend    = R17       ; Dividend
+                 .def    divisor     = R18       ; Divisor
+                 .def    result      = R19       ; Resultat
                  
-                 // -- Variablen Deffinition der 16x16 Bit multiplikation.
-                 .def    zahl1_lw_lb    = R20    ; Low Word Low Byte Zahl1
-                 .def    zahl1_lw_hb    = R21    ; Low Word High Byte Zahl1
-                 .def    zahl1_hw_lb    = R16    ; High Word Low Byte Zahl1
-                 .def    zahl1_hw_hb    = R17    ; High Word High Byte Zahl1
                  
-                 .def    zahl2_lb	   = R22    ; Low Byte Zahl1
-                 .def    zahl2_hb	   = R23    ; High Byte Zahl1
-                 
-                 .def    res_lw_lb	   = R24    ; low Word Low Byte Resultat
-                 .def    res_lw_hb	   = R25    ; Low Word High Byte Resultat
-                 .def    res_hw_lb	   = R26    ; High Word Low Byte Resultat
-                 .def    res_hw_hb	   = R27    ; High Word High Byte Resultat
-                 
-                 .def    exp            = R28    ; Exponent
-                 .def    base_lb        = R29    ; Die Basis LB
-                 .def    base_hb        = R30    ; Die Basis HB
                  
                  ;------------------------------------------------------------------------------
                  ; Hauptprogramm
                  ;------------------------------------------------------------------------------
                  
                  ;--- Initialisierung ---
-000001 ef0f      Reset:	SER	    mpr			        ; Output:= LED
-000002 b904      		OUT	    LED_D, mpr
+000017 ef0f      Reset:	SER	    mpr			        ; Output:= LED
+000018 b904      		OUT	    LED_D, mpr
                  
-000003 2700      		CLR	    mpr			        ; Input:= Schalterwerte
-000004 b90a      		OUT	    SWITCH_D, mpr
+000019 2700      		CLR	    mpr			        ; Input:= Schalterwerte
+00001a b90a      		OUT	    SWITCH_D, mpr
                  
-000005 ef0f      		LDI	    mpr, LOW(RAMEND)    ; Stack initialisieren
-000006 bf0d      		OUT	    SPL,mpr
-000007 e201      		LDI	    mpr, HIGH(RAMEND)
-000008 bf0e      		OUT	    SPH,mpr
+00001b ef0f      		LDI	    mpr, LOW(RAMEND)    ; Stack initialisieren
+00001c bf0d      		OUT	    SPL,mpr
+00001d e201      		LDI	    mpr, HIGH(RAMEND)
+00001e bf0e      		OUT	    SPH,mpr
                  
                  
                  ;--- Hauptprogramm ---	
-                 Main:		                        ; Main Function
-                     
-000009 27bb              CLR     res_hw_hb           ;  Resultat = 1
-00000a 27aa              CLR     res_hw_lb           ;  Resultat = 1
-00000b 2799              CLR     res_lw_hb           ;  Resultat = 1
-00000c e081              LDI     res_lw_lb, $01      ;  Resultat = 1
-                 
-00000d 2744              CLR     zahl1_lw_lb         ;  LWLB Zahl1 = 20
-00000e 2755              CLR     zahl1_lw_hb         ;  LWHB Zahl1 = 30
-00000f 2700              CLR     zahl1_hw_lb         ;  HWLB = 0
-000010 2711              CLR     zahl1_hw_hb         ;  HWHB = 0*/
-                 
-000011 2766              CLR     zahl2_lb            ;  Zahl2 = 0
-000012 2777              CLR     zahl2_hb            ;  Zahl2 = 0
-                 
-000013 e0c2              LDI     exp, $02            ;  Exponent = 2
-000014 e0d4              LDI     base_lb, $04        ;  Basis = 4
-                 
-000015 23cc              TST     exp                 ;  if exp != 0
-000016 f409              BRNE    ExpNotZero          ;   Goto: ExpZero
-000017 c01d              RJMP    End_WhilePOW        ;   Calculated Power
-                     ExpNotZero:                     ;  Exponent ist nicht 0
+                 Main:	                            ; Main function
                          
-000018 23cc              TST     exp                 ;  if base != 0
-000019 f411              BRNE    BaseNotZero         ;   Goto: BaseNotZero
-00001a 2788              CLR     res_lw_lb           ;   Resultat = 0
-00001b c019              RJMP    End_WhilePOW        ;   Calculated Power
-                     BaseNotZero:                    ;  Basis ist nicht 0
-                 
-                     WhilePOW:                       ;  While loop
-00001c 23cc              TST     exp                 ;  If exp == 0
-00001d f0b9              BREQ    End_WhilePOW        ;  Goto End_WhilePOW
-00001e 95c6              LSR     exp                 ;  exp nach Rechts schieben
-00001f f428              BRCC    SQRBase             ;  if carry-bit == 0 GoTo: SQRBase
-000020 2f48              MOV     zahl1_lw_lb, res_lw_lb; Zahl1 = Resultat
-000021 2f59              MOV     zahl1_lw_hb, res_lw_hb; Zahl1 = Resultat
-                 
-000022 2f6d              MOV     zahl2_lb, base_lb   ;   Zahl2 = Basis
-000023 2f7e              MOV     zahl2_hb, base_hb   ;   Zahl2 = Basis
-                 
-000024 d011              RCALL   Mult                ;   Resultat = Resultat * Basis
+00001f e018              LDI         dividend, 8
+000020 e025              LDI         divisor, 5
+                             
+000021 d002              RCALL       MOD
                          
-                     SQRBase:
-                         // Das Resultat auf dem Stack sichern (weil Mult in Resultat schrieb)
-000025 93bf              PUSH    res_hw_hb        
-000026 93af              PUSH    res_hw_lb        
-000027 939f              PUSH    res_lw_hb        
-000028 938f              PUSH    res_lw_lb   
+000022 b935              OUT         LED, result
                  
-000029 2f4d              MOV     zahl1_lw_lb, base_lb; Zahl1 = basis
-00002a 2f5e              MOV     zahl1_lw_hb, base_hb; Zahl1 = basis
-                 
-00002b 2f6d              MOV     zahl2_lb, base_lb   ; Zahl2 = basis
-00002c 2f7e              MOV     zahl2_hb, base_hb   ; Zahl2 = basis
-                 
-00002d d008              RCALL   Mult                ; Basis = Basis * Basis
-                 
-00002e 2fd8              MOV     base_lb, res_lw_lb  ; Resultat = Basis
-00002f 2fe9              MOV     base_hb, res_lw_hb  ; Resultat = Basis
-                 
-                         // Das Resultat vom Stack laden (weil Mult in Resultat schrieb)
-000030 918f              POP     res_lw_lb
-000031 919f              POP     res_lw_hb
-000032 91af              POP     res_hw_lb
-000033 91bf              POP     res_hw_hb
-                 
-000034 cfe7              RJMP    WhilePOW
-                 
-                     End_WhilePOW:                   ;  End of While Loop
-000035 cfd3              RJMP    Main                ; Endless Loop
-                 
+000023 cffb              RJMP        Main            
                  
                  
                  ;------------------------------------------------------------------------------
                  ; Unterprogramme
                  ;------------------------------------------------------------------------------
+                 MOD:                                ;  [MOD(<dividend>, <divisor>)] function
+                         // stack speichern: ---
+000024 931f              PUSH    dividend            ;    <dividend> auf stack speichern
+000025 932f              PUSH    divisor             ;    <divisor> auf stack speichern
+000026 930f              PUSH    mpr                 ;    <mpr> auf stack speichern
                  
+                         // modulo: ---
+000027 dfd9              RCALL   DIV                 ;    <result> = DIV(<dividend>, <divisor>)
+000028 9f32              MUL     result, divisor     ;    <R1:R0> = resultat * divisor
+000029 1910              SUB     dividend, R0        ;    <dividend> = <R0> - <dividend>
                  
-                 Mult:								; Multiplication Function
-                 
-                         // Parameter auf dem Stack sichern (call by Value)
-000036 934f              PUSH    zahl1_lw_lb        
-000037 935f              PUSH    zahl1_lw_hb        
-000038 930f              PUSH    zahl1_hw_lb        
-000039 931f              PUSH    zahl1_hw_hb        
-00003a 936f              PUSH    zahl2_lb
-00003b 937f              PUSH    zahl2_hb
-                 
-00003c 27bb              CLR     res_hw_hb           ;  Resultat = 0
-00003d 27aa              CLR     res_hw_lb           ;  Resultat = 0
-00003e 2799              CLR     res_lw_hb           ;  Resultat = 0
-00003f 2788              CLR     res_lw_lb           ;  Resultat = 0
-                 
-                     While:                          ;  While
-000040 2377              TST     zahl2_hb            ;  zahl2_lb > 0
-000041 f009              BREQ    TestLowByte         ;  Wenn true gehe teste das Low Byte
-000042 c002              RJMP    TestLowByteEnd      ;  Wenn false dann nicht weiter prüfen
-                    TestLowByte:                     ;  TestLowByte
-000043 2366              TST     zahl2_lb            ;  zahl2_lb > 0
-000044 f061              BREQ    While_false         ;  Wenn true dann nicht mehr loopen
-                    TestLowByteEnd:                  ;  Ende der prüfung
-                 
-000045 9576              LSR     zahl2_hb            ;   schiebe zahl2_hb nach rechts
-000046 9567              ROR     zahl2_lb            ;   Rotiere zahl2_lb nach rechts
-000047 f420              BRCC    Else                ;   Wenn carry = 0 dann zu else
-                 
-000048 0f84              ADD     res_lw_lb, zahl1_lw_lb; LWLB resultat um LWLB Zahl1 erhöhen
-000049 1f95              ADC     res_lw_hb, zahl1_lw_hb; LWHB resultat um LWHB zahl1 erhönen + Carry
-00004a 1fa0              ADC     res_hw_lb, zahl1_hw_lb; HWLB resultat um HWLB zahl1 erhönen + Carry
-00004b 1fb1              ADC     res_hw_hb, zahl1_hw_hb; HWHB resultat um HWHB zahl1 erhöhen + Carry
+00002a 3010              CPI     dividend, $00       ;    if <dividend> > $00
+00002b f40c              BRGE    MOD_ENDIF01         ;      GoTo: MOD_ENDIF01
+                         // wenn dividend negative make positive: ---
+00002c 9511              NEG     dividend            ;      |<dividend>|
+                     MOD_ENDIF01:
                          
-                    Else:
-00004c 0f44              LSL     zahl1_lw_lb         ;   schiebe zahl1 nach links
-00004d 1f55              ROL     zahl1_lw_hb         ;   schiebe zahl1 nach links
-00004e 1f00              ROL     zahl1_hw_lb         ;   schiebe zahl1 nach links
-00004f 1f11              ROL     zahl1_hw_hb         ;   Rotiere zahl1 nach links.
+00002d 2f31              MOV     result, dividend    ;    <result> = <dividend>
                  
-000050 cfef              RJMP    While               ;  Loop
-                    While_false:                     ;  ende der While schlaufe
-                         
-                         // Parameter wieder vom Stack laden (call by value)
-000051 917f              POP     zahl2_hb
-000052 916f              POP     zahl2_lb
-000053 911f              POP     zahl1_hw_hb
-000054 910f              POP     zahl1_hw_lb
-000055 915f              POP     zahl1_lw_hb
-000056 914f              POP     zahl1_lw_lb
+                         // stack laden: ---
+00002e 910f              POP     mpr                 ;    <mpr> von stack laden
+00002f 912f              POP     divisor             ;    <divisor> von stack laden
+000030 911f              POP     dividend            ;    <dividend> von stack laden
+                 
+000031 9508              RET                         ;  RETURN: <result>
+                 
                  
 
 
@@ -2111,41 +2081,41 @@ counted separately from r26..r31 here.
 .dseg memory usage only counts static data declared with .byte
 
 "ATmega2560" register use summary:
-r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 r5 :   0 r6 :   0 r7 :   0 
+r0 :   1 r1 :   0 r2 :   0 r3 :   0 r4 :   0 r5 :   0 r6 :   0 r7 :   0 
 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 r13:   0 r14:   0 r15:   0 
-r16:  13 r17:   5 r18:   0 r19:   0 r20:   7 r21:   7 r22:   7 r23:   7 
-r24:   8 r25:   7 r26:   5 r27:   5 r28:   5 r29:   5 r30:   4 r31:   0 
+r16:  16 r17:  11 r18:   9 r19:   6 r20:   0 r21:   0 r22:   0 r23:   0 
+r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 r29:   0 r30:   0 r31:   0 
 x  :   0 y  :   0 z  :   0 
-Registers used: 13 out of 35 (37.1%)
+Registers used: 5 out of 35 (14.3%)
 
 "ATmega2560" instruction use summary:
-.lds  :   0 .sts  :   0 adc   :   3 add   :   1 adiw  :   0 and   :   0 
+.lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   0 and   :   0 
 andi  :   0 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
-brcc  :   2 brcs  :   0 break :   0 breq  :   3 brge  :   0 brhc  :   0 
-brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
-brne  :   2 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
+brcc  :   0 brcs  :   0 break :   0 breq  :   2 brge  :   1 brhc  :   0 
+brhs  :   0 brid  :   0 brie  :   0 brlo  :   1 brlt  :   0 brmi  :   0 
+brne  :   0 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
 brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   0 cbr   :   0 
-clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :  15 cls   :   0 
-clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   0 cpc   :   0 
-cpi   :   0 cpse  :   0 dec   :   0 eicall:   0 eijmp :   0 elpm  :   0 
+clc   :   1 clh   :   0 cli   :   0 cln   :   0 clr   :   3 cls   :   0 
+clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   1 cpc   :   0 
+cpi   :   1 cpse  :   0 dec   :   0 eicall:   0 eijmp :   0 elpm  :   0 
 eor   :   0 fmul  :   0 fmuls :   0 fmulsu:   0 icall :   0 ijmp  :   0 
-in    :   0 inc   :   0 jmp   :   0 ld    :   0 ldd   :   0 ldi   :   5 
-lds   :   0 lpm   :   0 lsl   :   1 lsr   :   2 mov   :  10 movw  :   0 
-mul   :   0 muls  :   0 mulsu :   0 neg   :   0 nop   :   0 or    :   0 
-ori   :   0 out   :   4 pop   :  10 push  :  10 rcall :   2 ret   :   1 
-reti  :   0 rjmp  :   7 rol   :   3 ror   :   1 sbc   :   0 sbci  :   0 
+in    :   0 inc   :   1 jmp   :   0 ld    :   0 ldd   :   0 ldi   :   4 
+lds   :   0 lpm   :   0 lsl   :   2 lsr   :   0 mov   :   1 movw  :   0 
+mul   :   1 muls  :   0 mulsu :   0 neg   :   1 nop   :   0 or    :   0 
+ori   :   0 out   :   5 pop   :   6 push  :   6 rcall :   2 ret   :   2 
+reti  :   0 rjmp  :   3 rol   :   1 ror   :   0 sbc   :   0 sbci  :   0 
 sbi   :   0 sbic  :   0 sbis  :   0 sbiw  :   0 sbr   :   0 sbrc  :   0 
 sbrs  :   0 sec   :   0 seh   :   0 sei   :   0 sen   :   0 ser   :   1 
 ses   :   0 set   :   0 sev   :   0 sez   :   0 sleep :   0 spm   :   0 
-st    :   0 std   :   0 sts   :   0 sub   :   0 subi  :   0 swap  :   0 
-tst   :   5 wdr   :   0 
-Instructions used: 20 out of 116 (17.2%)
+st    :   0 std   :   0 sts   :   0 sub   :   2 subi  :   0 swap  :   0 
+tst   :   2 wdr   :   0 
+Instructions used: 23 out of 116 (19.8%)
 
 "ATmega2560" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x0000b0    176      0    176  262144   0.1%
+[.cseg] 0x000000 0x000064    100      0    100  262144   0.0%
 [.dseg] 0x000200 0x000200      0      0      0    8192   0.0%
 [.eseg] 0x000000 0x000000      0      0      0    4096   0.0%
 
-Assembly complete, 0 errors, 6 warnings
+Assembly complete, 0 errors, 0 warnings

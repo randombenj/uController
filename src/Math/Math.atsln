@@ -11,6 +11,8 @@ Project("{18226A42-8477-4023-8AD2-40C49DA407C9}") = "8x8BitMultiplikation", "8x8
 EndProject
 Project("{18226A42-8477-4023-8AD2-40C49DA407C9}") = "16x16BitMultiplikation", "16x16BitMultiplikation\16x16BitMultiplikation.asmproj", "{39765FE0-E573-4711-B6FB-EEBB16B7E3C6}"
 EndProject
+Project("{18226A42-8477-4023-8AD2-40C49DA407C9}") = "8x8BitModulo", "8x8BitModulo\8x8BitModulo.asmproj", "{E9DBB0E8-03B4-4E9F-A95C-FBAE3A9ECC1F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AVR = Debug|AVR
@@ -37,6 +39,10 @@ Global
 		{39765FE0-E573-4711-B6FB-EEBB16B7E3C6}.Debug|AVR.Build.0 = Debug|AVR
 		{39765FE0-E573-4711-B6FB-EEBB16B7E3C6}.Release|AVR.ActiveCfg = Release|AVR
 		{39765FE0-E573-4711-B6FB-EEBB16B7E3C6}.Release|AVR.Build.0 = Release|AVR
+		{E9DBB0E8-03B4-4E9F-A95C-FBAE3A9ECC1F}.Debug|AVR.ActiveCfg = Debug|AVR
+		{E9DBB0E8-03B4-4E9F-A95C-FBAE3A9ECC1F}.Debug|AVR.Build.0 = Debug|AVR
+		{E9DBB0E8-03B4-4E9F-A95C-FBAE3A9ECC1F}.Release|AVR.ActiveCfg = Release|AVR
+		{E9DBB0E8-03B4-4E9F-A95C-FBAE3A9ECC1F}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
