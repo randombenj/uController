@@ -1,21 +1,21 @@
 ;===============================================================================
-;- Programm:		
+;- Program:             
 ;-
-;- Dateinname:		    .asm
-;- Version:			    1.0
-;- Autor:			    Benj Fassbind
+;- Filename:            .asm
+;- Version:             1.0.0
+;- Autor:               Benj Fassbind
 ;-
-;- Verwendungszweck:	uP-Schulung
+;- Purpose:             uP-Schulung
 ;-
-;- Beschreibung:
-;-		
-;-				
+;- Description:
+;-          
+;-                    
 ;-
 ;- Entwicklungsablauf:
-;- Ver: Datum:	Autor:   Entwicklungsschritt:                         Zeit:
-;- 1.0  01.01.13  FAB    Ganzes Programm erstellt				           Min.
+;- Version:  Datum:     Autor:   Entwicklungsschritt:               Zeit:
+;- 1.0.0     01.01.13   FAB      Ganzes Programm erstellt               Min.
 ;-
-;-										Totalzeit:	 Min.
+;-                                                  Totalzeit:      Min.
 ;-
 ;- Copyright: Benj Fassbind, Sonneggstrasse 13, 6410 Goldau (2013)
 ;------------------------------------------------------------------------------
@@ -23,47 +23,47 @@
 ;--- Kontrollerangabe ---
 .include "m2560def.inc"
 
-		RJMP	Reset
+          RJMP     Reset
 
 ;--- Include-Files ---
-.include "U:\AVR Include Files\delay.inc"
 
 
 
-;--- Konstanten ---
-.equ	LED		    = PORTB		; Ausgabeport fuer LED
-.equ	LED_D	    = DDRB		; Daten Direction Port fuer LED
 
-.equ	SWITCH	    = PIND		; Eingabeport fuer SWITCH
-.equ	SWITCH_D	= DDRD		; Daten Direction Port fuer SWITCH
+;--- constants ---
+.equ     LED          = PORTB         ; Output for LED
+.equ     LED_D        = DDRB          ; Data direction Port for LED
 
-;--- Variablen ---
-.def 	mpr	        = R16		; Multifunktionsregister
+.equ     SWITCH       = PIND          ; Input for SWITCH
+.equ     SWITCH_D     = DDRD          ; Data direction Port for SWITCH
 
-
-
-;------------------------------------------------------------------------------
-; Hauptprogramm
-;------------------------------------------------------------------------------
-
-;--- Initialisierung ---
-Reset:	SER	    mpr			        ; Output:= LED
-		OUT	    LED_D, mpr
-
-		CLR	    mpr			        ; Input:= Schalterwerte
-		OUT	    SWITCH_D, mpr
-
-		LDI	    mpr, LOW(RAMEND)    ; Stack initialisieren
-		OUT	    SPL,mpr
-		LDI	    mpr, HIGH(RAMEND)
-		OUT	    SPH,mpr
-
-
-;--- Hauptprogramm ---	
-Main:		
+;--- variables ---
+.def      mpr         = R16           ; multipurpose register
 
 
 
 ;------------------------------------------------------------------------------
-; Unterprogramme
+; Main program
+;------------------------------------------------------------------------------
+
+;--- Initialisation ---
+Reset:    SER         mpr                       ; Output:= LED
+          OUT         LED_D, mpr
+
+          CLR         mpr                       ; Input:= Switch-values
+          OUT         SWITCH_D, mpr
+
+          LDI         mpr, LOW(RAMEND)          ; Initialise stack
+          OUT         SPL,mpr
+          LDI         mpr, HIGH(RAMEND)
+          OUT         SPH,mpr
+
+
+;--- Main program: ---     
+Main:          
+
+
+
+;------------------------------------------------------------------------------
+; Subroutines
 ;------------------------------------------------------------------------------
