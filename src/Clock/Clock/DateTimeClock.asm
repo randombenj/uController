@@ -267,6 +267,115 @@ GET_D:                              ;  [GET_D(<DD>, <MO>, <YY>)] function
         RET                         ;  RETURN <result>
 
 ;===============================================================================
+; @name:             GET_Www
+; @description:
+;   Calculates the the week number (0-53):
+;
+; @param <MO>:
+;  the month of the current date
+; @param <DD>:
+;  the days of the current month
+; @return <Www>:
+;  the week number
+;------------------------------------------------------------------------------
+GET_Www:                            ;  [GET_Www(<MO>, <DD>)] function
+        // stack saving: ---        
+        PUSH    dd                  ;    save <dd> on stack
+        PUSH    MO                  ;    save <MO> on stack
+        PUSH    mpr                 ;    save <mpr> on stack
+        // calc active month: ---
+        MOV     dividend, DD        ;    <dividend> = <DD>
+        LDI     divisor, $07        ;    <divisor> = 7
+        RCALL   DIV                 ;    <result> = DIV(<dividend>, <divisor>)
+        MOV     Www, result         ;    <Www> = <result>
+        // add modulo to days: ---
+        MOV     dividend, DD        ;    <dividend> = <DD>
+        LDI     divisor, $07        ;    <divisor> = 7
+        RCALL   MOD                 ;    <result> = MOD(<dividend>, <divisor>)
+        MOV     DD, result          ;    <DD> = <result>
+        DEC     MO                  ;    decrement <MO>
+    GET_Www_WHILE01:                ;    while loop
+        // calculate months til january: ---
+
+        RCALL   DT_Www_MM           ;   DT_Www_MM(<DD>)
+
+        MOV     dividend, DD        ;    <dividend> = <DD>
+        LDI     divisor, $07        ;    <divisor> = 7
+        RCALL   DIV                 ;    <result> = DIV(<dividend>, <divisor>)
+        ADD     Www, result         ;    <Www> = <result>
+        // add modulo to days: ---
+        MOV     dividend, DD        ;    <dividend> = <DD>
+        LDI     divisor, $07        ;    <divisor> = 7
+        RCALL   MOD                 ;    <result> = MOD(<dividend>, <divisor>)
+        MOV     DD, result          ;    <DD> = <result>
+        DEC     MO
+        BRNE    GET_Www_WHILE01
+        // stack loading: ---
+        POP     mpr                 ;    load <mpr> from stack
+        POP     MO                  ;    load <MO> from stack
+        POP     dd                  ;    load <dd> from stack
+
+        RET                         ;  RETURN <result>
+
+;===============================================================================
+; @name:             DT_Www_MM
+; @description:
+;   Handles the date-time Month calculation for week number calculation:
+;
+; @param *<DD>:
+;  the day of the date
+;------------------------------------------------------------------------------
+DT_Www_MM:                          ;  [DT_Www_MM(*<DD>)] function
+        // Stack saving: ---
+        PUSH    mpr                 ;  save <mpr> on stack
+        CPI     MO, $02             ;  if <MO> != 2
+        BRNE    GET_Www_ELSEIF1     ;   GoTo: GET_Www_ELSEIF1
+        // Handle if month has 30 or 31 Days
+        CPI     MO, $07             ;      if <MO> < 7
+        BRLO    GET_Www_ELSEIF4     ;       GoTo: GET_Www_ELSEIF4
+        // Handle Jan-Jul: ---
+        MOV     mpr, MO             ;        <mpr> = <MO>
+        ASR     mpr                 ;        <mpr> = <mpr> / 2
+        BRCC    GET_Www_30DAY       ;        if <carry-bit> = 0: GoTo: GET_Www_30DAY
+        RJMP    GET_Www_31DAY       ;        else: GoTo: GET_Www_31DAY
+    DGET_Www_ELSEIF4:               ;      DT_MM_ELSEIF4
+        // Handle Aug-Dec: ---
+        MOV     mpr, MO             ;        <mpr> = <MO>
+        ASR     mpr                 ;        <mpr> = <mpr> / 2
+        BRCS    GET_Www_30DAY       ;        if <carry-bit> = 1: GoTo: GET_Www_30DAY
+        RJMP    GET_Www_31DAY       ;        else: GoTo: GET_Www_31DAY
+    GET_Www_30DAY:                  ;      DT_MM_30DAY
+        // The Month has 30 Days: ---
+        SUBI    DD, -30             ;        <DD> += 30
+        RJMP    GET_Www_DAYEND      ;        GoTo: GET_Www_DAYEND
+    GET_Www_31DAY:                  ;      DT_MM_31DAY
+        // The Month has 31 Days: ---
+        SUBI    DD, -31             ;        <DD> += 31
+        RJMP    GET_Www_DAYEND      ;          GoTo: GET_Www_DAYEND
+    GET_Www_DAYEND:                 ;      End Day calc
+        RJMP    GET_Www_ENDIF1      ;  GoTo: GET_Www_ENDIF1
+    GET_Www_ELSEIF1:                ;  GET_Www_ELSEIF1
+        // Handle February: ---
+        MOV     mpr, YY             ;    <mpr> = <YY>
+        ASR     mpr                 ;    <mpr> = <mpr> / 2
+        BRCS    GET_Www_ELSEIF2     ;    if <carry-bit> == 2: GoTo: GET_Www_ELSEIF2
+        ASR     mpr                 ;    <mpr> = <mpr> / 2
+        BRCS    GET_Www_ELSEIF2     ;    if <carry-bit> == 2: GoTo: GET_Www_ELSEIF2
+        // Handle leap year: ---
+        SUBI    DD, -29             ;      <DD> += 29
+    GET_Www_ENDIF3:                 ;      GET_Www_ENDIF3
+        RJMP    GET_Www_ENDIF2      ;    GoTo: GET_Www_ENDIF2
+    GET_Www_ELSEIF2:                ;    GET_Www_ELSEIF2
+        // Handle non leap year: ---
+        SUBI    DD, -28             ;      <DD> += 29
+    GET_Www_ENDIF2:                 ;    GET_Www_ENDIF2
+    GET_Www_ENDIF1:                 ;  GET_Www_ENDIF1
+        // Stack loading: ---
+        POP     mpr                 ;  load <mpr> from stack
+        RET                         ;  RETURN <void>
+
+
+;===============================================================================
 ; @name:             DT_MM
 ; @description:
 ;   Handles the date-time Month calculation:
@@ -278,7 +387,7 @@ DT_MM:                              ;  [DT_MM(<DD>)] function
         // Stack saving: ---
         PUSH    mpr                 ;  save <mpr> on stack
 
-        CPI     MO, $02               ;  if <MO> != 2
+        CPI     MO, $02             ;  if <MO> != 2
         BRNE    DT_MM_ELSEIF1       ;   GoTo: DT_MM_ENDIF1
         // Handle all months except February: ---
         CPI     DD, $1D             ;    if <DD> < 29:
