@@ -27,7 +27,8 @@
 		RJMP	Reset
 
 ;--- Include-Files ---
-.include "C:\Users\Benj\workspace\GitHub\uController\lib\delay.inc"
+.include "C:\Users\Beni\Documents\GitHub\uControllerNew\uController\lib\delay.inc"
+.include "C:\Users\Beni\Documents\GitHub\uControllerNew\uController\lib\math.inc"
 
 
 
@@ -53,6 +54,12 @@
 
 .def    Www         = R23       ; calender week register (W01-W53)
 .def    D           = R24       ; week day register (1-7)  
+
+;-- math.inc variables: ---
+.def    dividend    = R25       ; the dividend
+.def    divisor     = R26       ; the divisor
+.def    result      = R27       ; the result
+
 
 ;-- Delay variables ---
 .def    ms          = R25       ; milli seconds 
@@ -85,6 +92,12 @@ Main:		                        ;  [Main()] function
 
 ;------------------------------------------------------------------------------
 ; Unterprogramme
+;------------------------------------------------------------------------------
+;===============================================================================
+; @name:             DT_Handle
+; @description:
+;   Handles the date-time clock
+;
 ;------------------------------------------------------------------------------
 DT_Handle:                          ;  [DT_Handle()] function
         
@@ -120,24 +133,147 @@ DT_Handle:                          ;  [DT_Handle()] function
     DT_Handle_ENDIF1:               ;  DT_Handle_ENDIF1
         RET                         ;  RETURN: <void>
 
-GET_D:                              ;  [GET_D(<dd>, <MM>, <YY>)] function
+;===============================================================================
+; @name:             GET_D
+; @description:
+;   Calculates the day of the week (0-6):
+;
+; @param <DD>:
+;  the day of the date
+; @param <MO>:
+;  the month of the date
+; @param <YY>:
+;  the year of the date
+; @return <result>:
+;  the result week day (0-6)
+;------------------------------------------------------------------------------
+GET_D:                              ;  [GET_D(<DD>, <MO>, <YY>)] function
         // stack saving: ---        
         PUSH    dd                  ;  save <dd> on stack
         PUSH    MO                  ;  save <MO> on stack
         PUSH    YY                  ;  save <YY> on stack
         PUSH    mpr                 ;  save <mpr> on stack
+        // calc. year-offset: ---
+        MOV     mpr, YY             ;  <mpr> = <YY>
+        PUSH    mpr                 ;  save original year on stack
+        ASR     mpr                 ;  <mpr> = <mpr> / 2
+        ASR     mpr                 ;  <mpr> = <mpr> / 2
+        ADD     YY, mpr             ;  <YY> = <YY> + <mpr>
+        MOV     dividend, YY        ;  <dividend> = <YY>
+        LDI     divisor, $07        ;  <divisor> = 7
+        RCALL   MOD                 ;  <result> = MOD(<dividend>, <divisor>)
+        MOV     YY, result          ;  <YY> = <result>
+        POP     mpr                 ;  load original year from stack
+        // leap year: ---
+        ASR     mpr                 ;    <mpr> = <mpr> / 2
+        BRCS    DT_MM_ELSEIF01      ;    if <carry-bit> == 2: GoTo: DT_MM_ELSEIF01
+        ASR     mpr                 ;    <mpr> = <mpr> / 2
+        BRCS    DT_MM_ELSEIF01      ;    if <carry-bit> == 2: GoTo: DT_MM_ELSEIF01
+        // handle leap year: ---
+        DEC     YY                  ;    <YY> = <YY> - 1
+    DT_MM_ELSEIF2:                  ;    DT_MM_ELSEIF2
+        // calc. month-offset: ---
+        CPI     MO, $01             ;  case <MO> =  1
+        BRNE    GET_D_CASE_02       ;    else: GoTo: GET_D_CASE_02
+        // January
+        LDI     MO, $00             ;    <MO> = 0;
+        RJMP    GET_D_ENDSWICH01    ;    break
+    GET_D_CASE_02:
+        CPI     MO, $01             ;  case <MO> =  1
+        BRNE    GET_D_CASE_03       ;    else: GoTo: GET_D_CASE_03
+        // February
+        LDI     MO, $03             ;    <MO> = 3;
+        RJMP    GET_D_ENDSWICH01    ;    break
+    GET_D_CASE_03:
+        CPI     MO, $01             ;  case <MO> =  1
+        BRNE    GET_D_CASE_04       ;    else: GoTo: GET_D_CASE_04
+        // March
+        LDI     MO, $03             ;    <MO> = 3;
+        RJMP    GET_D_ENDSWICH01    ;    break
+    GET_D_CASE_04:
+        CPI     MO, $01             ;  case <MO> =  1
+        BRNE    GET_D_CASE_05       ;    else: GoTo: GET_D_CASE_05
+        // April
+        LDI     MO, $06             ;    <MO> = 6;
+        RJMP    GET_D_ENDSWICH01    ;    break
+    GET_D_CASE_05:
+        CPI     MO, $01             ;  case <MO> =  1
+        BRNE    GET_D_CASE_06       ;    else: GoTo: GET_D_CASE_06
+        // May
+        LDI     MO, $01             ;    <MO> = 1;
+        RJMP    GET_D_ENDSWICH01    ;    break
+    GET_D_CASE_06:
+        CPI     MO, $01             ;  case <MO> =  1
+        BRNE    GET_D_CASE_07       ;    else: GoTo: GET_D_CASE_07
+        // June
+        LDI     MO, $04             ;    <MO> = 4;
+        RJMP    GET_D_ENDSWICH01    ;    break
+    GET_D_CASE_07:
+        CPI     MO, $01             ;  case <MO> =  1
+        BRNE    GET_D_CASE_08       ;    else: GoTo: GET_D_CASE_08
+        // July
+        LDI     MO, $06             ;    <MO> = 6;
+        RJMP    GET_D_ENDSWICH01    ;    break
+    GET_D_CASE_08:
+        CPI     MO, $01             ;  case <MO> =  1
+        BRNE    GET_D_CASE_09       ;    else: GoTo: GET_D_CASE_09
+        // August
+        LDI     MO, $02             ;    <MO> = 2;
+        RJMP    GET_D_ENDSWICH01    ;    break
+    GET_D_CASE_09:
+        CPI     MO, $01             ;  case <MO> =  1
+        BRNE    GET_D_CASE_10       ;    else: GoTo: GET_D_CASE_10
+        // September
+        LDI     MO, $05             ;    <MO> = 5;
+        RJMP    GET_D_ENDSWICH01    ;    break
+    GET_D_CASE_10:
+        CPI     MO, $01             ;  case <MO> =  1
+        BRNE    GET_D_CASE_11       ;    else: GoTo: GET_D_CASE_11
+        // October
+        LDI     MO, $00             ;    <MO> = 0;
+        RJMP    GET_D_ENDSWICH01    ;    break
+    GET_D_CASE_11:
+        CPI     MO, $01             ;  case <MO> =  1
+        BRNE    GET_D_CASE_12       ;    else: GoTo: GET_D_CASE_12
+        // November
+        LDI     MO, $03             ;    <MO> = 3;
+        RJMP    GET_D_ENDSWICH01    ;    break
+    GET_D_CASE_12:
+        CPI     MO, $01             ;  case <MO> =  1
+        BRNE    GET_D_ENDSWICH01    ;    else: GoTo: GET_D_ENDSWICH01
+        // December
+        LDI     MO, $05             ;    <MO> = 5;
+        RJMP    GET_D_ENDSWICH01    ;    break
+    GET_D_ENDSWICH01:               ;  end of swich 01
+        // calc day-offset: ---
+        MOV     dividend, DD        ;  <dividend> = <DD>
+        LDI     divisor, $07        ;  <divisor> = 7
+        RCALL   MOD                 ;  <result> = MOD(<dividend>, <divisor>)
+        MOV     DD, result          ;  <DD> = <result>
+        // calculate the day of the week: ---
+        SUBI    mpr, -$06           ;  <mpr> = <mpr> + 6 > century-offset
+        ADD     mpr, YY             ;  <mpr> = <mpr> + <YY> > year-offset
+        ADD     mpr, MO             ;  <mpr> = <mpr> + <MO> > month-offset 
+        ADD     mpr, DD             ;  <mpr> = <mpr> + <DD> > day-offset
 
-        LDI     mpr, $05            ;  <mpr> = 05 > set century
-        ADD     YY, YY              ;  <YY> = <YY> *2
-
-
+        MOV     dividend, mpr       ;  <dividend> = <DD>
+        LDI     divisor, $07        ;  <divisor> = 7
+        RCALL   MOD                 ;  <result> = MOD(<dividend>, <divisor>)
         // stack loading: ---
         POP     mpr                 ;  load <mpr> from stack
         POP     YY                  ;  load <YY> from stack
         POP     MO                  ;  load <MO> from stack
         POP     dd                  ;  load <dd> from stack
+        RET                         ;  RETURN <result>
 
-
+;===============================================================================
+; @name:             DT_MM
+; @description:
+;   Handles the date-time Month calculation:
+;
+; @param <DD>:
+;  the day of the date
+;------------------------------------------------------------------------------
 DT_MM:                              ;  [DT_MM(<DD>)] function
         // Stack saving: ---
         PUSH    mpr                 ;  save <mpr> on stack
