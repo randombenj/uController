@@ -2,11 +2,11 @@
 
 ##contents
 
-* [description and requirements](##description and requirements)
-    * [requirements](###requirements)
-* [how to use](##how to use)
-    * [register names](###register names)
-    * [code initialisation](###code initialisation)
+* [description and requirements](#description and requirements)
+    * [requirements](#requirements)
+* [how to use](#how-to-use)
+    * [register names](#register-names)
+    * [code initialisation](#code-initialisation)
 
 ##description and requirements
 
