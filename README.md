@@ -6,8 +6,8 @@
 
 ##content
 
-* [equipment](##equipment)
-* [projects](##projects)
+* [equipment](#equipment)
+* [projects](#projects)
 
 ##equipment
 
