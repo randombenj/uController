@@ -8,12 +8,12 @@ instructions based on higher languages like c/c++ etc.
 Ideas for improvment are welcome. :D
 
 ##Content
-* [Interduction](#Interduction)
-  * [What is assembly](#What-is-assembly)
-    * [Advantages and Disatvantages](#Advantages-and-Disatvantages)
-* [Where to start](#Where-to-start)
-  * [Requirements](#Requirements)
-  * [RESET code](#RESET-code)
+* [Interduction](#interduction)
+  * [What is assembly](#what-is-assembly)
+    * [Advantages and Disatvantages](#advantages-and-disatvantages)
+* [Where to start](#where-to-start)
+  * [Requirements](#requirements)
+  * [RESET code](#reset-code)
 
 ##Interduction
 
