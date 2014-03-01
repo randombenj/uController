@@ -63,7 +63,7 @@ Reset:	SER	    mpr			        ; Output:= LED
 Main:	                            ; Main function
 
         // Data Initialisation
-        LDI     dividend, $15       ;   <dividend> = 0b10101
+        LDI     dividend, $08       ;   <dividend> = 0b10101
         LDI     divisor, $05        ;   <dividend> = 0b101
         CLR     result              ;   <result> = $00
         CLR     mpr                 ;   <mpr> = $00

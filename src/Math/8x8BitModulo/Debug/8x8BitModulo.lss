@@ -1,9 +1,9 @@
 
-AVRASM ver. 2.1.52  C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\8x8BitModulo\8x8BitModulo.asm Fri Feb 21 22:37:38 2014
+AVRASM ver. 2.1.52  C:\Users\Benj\workspace\GitHub\uController\src\Math\8x8BitModulo\8x8BitModulo.asm Sat Mar 01 11:26:55 2014
 
 [builtin](2): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
-C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\8x8BitModulo\8x8BitModulo.asm(24): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
-C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\8x8BitModulo\8x8BitModulo.asm(29): Including file 'C:\Users\Beni\Documents\GitHub\uControllerNew\uController\lib\math.inc'
+C:\Users\Benj\workspace\GitHub\uController\src\Math\8x8BitModulo\8x8BitModulo.asm(24): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
+C:\Users\Benj\workspace\GitHub\uController\src\Math\8x8BitModulo\8x8BitModulo.asm(29): Including file 'C:\Users\Benj\workspace\GitHub\uController\lib\math.inc'
                  
                  ;===============================================================================
                  
@@ -1911,9 +1911,9 @@ C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\8x8BitModulo\
                  ; ***** END OF FILE ******************************************************
                  
                  
-000000 c016      		RJMP	Reset
+000000 c024      		RJMP	Reset
                  
-                 .include "C:\Users\Beni\Documents\GitHub\uControllerNew\uController\lib\math.inc"
+                 .include "C:\Users\Benj\workspace\GitHub\uController\lib\math.inc"
                  
                  ; Programm:                 math
                  ;
@@ -1926,11 +1926,12 @@ C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\8x8BitModulo\
                  ; Beschreibung:
                  ;  
                  ;  Various math operations.
-                 ;   - 8/8 bit divison
+                 ;   - DIV
+                 ;   - MOD
                  ;
                  ; Entwicklungsablauf:
                  ; Ver: Datum:    Autor:   Entwicklungsschritt:                         Zeit:
-                 ; 0.1.0  18.12.13  FAB    Ganzes Programm erstellt                        Min.
+                 ; 0.1.0  21.1.14  FAB    Ganzes Programm erstellt                        Min.
                  ;
                  ;                                        Totalzeit:     Min.
                  ;
@@ -1943,7 +1944,7 @@ C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\8x8BitModulo\
                  ; Version:              0.1.0
                  ;
                  ; Beschrieb:
-                 ;   8/8 bit division mit 8 bit ausgabe.
+                 ;   8/8 bit division mit 8 bit return.
                  ;
                  ; Register:
                  ;  mpr      8bit
@@ -1988,7 +1989,47 @@ C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\8x8BitModulo\
 000014 912f              POP     divisor             ;   <dividend> von stack laden
 000015 911f              POP     dividend            ;   <dividend> von stack laden
                  
-000016 9508      
+000016 9508              RET                         ;   RETURN: <result>
+                 
+                 ;===============================================================================
+                 ; Funktion:             DIV
+                 ; Datum:                21.2.2014
+                 ; Version:              0.1.0
+                 ;
+                 ; Beschrieb:
+                 ;   8%8 bit modulo mit 8 bit return.
+                 ;
+                 ; Register:
+                 ;  mpr      8bit
+                 ;  dividend 8bit
+                 ;  divisor  8bit
+                 ;  result   8bit
+                 ;------------------------------------------------------------------------------
+                 MOD:                                ;  [MOD(<dividend>, <divisor>)] function
+                         // stack speichern: ---
+000017 931f              PUSH    dividend            ;    <dividend> auf stack speichern
+000018 932f              PUSH    divisor             ;    <divisor> auf stack speichern
+000019 930f              PUSH    mpr                 ;    <mpr> auf stack speichern
+                 
+                         // modulo: ---
+00001a dfe6              RCALL   DIV                 ;    <result> = DIV(<dividend>, <divisor>)
+00001b 9f32              MUL     result, divisor     ;    <R1:R0> = resultat * divisor
+00001c 1910              SUB     dividend, R0        ;    <dividend> = <R0> - <dividend>
+                 
+00001d 3010              CPI     dividend, $00       ;    if <dividend> > $00
+00001e f40c              BRGE    MOD_ENDIF01         ;      GoTo: MOD_ENDIF01
+                         // wenn dividend negative make positive: ---
+00001f 9511              NEG     dividend            ;      |<dividend>|
+                     MOD_ENDIF01:
+                         
+000020 2f31              MOV     result, dividend    ;    <result> = <dividend>
+                 
+                         // stack laden: ---
+000021 910f              POP     mpr                 ;    <mpr> von stack laden
+000022 912f              POP     divisor             ;    <divisor> von stack laden
+000023 911f              POP     dividend            ;    <dividend> von stack laden
+                 
+000024 9508      
                  ;--- Konstanten ---
                  .equ	LED		    = PORTB		; Ausgabeport fuer LED
                  .equ	LED_D	    = DDRB		; Daten Direction Port fuer LED
@@ -2009,59 +2050,59 @@ C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\8x8BitModulo\
                  ;------------------------------------------------------------------------------
                  
                  ;--- Initialisierung ---
-000017 ef0f      Reset:	SER	    mpr			        ; Output:= LED
-000018 b904      		OUT	    LED_D, mpr
+000025 ef0f      Reset:	SER	    mpr			        ; Output:= LED
+000026 b904      		OUT	    LED_D, mpr
                  
-000019 2700      		CLR	    mpr			        ; Input:= Schalterwerte
-00001a b90a      		OUT	    SWITCH_D, mpr
+000027 2700      		CLR	    mpr			        ; Input:= Schalterwerte
+000028 b90a      		OUT	    SWITCH_D, mpr
                  
-00001b ef0f      		LDI	    mpr, LOW(RAMEND)    ; Stack initialisieren
-00001c bf0d      		OUT	    SPL,mpr
-00001d e201      		LDI	    mpr, HIGH(RAMEND)
-00001e bf0e      		OUT	    SPH,mpr
+000029 ef0f      		LDI	    mpr, LOW(RAMEND)    ; Stack initialisieren
+00002a bf0d      		OUT	    SPL,mpr
+00002b e201      		LDI	    mpr, HIGH(RAMEND)
+00002c bf0e      		OUT	    SPH,mpr
                  
                  
                  ;--- Hauptprogramm ---	
                  Main:	                            ; Main function
                          
-00001f e018              LDI         dividend, 8
-000020 e025              LDI         divisor, 5
+00002d e018              LDI         dividend, 8
+00002e e025              LDI         divisor, 5
                              
-000021 d002              RCALL       MOD
+00002f dfe7              RCALL       MOD
                          
-000022 b935              OUT         LED, result
+000030 b935              OUT         LED, result
                  
-000023 cffb              RJMP        Main            
+000031 cffb              RJMP        Main            
                  
                  
                  ;------------------------------------------------------------------------------
                  ; Unterprogramme
                  ;------------------------------------------------------------------------------
-                 MOD:                                ;  [MOD(<dividend>, <divisor>)] function
+                 /*MOD:                                ;  [MOD(<dividend>, <divisor>)] function
                          // stack speichern: ---
-000024 931f              PUSH    dividend            ;    <dividend> auf stack speichern
-000025 932f              PUSH    divisor             ;    <divisor> auf stack speichern
-000026 930f              PUSH    mpr                 ;    <mpr> auf stack speichern
+                         PUSH    dividend            ;    <dividend> auf stack speichern
+                         PUSH    divisor             ;    <divisor> auf stack speichern
+                         PUSH    mpr                 ;    <mpr> auf stack speichern
                  
                          // modulo: ---
-000027 dfd9              RCALL   DIV                 ;    <result> = DIV(<dividend>, <divisor>)
-000028 9f32              MUL     result, divisor     ;    <R1:R0> = resultat * divisor
-000029 1910              SUB     dividend, R0        ;    <dividend> = <R0> - <dividend>
+                         RCALL   DIV                 ;    <result> = DIV(<dividend>, <divisor>)
+                         MUL     result, divisor     ;    <R1:R0> = resultat * divisor
+                         SUB     dividend, R0        ;    <dividend> = <R0> - <dividend>
                  
-00002a 3010              CPI     dividend, $00       ;    if <dividend> > $00
-00002b f40c              BRGE    MOD_ENDIF01         ;      GoTo: MOD_ENDIF01
+                         CPI     dividend, $00       ;    if <dividend> > $00
+                         BRGE    MOD_ENDIF01         ;      GoTo: MOD_ENDIF01
                          // wenn dividend negative make positive: ---
-00002c 9511              NEG     dividend            ;      |<dividend>|
+                         NEG     dividend            ;      |<dividend>|
                      MOD_ENDIF01:
                          
-00002d 2f31              MOV     result, dividend    ;    <result> = <dividend>
+                         MOV     result, dividend    ;    <result> = <dividend>
                  
                          // stack laden: ---
-00002e 910f              POP     mpr                 ;    <mpr> von stack laden
-00002f 912f              POP     divisor             ;    <divisor> von stack laden
-000030 911f              POP     dividend            ;    <dividend> von stack laden
+                         POP     mpr                 ;    <mpr> von stack laden
+                         POP     divisor             ;    <divisor> von stack laden
+                         POP     dividend            ;    <dividend> von stack laden
                  
-000031 9508              RET                         ;  RETURN: <result>
+                         RET                         ;  RETURN: <result>*/
                  
                  
 

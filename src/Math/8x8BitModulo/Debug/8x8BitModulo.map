@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.52  C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Math\8x8BitModulo\8x8BitModulo.asm Fri Feb 21 22:37:38 2014
+AVRASM ver. 2.1.52  C:\Users\Benj\workspace\GitHub\uController\src\Math\8x8BitModulo\8x8BitModulo.asm Sat Mar 01 11:26:55 2014
 
 
 EQU  SIGNATURE_000 0000001e
@@ -1359,7 +1359,7 @@ EQU  URXC3addr    0000006c
 EQU  UDRE3addr    0000006e
 EQU  UTXC3addr    00000070
 EQU  INT_VECTORS_SIZE 00000072
-CSEG Reset        00000017
+CSEG Reset        00000025
 CSEG DIV          00000001
 DEF  dividend     r17
 DEF  divisor      r18
@@ -1369,10 +1369,10 @@ CSEG DevByZero    00000013
 CSEG While        00000008
 CSEG EndWhile     00000013
 CSEG EndSub       00000012
+CSEG MOD          00000017
+CSEG MOD_ENDIF01  00000020
 EQU  LED          00000005
 EQU  LED_D        00000004
 EQU  SWITCH       00000009
 EQU  SWITCH_D     0000000a
-CSEG Main         0000001f
-CSEG MOD          00000024
-CSEG MOD_ENDIF01  0000002d
+CSEG Main         0000002d

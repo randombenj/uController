@@ -1,8 +1,8 @@
 
-AVRASM ver. 2.1.52  C:\Users\Beni\Documents\GitHub\uController\8x8BitDivision\8x8BitDivision\8x8BitDivision.asm Sun Nov 17 19:09:26 2013
+AVRASM ver. 2.1.52  C:\Users\Benj\workspace\GitHub\uController\src\Math\8x8BitDivision\8x8BitDivision.asm Sat Mar 01 11:27:26 2014
 
 [builtin](2): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
-C:\Users\Beni\Documents\GitHub\uController\8x8BitDivision\8x8BitDivision\8x8BitDivision.asm(24): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
+C:\Users\Benj\workspace\GitHub\uController\src\Math\8x8BitDivision\8x8BitDivision.asm(24): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
                  
                  ;===============================================================================
                  
@@ -1949,7 +1949,7 @@ C:\Users\Beni\Documents\GitHub\uController\8x8BitDivision\8x8BitDivision\8x8BitD
                  Main:	                            ; Main function
                  
                          // Data Initialisation
-000009 e115              LDI     dividend, $15       ;   <dividend> = 0b10101
+000009 e018              LDI     dividend, $08       ;   <dividend> = 0b10101
 00000a e025              LDI     divisor, $05        ;   <dividend> = 0b101
 00000b 2733              CLR     result              ;   <result> = $00
 00000c 2700              CLR     mpr                 ;   <mpr> = $00

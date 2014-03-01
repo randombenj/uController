@@ -26,7 +26,7 @@
 
 		RJMP	Reset
 
-.include "C:\Users\Beni\Documents\GitHub\uControllerNew\uController\lib\math.inc"
+.include "C:\Users\Benj\workspace\GitHub\uController\lib\math.inc"
 
 ;--- Konstanten ---
 .equ	LED		    = PORTB		; Ausgabeport fuer LED
