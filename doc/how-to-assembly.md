@@ -5,7 +5,7 @@ instructions based on higher languages like c/c++ etc.
 
 > !The tutorial is entirely based on my experience and stuff I read about assembly on the interwebs.
 
-Ideas for improvment are welcome. :D
+Ideas for improvment are welcome. :smile:
 
 ##Content
 * [Interduction](#interduction)
