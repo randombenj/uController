@@ -13,8 +13,9 @@
 ;-				
 ;-
 ;- Entwicklungsablauf:
-;- Ver: Datum:	Autor:   Entwicklungsschritt:                         Zeit:
-;- 1.0  01.01.13  FAB    Ganzes Programm erstellt				           Min.
+;- Ver:  Datum:	 Autor:    Entwicklungsschritt:                        Zeit:
+;- 0.1.0  01.01.13  FAB    Ganzes Programm erstellt				          Min.
+;- 0.1.1  01.03.14  FAB    Summer winter time   				      30  Min.
 ;-
 ;-										Totalzeit:	 Min.
 ;-
@@ -27,8 +28,8 @@
 		RJMP	Reset
 
 ;--- Include-Files ---
-.include "C:\Users\Beni\Documents\GitHub\uControllerNew\uController\lib\delay.inc"
-.include "C:\Users\Beni\Documents\GitHub\uControllerNew\uController\lib\math.inc"
+.include "C:\Users\Benj\workspace\GitHub\uController\lib\delay.inc"
+.include "C:\Users\Benj\workspace\GitHub\uController\lib\math.inc"
 
 
 
@@ -134,6 +135,71 @@ DT_Handle:                          ;  [DT_Handle()] function
         RET                         ;  RETURN: <void>
 
 ;===============================================================================
+; @name:             SW_Handle
+; @description:
+;   Handles the summer and winter time houer increment or decrement:
+;
+; @param <DD>:
+;  the day of the date
+; @param <MO>:
+;  the month of the date
+; @param *<hh>:
+;  the hour of the date
+; @param <D>:
+;  the weekday
+;------------------------------------------------------------------------------
+SW_Handle:                          ;  [SW_Handle()] function
+        // stack saving: ---
+        PUSH    dd                  ;  save <dd> on stack
+        PUSH    MO                  ;  save <MO> on stack
+        PUSH    D                   ;  save <D> on stack
+        PUSH    mpr                 ;  save <mpr> on stack
+        // summer winter time correction: --
+        CPI     MO, $03             ;  if <MO> is March
+        BRNE    SW_HandleELSEIF01   ;   else if: SW_HandleELSEIF01
+        // summer time: ---
+        CPI     HH, $02             ;   if <HH> = 2:00
+        BRNE    SW_HandleENDIF01    ;    endif
+        // the last sunday in the month: ---
+        CPI     D, $00              ;     if <D> = sunday
+        BRNE    SW_HandleENDIF01    ;      endif
+        LDI     mpr, 31             ;       <mpr> = 31
+        SUB     mpr, DD             ;       31 - <DD> => if last sunday
+        CPI     mpr, $07            ;       if not last sunday:
+        BRGE    SW_HandleENDIF01    ;        endif
+        // summer time: ---
+        INC     hh                  ;         set summer time
+    SW_HandleELSEIF01:
+        CPI     MO, $0A             ;  if <MO> is October
+        BRNE    SW_HandleENDIF01    ;   endif: SW_HandleENDIF01
+        // winter time: ---
+        CPI     HH, $03             ;   if <HH> = 3:00
+        BRNE    SW_HandleENDIF01    ;    endif
+        // the last sunday in the month: ---
+        CPI     D, $00              ;     if <D> = sunday
+        BRNE    SW_HandleENDIF01    ;      endif
+        LDI     mpr, 31             ;       <mpr> = 31
+        SUB     mpr, DD             ;       31 - <DD> => if last sunday
+        CPI     mpr, $07            ;       if not last sunday:
+        BRGE    SW_HandleENDIF01    ;        endif
+        // winter time (if not allready set): ---
+        BRTS    SW_HandleELSEID02   ;         if <t-flag> set
+        // winter time: ---
+        DEC     hh                  ;           set winter time
+        SET                         ;           set <t-flag>
+        RJMP    SW_HandleENDIF01    ;           endif
+    SW_HandleELSEID02:
+        CLT                         ;           set <t-flag>
+    SW_HandleENDIF01:
+        // stack loading: ---
+        POP     mpr                 ;  load <mpr> from stack
+        PUSH    D                   ;  load <D> from stack
+        POP     MO                  ;  load <MO> from stack
+        POP     dd                  ;  load <dd> from stack
+        RET                         ;  RETURN <void>
+
+
+;===============================================================================
 ; @name:             GET_D
 ; @description:
 ;   Calculates the day of the week (0-6):
@@ -166,12 +232,12 @@ GET_D:                              ;  [GET_D(<DD>, <MO>, <YY>)] function
         POP     mpr                 ;  load original year from stack
         // leap year: ---
         ASR     mpr                 ;    <mpr> = <mpr> / 2
-        BRCS    DT_MM_ELSEIF01      ;    if <carry-bit> == 2: GoTo: DT_MM_ELSEIF01
+        BRCS    GET_D_ELSEIF2      ;    if <carry-bit> == 2: GoTo: GET_D_ELSEIF01
         ASR     mpr                 ;    <mpr> = <mpr> / 2
-        BRCS    DT_MM_ELSEIF01      ;    if <carry-bit> == 2: GoTo: DT_MM_ELSEIF01
+        BRCS    GET_D_ELSEIF2      ;    if <carry-bit> == 2: GoTo: GET_D_ELSEIF01
         // handle leap year: ---
         DEC     YY                  ;    <YY> = <YY> - 1
-    DT_MM_ELSEIF2:                  ;    DT_MM_ELSEIF2
+    GET_D_ELSEIF2:                  ;    GET_D_ELSEIF2
         // calc. month-offset: ---
         CPI     MO, $01             ;  case <MO> =  1
         BRNE    GET_D_CASE_02       ;    else: GoTo: GET_D_CASE_02
@@ -338,7 +404,7 @@ DT_Www_MM:                          ;  [DT_Www_MM(*<DD>)] function
         ASR     mpr                 ;        <mpr> = <mpr> / 2
         BRCC    GET_Www_30DAY       ;        if <carry-bit> = 0: GoTo: GET_Www_30DAY
         RJMP    GET_Www_31DAY       ;        else: GoTo: GET_Www_31DAY
-    DGET_Www_ELSEIF4:               ;      DT_MM_ELSEIF4
+    GET_Www_ELSEIF4:                ;      DT_MM_ELSEIF4
         // Handle Aug-Dec: ---
         MOV     mpr, MO             ;        <mpr> = <MO>
         ASR     mpr                 ;        <mpr> = <mpr> / 2
