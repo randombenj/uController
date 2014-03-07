@@ -12,6 +12,8 @@ Ideas for improvment are welcome. :smile:
   * [What is assembly](#what-is-assembly)
     * [Advantages and Disatvantages](#advantages-and-disatvantages)
 * [Where to start](#where-to-start)
+  * [The Controller](#the-controller)
+    * [Hardware basics](#hardware-basics)
   * [Requirements](#requirements)
   * [RESET code](#reset-code)
 
@@ -33,7 +35,7 @@ Assembly is a programming language, a **low level** programming laugage.
 **Generaly** one assembly instruction takes one CPU cycle. That means if you have a 8MHz CPU you can perform 
 make at best 8000000 assembly instructions per second.
 
-> So a Intel i7 4770k@3.5GHz can make up to 3500000000 instructions per second!
+> So a Intel i7 4770k@3.5GHz can make up to 3500000000 instructions per second (if it were a RISC arcitecure)!
 
 ![OMG Cat ^^](http://img.wonkette.com/wp-content/uploads/2013/10/OMG-cat.jpg)
 
@@ -44,6 +46,25 @@ Atvangates | Disatvantages
 As sayd before: Assembly is very, very fast, **Its the fastest way to program any Electronic Device** | To write good and readable assembly code you have to document your vode very well. Its not as comfoteable to write like higher programming languages like c, c++, c#, java, javascript ... But the highest disatvantage might be that you have to learn **new assembly commands for every new CPU/MCU you want to program with Assembly.**
 
 ##Where to start
+
+###The Controller
+
+> If i want to buy a µController wich one should I choose?
+
+ * The [STK600](http://www.atmel.com/tools/stk600.aspx) is a µController starter kit and comes with the ATMega2560 MCU.
+ * [Arduino](http://arduino.cc/) also uses µControllers from Atmel for example the [Arduino Uno](http://arduino.cc/en/Main/ArduinoBoardUno) uses the ATmega328 microcontroller from Atmel. The Arduino boards also have a great comunity.
+ * The Raspberry PI. Its not esspecialy a microcontroller but you can in fact program any cpu with assembly. For "only" programming in assembly languaage the Raspberry is nearly overpowered.
+ * If you want a real chalange you can write your own little "hello-world" operating system with assembly for your Desktop PC: [Tutorial: Hello-World OS](http://mikeos.berlios.de/write-your-own-os.html)
+
+####Hardware basics
+
+**RISC vs CISC**
+
+RISC and CISC stand for [*Reduced instruction set computing*](http://en.wikipedia.org/wiki/Reduced_instruction_set_computing) and [*Complex instructing set computing*](http://en.wikipedia.org/wiki/Complex_instruction_set_computing). RISC and CISC are both CPU design strategys.
+
+RISC | CISC
+---|---
+RISC CPUs are less complex then CISC CPUs. What does this mean? This menans that the CPU can execute one commant ine one clock (8 MHz = 8000000 clocks per second). But it also means that there are less instructions then on a CISC CPU. So you have to write more complex assembly code. RISC CPUs are used where you have to save power e.g. your smartphone, microcontrollers, raspberry pi, arm cpus ... | CISC CPUs have much more instructions than a RISC CPU, but one complex CISC instruction can take multiple clocks. Advantages are that you dont have to write as much assembly code for some operations as in a RISC cpu. Intel uses the CISC arcitecture but also with some RISC features.
 
 ###Requirements
 
