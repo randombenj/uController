@@ -25,11 +25,37 @@
 ;--- Kontrollerangabe ---
 .include "m2560def.inc"
 
-		RJMP	Reset
-
+        RJMP   Reset            ; Ext-Pin, Power-on, Brown-out,Watchdog Reset
+        RETI                    ; External Interrupt Request 0
+        RETI                    ; External Interrupt Request 1
+        RETI                    ; External Interrupt Request 2
+        RETI                    ; External Interrupt Request 3
+        RETI                    ; External Interrupt Request 4
+        RETI                    ; External Interrupt Request 5
+        RETI                    ; External Interrupt Request 6
+        RETI                    ; External Interrupt Request 7
+        RETI                    ; Pin Change Interrupt Request 0
+        RETI                    ; Pin Change Interrupt Request 1
+        RETI                    ; Pin Change Interrupt Request 2
+        RETI                    ; Watchdog Time-out Interrupt
+        RETI                    ; Timer/Counter2 Compare Match A
+        RETI                    ; Timer/Counter2 Compare Match B
+        RETI                    ; Timer/Counter2 Overflow
+        RETI                    ; Timer/Counter1 Capture Event
+        RETI                    ; Timer/Counter1 Compare Match A
+        RETI                    ; Timer/Counter1 Compare Match B
+        RETI                    ; Timer/Counter1 Compare Match C
+        RETI                    ; Timer/Counter1 Overflow
+        RETI                    ; Timer/Counter0 Compare Match A
+        RETI                    ; Timer/Counter0 Compare Match B
+        RJMP Tc0i               ; Timer/Counter0 Overflow
+        RETI                    ; SPI Serial Transfer Complete
+        RETI                    ; USART0 Rx Complete
+        RETI                    ; USART0 Data Register Empty
+        RETI                    ; USART0 Tx Complete
+        RETI                    ; Analog Comparator
 ;--- Include-Files ---
-.include "C:\Users\Benj\workspace\GitHub\uController\lib\delay.inc"
-.include "C:\Users\Benj\workspace\GitHub\uController\lib\math.inc"
+.include "C:\Users\Beni\Documents\GitHub\uControllerNew\uController\lib\math.inc"
 
 
 
@@ -39,6 +65,10 @@
 
 .equ	SWITCH	    = PIND		; Eingabeport fuer SWITCH
 .equ	SWITCH_D	= DDRD		; Daten Direction Port fuer SWITCH
+
+.equ    MHz         = $08       ; MCU getaktet mit 8 MHz
+.equ    MaxCount    = $7A12     ; Vorteiler des Zaehlers = 256 
+                                ; => 8MHz/256 = 31250 Hz = $7A12
 
 ;--- Variablen ---
 .def 	mpr	        = R16		; Multifunktionsregister
@@ -65,6 +95,9 @@
 ;-- Delay variables ---
 .def    ms          = R25       ; milli seconds 
 
+;-- TC variables ---
+.def    count       = R28       ; MSB-count, SW-count
+
 
 ;------------------------------------------------------------------------------
 ; Hauptprogramm
@@ -82,11 +115,35 @@ Reset:	SER	    mpr			        ; Output:= LED
 		LDI	    mpr, HIGH(RAMEND)
 		OUT	    SPH,mpr
 
+        ; Timer 0 initialisieren:
+        LDI     mpr, MHz            ;  Initiate Timer/Counter 0 Vorteiler
+        OUT     TCCR0, mpr          ;  to timer interupt mask register
+
+        ; Swich timer 0 interup on:
+        LDI     mpr, (1<<TOIE0)     ; Swich bit1 on
+        OUT     TIMSK0, mpr         ; in timer interupt mask register
+
+        ; software count register = $00
+        CLR     count               ; software count = $00
+        CLR     SS                  ; seconds = $00
+
 
 ;--- Hauptprogramm ---	
 Main:		                        ;  [Main()] function
         
-        RCALL   W100US              ;    W100US()
+    Main_LOOP01:
+        CPI     count, HIGH(MaxCount)
+        BRLT    Main_LOOP01         ;    count < $7A: wait longer
+
+    Main_LOOP02:
+        IN      mpr, TCNT0          ;    read count LSB
+        CPI     mpr, LOW(MaxCount)
+        BRLT    Main_LOOP02         ;    mpr < $12: wait longer
+
+        CLR     mpr                 ;    mpr = $00
+        OUT     TCNT0, mpr          ;    $00 in hardware counter LSB
+        CLR     count               ;    count = $00 (MSB)
+
         RCALL   DT_Handle           ;    DT_Handle()
 
         RJMP    Main                ;  Endless Loop    
@@ -94,6 +151,23 @@ Main:		                        ;  [Main()] function
 ;------------------------------------------------------------------------------
 ; Unterprogramme
 ;------------------------------------------------------------------------------
+;===============================================================================
+; @name:             Tc0i
+; @description:
+;   Handles Timer counter 0 overflow
+;
+;------------------------------------------------------------------------------
+Tc0i:                               ; [Tc0i(<count>)] function
+        
+        PUSH    mpr                 ; save mpr to stack
+        IN      mpr, SREG           ; save SREG
+        INC     count               ; increment count register
+        OUT     SREG, mpr           ; load SREG
+        POP     mpr                 ; load mpr from stack
+
+        RETI                        ; return from interupt
+
+
 ;===============================================================================
 ; @name:             DT_Handle
 ; @description:
