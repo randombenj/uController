@@ -26,36 +26,12 @@
 .include "m2560def.inc"
 
         RJMP   Reset            ; Ext-Pin, Power-on, Brown-out,Watchdog Reset
-        RETI                    ; External Interrupt Request 0
-        RETI                    ; External Interrupt Request 1
-        RETI                    ; External Interrupt Request 2
-        RETI                    ; External Interrupt Request 3
-        RETI                    ; External Interrupt Request 4
-        RETI                    ; External Interrupt Request 5
-        RETI                    ; External Interrupt Request 6
-        RETI                    ; External Interrupt Request 7
-        RETI                    ; Pin Change Interrupt Request 0
-        RETI                    ; Pin Change Interrupt Request 1
-        RETI                    ; Pin Change Interrupt Request 2
-        RETI                    ; Watchdog Time-out Interrupt
-        RETI                    ; Timer/Counter2 Compare Match A
-        RETI                    ; Timer/Counter2 Compare Match B
-        RETI                    ; Timer/Counter2 Overflow
-        RETI                    ; Timer/Counter1 Capture Event
-        RETI                    ; Timer/Counter1 Compare Match A
-        RETI                    ; Timer/Counter1 Compare Match B
-        RETI                    ; Timer/Counter1 Compare Match C
-        RETI                    ; Timer/Counter1 Overflow
-        RETI                    ; Timer/Counter0 Compare Match A
-        RETI                    ; Timer/Counter0 Compare Match B
-        RJMP Tc0i               ; Timer/Counter0 Overflow
-        RETI                    ; SPI Serial Transfer Complete
-        RETI                    ; USART0 Rx Complete
-        RETI                    ; USART0 Data Register Empty
-        RETI                    ; USART0 Tx Complete
-        RETI                    ; Analog Comparator
+.org    0x46
+        RJMP   Tc0i
+
+
 ;--- Include-Files ---
-.include "C:\Users\Beni\Documents\GitHub\uControllerNew\uController\lib\math.inc"
+.include "U:\WORK.10.3.2014\master\lib\math.inc"
 
 
 
@@ -66,7 +42,7 @@
 .equ	SWITCH	    = PIND		; Eingabeport fuer SWITCH
 .equ	SWITCH_D	= DDRD		; Daten Direction Port fuer SWITCH
 
-.equ    MHz         = $08       ; MCU getaktet mit 8 MHz
+.equ    MHz         = $04       ; MCU getaktet mit 8 MHz
 .equ    MaxCount    = $7A12     ; Vorteiler des Zaehlers = 256 
                                 ; => 8MHz/256 = 31250 Hz = $7A12
 
@@ -117,15 +93,18 @@ Reset:	SER	    mpr			        ; Output:= LED
 
         ; Timer 0 initialisieren:
         LDI     mpr, MHz            ;  Initiate Timer/Counter 0 Vorteiler
-        OUT     TCCR0, mpr          ;  to timer interupt mask register
+        OUT     TCCR0B, mpr         ;  to timer interupt mask register
 
         ; Swich timer 0 interup on:
         LDI     mpr, (1<<TOIE0)     ; Swich bit1 on
-        OUT     TIMSK0, mpr         ; in timer interupt mask register
+        STS     TIMSK0, mpr         ; in timer interupt mask register
 
         ; software count register = $00
         CLR     count               ; software count = $00
         CLR     SS                  ; seconds = $00
+
+		; set interupts globaly
+		SEI							; sets interupts globaly
 
 
 ;--- Hauptprogramm ---	
