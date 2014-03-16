@@ -32,7 +32,7 @@ its quiet interesstiong to understand how thigs work on the deepest level.
 > [Assembly language Wikipedia](http://en.wikipedia.org/wiki/Assembly_language)
 
 Assembly is a programming language, a **low level** programming laugage.
-**Generaly** one assembly instruction takes one CPU cycle. That means if you have a 8MHz CPU you can perform 
+**Generaly** one assembly instruction takes one CPU cycle (in RISC arcitecture). That means if you have a 8MHz RISC CPU you can perform 
 make at best 8000000 assembly instructions per second.
 
 > So a Intel i7 4770k@3.5GHz can make up to 3500000000 instructions per second (if it were a RISC arcitecure)!
@@ -97,13 +97,17 @@ For my projects I use the [header](https://github.com/randombenj/uController/blo
 
 > **!Documentation is verry important when writing assembly code.**
 
-A code command in assembly beginss with ";"
+A code comment in assembly beginss with `;`
 
 ```nasm
-; some random command ...
+; some random comment ...
 ```
 
 ####The [header](https://github.com/randombenj/uController/blob/master/AVR_Header.asm) file explained:
+
+> Why use the header file?
+
+All my projects are based on the header file, this is because its a great entry point and all important Initialisations are already done e.g. stack initialisation.
 
 ```nasm
 .include "m2560def.inc"
@@ -122,6 +126,50 @@ PORTB is defined. This is done with .equ wich you can relate to in c as: `#defin
 // defining port b
 #define PORTB	= 0x05
 ```
+> Wich line is executed first?
 
+Simple: the first one. Assembly is executed from top to bottom, now we have to find the first command. Line 1 - 23 are comments:
 
+```nasm
+;===============================================================================
+;- Program:             
+;-
+;- Filename:            .asm
+;- Version:             1.0.0
+;- Autor:               Benj Fassbind
+;-
+;- Purpose:             uP-Schulung
+;-
+;- Description:
+;-          
 
+;- ... and so on ...
+
+;--- uController ---
+```
+Then there is the `.include "m2560def.inc"` wich only contains `.equ` so that we don't have to know all the adresses by heart. 
+```nasm
+        RJMP   Reset            ; Ext-Pin, Power-on, Brown-out,Watchdog Reset
+```
+There we have it. `RJMP Reset`. What does it do? When the program is loaded on to the MCU and hits this line, the programm counter will be 1. The program counter will be explained later.
+
+> `RJMP Reset` WAT?
+
+If we look in to our instruction set table and search for the command `RJMP` we will notice that this is a jump command.
+It jumps to the label Reset. Now we search for `Reset`:
+
+```nasm
+        ;--- Initialisation ---
+Reset:    SER         mpr                       ; Output:= LED
+          OUT         LED_D, mpr
+
+          CLR         mpr                       ; Input:= Switch-values
+          OUT         SWITCH_D, mpr
+
+          LDI         mpr, LOW(RAMEND)          ; Initialise stack
+          OUT         SPL,mpr
+          LDI         mpr, HIGH(RAMEND)
+          OUT         SPH,mpr
+```
+
+There we have it. Labels are defined by giving them a name and a `:` like `Reset:`. Now we can Jump to the Reset label with the `RJMP` command.
