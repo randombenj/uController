@@ -31,7 +31,7 @@
 
 
 ;--- Include-Files ---
-.include "U:\WORK.10.3.2014\master\lib\math.inc"
+.include "C:\Users\Benj\workspace\GitHub\uController\lib\math.inc"
 
 
 
@@ -124,6 +124,10 @@ Main:		                        ;  [Main()] function
         CLR     count               ;    count = $00 (MSB)
 
         RCALL   DT_Handle           ;    DT_Handle()
+
+        COM     SS                  ;    invert seconds
+        OUT     LED, SS             ;    output seconds
+        COM     SS                  ;    invert seconds (normal again)
 
         RJMP    Main                ;  Endless Loop    
 
