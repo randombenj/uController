@@ -1,9 +1,9 @@
 
-AVRASM ver. 2.1.52  C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm Sun Mar 16 20:39:29 2014
+AVRASM ver. 2.1.52  C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm Tue Mar 18 17:29:41 2014
 
 [builtin](2): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
 C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm(26): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
-C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm(34): Including file 'C:\Users\Benj\workspace\GitHub\uController\lib\math.inc'
+C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm(34): Including file 'C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\..\..\..\lib\math.inc'
 C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm(67): warning: Register r26 already defined by the .DEF directive
 C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm(68): warning: Register r27 already defined by the .DEF directive
 C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm(72): warning: Register r25 already defined by the .DEF directive
@@ -1922,7 +1922,7 @@ C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm(75)
                  
                  
                  ;--- Include-Files ---
-                 .include "C:\Users\Benj\workspace\GitHub\uController\lib\math.inc"
+                 .include "..\..\..\lib\math.inc"
                  
                  ; Programm:                 math
                  ;

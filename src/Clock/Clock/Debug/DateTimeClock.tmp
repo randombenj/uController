@@ -9,7 +9,7 @@
  <SOURCE_FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</SOURCE_FILE>
  <INCLUDED_FILES>
   <FILE>C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc</FILE>
-  <FILE>C:\Users\Benj\workspace\GitHub\uController\lib\math.inc</FILE>
+  <FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE>
  </INCLUDED_FILES>
  <OBJECT_FILES>
   <FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\Debug/DateTimeClock.obj</FILE>
@@ -24,13 +24,13 @@
  <LABELS>
   <Reset><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>83</LINE></Reset>
   <Tc0i><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>143</LINE></Tc0i>
-  <DIV><FILE>C:\Users\Benj\workspace\GitHub\uController\lib\math.inc</FILE><LINE>39</LINE></DIV>
-  <DevByZero><FILE>C:\Users\Benj\workspace\GitHub\uController\lib\math.inc</FILE><LINE>69</LINE></DevByZero>
-  <While><FILE>C:\Users\Benj\workspace\GitHub\uController\lib\math.inc</FILE><LINE>51</LINE></While>
-  <EndWhile><FILE>C:\Users\Benj\workspace\GitHub\uController\lib\math.inc</FILE><LINE>68</LINE></EndWhile>
-  <EndSub><FILE>C:\Users\Benj\workspace\GitHub\uController\lib\math.inc</FILE><LINE>66</LINE></EndSub>
-  <MOD><FILE>C:\Users\Benj\workspace\GitHub\uController\lib\math.inc</FILE><LINE>92</LINE></MOD>
-  <MOD_ENDIF01><FILE>C:\Users\Benj\workspace\GitHub\uController\lib\math.inc</FILE><LINE>107</LINE></MOD_ENDIF01>
+  <DIV><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>39</LINE></DIV>
+  <DevByZero><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>69</LINE></DevByZero>
+  <While><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>51</LINE></While>
+  <EndWhile><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>68</LINE></EndWhile>
+  <EndSub><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>66</LINE></EndSub>
+  <MOD><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>92</LINE></MOD>
+  <MOD_ENDIF01><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>107</LINE></MOD_ENDIF01>
   <Main><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>111</LINE></Main>
   <Main_LOOP01><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>113</LINE></Main_LOOP01>
   <Main_LOOP02><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>117</LINE></Main_LOOP02>
