@@ -172,4 +172,32 @@ Reset:    SER         mpr                       ; Output:= LED
           OUT         SPH,mpr
 ```
 
-There we have it. Labels are defined by giving them a name and a `:` like `Reset:`. Now we can Jump to the Reset label with the `RJMP` command.
+Labels are defined by giving them a name and a `:` like `Reset:`. Now we can Jump to the Reset label with the `RJMP` command.
+
+To understand the Reset routine we first have to understand how i/o pins work. Important for this part is this code:
+
+```nasm
+;--- constants ---
+.equ     LED          = PORTB         ; Output for LED
+.equ     LED_D        = DDRB          ; Data direction Port for LED
+
+.equ     SWITCH       = PIND          ; Input for SWITCH
+.equ     SWITCH_D     = DDRD          ; Data direction Port for SWITCH
+
+;--- variables ---
+.def      mpr         = R16           ; multipurpose register
+```
+
+We already know the `.equ` command. With the first four `.equs` we are just renaming **PORTB** to our LED (Output) and **PIND** to our SWITCH (input). 
+
+You have to use **PIN** for input and **PORT** for input.
+
+On the next line we see a new command `.def`. Some assembly instructions need registers to save the in and output data of the performing instruction. 
+
+e.g. if you add two numbers together you ned at least two numbers (stored in registers). One for the 1. summand and one for the 2. summand plus you can use one of the two registers as the result. In a higher level language you would write:
+
+`a = a + b`
+
+To use the Registers you simply can write `R1` to `R30`. With the `.def` command you can give the registers a name.
+
+Now we can go back to the **Reset** code.
