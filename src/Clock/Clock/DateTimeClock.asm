@@ -106,11 +106,18 @@ Reset:	SER	    mpr			        ; Output:= LED
 		; set interupts globaly
 		SEI							; sets interupts globaly
 
+        ; set beginn datetime
+        LDI     MM, 22
+        LDI     HH, 20
+        LDI     DD, 30
+        LDI     MO, 3
+        LDI     YY, 14
 
 ;--- Hauptprogramm ---	
 Main:		                        ;  [Main()] function
         
     Main_LOOP01:
+        RCALL   Out_Handle          ;    Handle output
         CPI     count, HIGH(MaxCount)
         BRLT    Main_LOOP01         ;    count < $7A: wait longer
 
@@ -125,15 +132,85 @@ Main:		                        ;  [Main()] function
 
         RCALL   DT_Handle           ;    DT_Handle()
 
-        COM     SS                  ;    invert seconds
-        OUT     LED, SS             ;    output seconds
-        COM     SS                  ;    invert seconds (normal again)
-
         RJMP    Main                ;  Endless Loop    
 
 ;------------------------------------------------------------------------------
 ; Unterprogramme
 ;------------------------------------------------------------------------------
+;===============================================================================
+; @name:             Out_Handle
+; @description:
+;   Handles the output of the datetime
+;
+;------------------------------------------------------------------------------
+Out_Handle:                         ; [Out_Handle(<count>)] function
+
+        IN      mpr, SWITCH         ;  read SWITCH
+        COM     mpr                 ; invert (device specific)
+
+
+        TST     mpr                 ;  if at least one button pressed
+        BRNE    Out_HandleIF01      ;  goto
+
+        COM     SS                  ;   prepare <SS> for output
+        OUT     LED, SS             ;   set LED to <SS>
+        COM     SS                  ;   undo the preparation.
+
+        RJMP    Out_HandleENDIF01
+    Out_HandleIF01:
+
+        SBRS    mpr, 0              ;  if <SWITCH[0]> is not pressed
+        RJMP    Out_HandleELSEIF01  ;  else if
+
+        COM     SS                  ;   prepare <SS> for output
+        OUT     LED, SS             ;   set LED to <SS>
+        COM     SS                  ;   undo the preparation.
+
+    Out_HandleELSEIF01:
+        SBRS    mpr, 1              ;  if <SWITCH[1]> is not pressed
+        RJMP    Out_HandleELSEIF02  ;  else if
+        
+        COM     MM                  ;   prepare <MM> for output
+        OUT     LED, MM             ;   set LED to <MM>
+        COM     MM                  ;   undo the preparation
+
+    Out_HandleELSEIF02:
+        SBRS    mpr, 2              ;  if <SWITCH[2]> is not pressed
+        RJMP    Out_HandleELSEIF03  ;  else if
+        
+        COM     HH                  ;   prepare <HH> for output
+        OUT     LED, HH             ;   set LED to <HH>
+        COM     HH                  ;   undo the preparation
+
+    Out_HandleELSEIF03:
+        SBRS    mpr, 3              ;  if <SWITCH[3]> is not pressed
+        RJMP    Out_HandleELSEIF04  ;  else if
+        
+        COM     DD                  ;   prepare <DD> for output
+        OUT     LED, DD             ;   set LED to <DD>
+        COM     DD                  ;   undo the preparation
+
+    Out_HandleELSEIF04:
+        SBRS    mpr, 4              ;  if <SWITCH[4]> is not pressed
+        RJMP    Out_HandleELSEIF05  ;  else if
+        
+        COM     MO                  ;   prepare <MO> for output
+        OUT     LED, MO             ;   set LED to <MO>
+        COM     MO                  ;   undo the preparation
+
+    Out_HandleELSEIF05:
+        SBRS    mpr, 5              ;  if <SWITCH[3]> is not pressed
+        RJMP    Out_HandleENDIF01   ;  endif
+        
+        COM     YY                  ;   prepare <YY> for output
+        OUT     LED, YY             ;   set LED to <YY>
+        COM     YY                  ;   undo the preparation
+
+    Out_HandleENDIF01:
+        
+        RET                         ; Return from function
+
+
 ;===============================================================================
 ; @name:             Tc0i
 ; @description:

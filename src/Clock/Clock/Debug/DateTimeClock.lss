@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.1.52  C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm Tue Mar 18 17:29:41 2014
+AVRASM ver. 2.1.52  C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm Sun Mar 30 20:22:36 2014
 
 [builtin](2): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
 C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm(26): Including file 'C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc'
@@ -1918,7 +1918,7 @@ C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm(75)
                  
 000000 c06a              RJMP   Reset            ; Ext-Pin, Power-on, Brown-out,Watchdog Reset
                  .org    0x46
-000046 c041              RJMP   Tc0i
+000046 c06b              RJMP   Tc0i
                  
                  
                  ;--- Include-Files ---
@@ -2112,34 +2112,111 @@ C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm(75)
                  		; set interupts globaly
 00007a 9478      		SEI							; sets interupts globaly
                  
+                         ; set beginn datetime
+00007b e126              LDI     MM, 22
+00007c e114              LDI     HH, 20
+00007d e14e              LDI     DD, 30
+00007e e053              LDI     MO, 3
+00007f e06e              LDI     YY, 14
                  
                  ;--- Hauptprogramm ---	
                  Main:		                        ;  [Main()] function
                          
                      Main_LOOP01:
-00007b 37ca              CPI     count, HIGH(MaxCount)
-00007c f3f4              BRLT    Main_LOOP01         ;    count < $7A: wait longer
+000080 d00a              RCALL   Out_Handle          ;    Handle output
+000081 37ca              CPI     count, HIGH(MaxCount)
+000082 f3ec              BRLT    Main_LOOP01         ;    count < $7A: wait longer
                  
                      Main_LOOP02:
-00007d b506              IN      mpr, TCNT0          ;    read count LSB
-00007e 3102              CPI     mpr, LOW(MaxCount)
-00007f f3ec              BRLT    Main_LOOP02         ;    mpr < $12: wait longer
+000083 b506              IN      mpr, TCNT0          ;    read count LSB
+000084 3102              CPI     mpr, LOW(MaxCount)
+000085 f3ec              BRLT    Main_LOOP02         ;    mpr < $12: wait longer
                  
-000080 2700              CLR     mpr                 ;    mpr = $00
-000081 bd06              OUT     TCNT0, mpr          ;    $00 in hardware counter LSB
-000082 27cc              CLR     count               ;    count = $00 (MSB)
+000086 2700              CLR     mpr                 ;    mpr = $00
+000087 bd06              OUT     TCNT0, mpr          ;    $00 in hardware counter LSB
+000088 27cc              CLR     count               ;    count = $00 (MSB)
                  
-000083 d00a              RCALL   DT_Handle           ;    DT_Handle()
+000089 d02e              RCALL   DT_Handle           ;    DT_Handle()
                  
-000084 9530              COM     SS                  ;    invert seconds
-000085 b935              OUT     LED, SS             ;    output seconds
-000086 9530              COM     SS                  ;    invert seconds (normal again)
-                 
-000087 cff3              RJMP    Main                ;  Endless Loop    
+00008a cff5              RJMP    Main                ;  Endless Loop    
                  
                  ;------------------------------------------------------------------------------
                  ; Unterprogramme
                  ;------------------------------------------------------------------------------
+                 ;===============================================================================
+                 ; @name:             Out_Handle
+                 ; @description:
+                 ;   Handles the output of the datetime
+                 ;
+                 ;------------------------------------------------------------------------------
+                 Out_Handle:                         ; [Out_Handle(<count>)] function
+                 
+00008b b109              IN      mpr, SWITCH         ;  read SWITCH
+00008c 9500              COM     mpr                 ; invert (device specific)
+                 
+                 
+00008d 2300              TST     mpr                 ;  if at least one button pressed
+00008e f421              BRNE    Out_HandleIF01      ;  goto
+                 
+00008f 9530              COM     SS                  ;   prepare <SS> for output
+000090 b935              OUT     LED, SS             ;   set LED to <SS>
+000091 9530              COM     SS                  ;   undo the preparation.
+                 
+000092 c01e              RJMP    Out_HandleENDIF01
+                     Out_HandleIF01:
+                 
+000093 ff00              SBRS    mpr, 0              ;  if <SWITCH[0]> is not pressed
+000094 c003              RJMP    Out_HandleELSEIF01  ;  else if
+                 
+000095 9530              COM     SS                  ;   prepare <SS> for output
+000096 b935              OUT     LED, SS             ;   set LED to <SS>
+000097 9530              COM     SS                  ;   undo the preparation.
+                 
+                     Out_HandleELSEIF01:
+000098 ff01              SBRS    mpr, 1              ;  if <SWITCH[1]> is not pressed
+000099 c003              RJMP    Out_HandleELSEIF02  ;  else if
+                         
+00009a 9520              COM     MM                  ;   prepare <MM> for output
+00009b b925              OUT     LED, MM             ;   set LED to <MM>
+00009c 9520              COM     MM                  ;   undo the preparation
+                 
+                     Out_HandleELSEIF02:
+00009d ff02              SBRS    mpr, 2              ;  if <SWITCH[2]> is not pressed
+00009e c003              RJMP    Out_HandleELSEIF03  ;  else if
+                         
+00009f 9510              COM     HH                  ;   prepare <HH> for output
+0000a0 b915              OUT     LED, HH             ;   set LED to <HH>
+0000a1 9510              COM     HH                  ;   undo the preparation
+                 
+                     Out_HandleELSEIF03:
+0000a2 ff03              SBRS    mpr, 3              ;  if <SWITCH[3]> is not pressed
+0000a3 c003              RJMP    Out_HandleELSEIF04  ;  else if
+                         
+0000a4 9540              COM     DD                  ;   prepare <DD> for output
+0000a5 b945              OUT     LED, DD             ;   set LED to <DD>
+0000a6 9540              COM     DD                  ;   undo the preparation
+                 
+                     Out_HandleELSEIF04:
+0000a7 ff04              SBRS    mpr, 4              ;  if <SWITCH[4]> is not pressed
+0000a8 c003              RJMP    Out_HandleELSEIF05  ;  else if
+                         
+0000a9 9550              COM     MO                  ;   prepare <MO> for output
+0000aa b955              OUT     LED, MO             ;   set LED to <MO>
+0000ab 9550              COM     MO                  ;   undo the preparation
+                 
+                     Out_HandleELSEIF05:
+0000ac ff05              SBRS    mpr, 5              ;  if <SWITCH[3]> is not pressed
+0000ad c003              RJMP    Out_HandleENDIF01   ;  endif
+                         
+0000ae 9560              COM     YY                  ;   prepare <YY> for output
+0000af b965              OUT     LED, YY             ;   set LED to <YY>
+0000b0 9560              COM     YY                  ;   undo the preparation
+                 
+                     Out_HandleENDIF01:
+                         
+0000b1 9508              RET                         ; Return from function
+                 
+                 
                  ;===============================================================================
                  ; @name:             Tc0i
                  ; @description:
@@ -2148,13 +2225,13 @@ C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm(75)
                  ;------------------------------------------------------------------------------
                  Tc0i:                               ; [Tc0i(<count>)] function
                          
-000088 930f              PUSH    mpr                 ; save mpr to stack
-000089 b70f              IN      mpr, SREG           ; save SREG
-00008a 95c3              INC     count               ; increment count register
-00008b bf0f              OUT     SREG, mpr           ; load SREG
-00008c 910f              POP     mpr                 ; load mpr from stack
+0000b2 930f              PUSH    mpr                 ; save mpr to stack
+0000b3 b70f              IN      mpr, SREG           ; save SREG
+0000b4 95c3              INC     count               ; increment count register
+0000b5 bf0f              OUT     SREG, mpr           ; load SREG
+0000b6 910f              POP     mpr                 ; load mpr from stack
                  
-00008d 9518              RETI                        ; return from interupt
+0000b7 9518              RETI                        ; return from interupt
                  
                  
                  ;===============================================================================
@@ -2168,34 +2245,34 @@ C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm(75)
                          // TODO: Calc <Www> and <D>
                  
                          // Calc time:   ---
-00008e 9533              INC     ss                  ;    incrment <ss>
-00008f 333c              CPI     ss, $3C             ;    if <ss> != 60:
-000090 f489              BRNE    DT_Handle_ENDIF1    ;     GoTo: DT_Handle_ENDIF1
+0000b8 9533              INC     ss                  ;    incrment <ss>
+0000b9 333c              CPI     ss, $3C             ;    if <ss> != 60:
+0000ba f489              BRNE    DT_Handle_ENDIF1    ;     GoTo: DT_Handle_ENDIF1
                          // Handle seconds: ---
-000091 2733              CLR     ss                  ;      <ss> = 0
-000092 9523              INC     mm                  ;      increment <mm>
-000093 332c              CPI     mm, $3C             ;      if <mm> != 60:
-000094 f469              BRNE    DT_Handle_ENDIF1    ;       GoTo: DT_Handle_ENDIF1
+0000bb 2733              CLR     ss                  ;      <ss> = 0
+0000bc 9523              INC     mm                  ;      increment <mm>
+0000bd 332c              CPI     mm, $3C             ;      if <mm> != 60:
+0000be f469              BRNE    DT_Handle_ENDIF1    ;       GoTo: DT_Handle_ENDIF1
                          // Handle minutes: ---
-000095 2722              CLR     mm                  ;        <mm> = 0
-000096 9513              INC     hh                  ;        increment <hh>
-000097 3118              CPI     hh, $18             ;        if <hh> != 24:
-000098 f449              BRNE    DT_Handle_ENDIF1    ;         GoTo: DT_Handle_ENDIF1
+0000bf 2722              CLR     mm                  ;        <mm> = 0
+0000c0 9513              INC     hh                  ;        increment <hh>
+0000c1 3118              CPI     hh, $18             ;        if <hh> != 24:
+0000c2 f449              BRNE    DT_Handle_ENDIF1    ;         GoTo: DT_Handle_ENDIF1
                          // Handle houers: ---
-000099 2711              CLR     hh                  ;          <mm> = 0
-00009a 9543              INC     DD                  ;          increment <hh>
-00009b 314c              CPI     DD, $1C             ;          if <hh> != 28:
-00009c f429              BRNE    DT_Handle_ENDIF1    ;           GoTo: DT_Handle_ENDIF1
+0000c3 2711              CLR     hh                  ;          <mm> = 0
+0000c4 9543              INC     DD                  ;          increment <hh>
+0000c5 314c              CPI     DD, $1C             ;          if <hh> != 28:
+0000c6 f429              BRNE    DT_Handle_ENDIF1    ;           GoTo: DT_Handle_ENDIF1
                          // Handle months
-00009d d0b2              RCALL   DT_MM               ;            DT_MM(<DD>)
-00009e 305d              CPI     MO, $0D             ;            if <MO> != 13:
-00009f f411              BRNE    DT_Handle_ENDIF1    ;             GoTo: DT_Handle_ENDIF1
+0000c7 d0b2              RCALL   DT_MM               ;            DT_MM(<DD>)
+0000c8 305d              CPI     MO, $0D             ;            if <MO> != 13:
+0000c9 f411              BRNE    DT_Handle_ENDIF1    ;             GoTo: DT_Handle_ENDIF1
                          // Handle years: ---
-0000a0 2755              CLR     MO                  ;              <mm> = 0
-0000a1 9563              INC     YY                  ;              increment <hh>
+0000ca 2755              CLR     MO                  ;              <mm> = 0
+0000cb 9563              INC     YY                  ;              increment <hh>
                  
                      DT_Handle_ENDIF1:               ;  DT_Handle_ENDIF1
-0000a2 9508              RET                         ;  RETURN: <void>
+0000cc 9508              RET                         ;  RETURN: <void>
                  
                  ;===============================================================================
                  ; @name:             SW_Handle
@@ -2213,53 +2290,53 @@ C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm(75)
                  ;------------------------------------------------------------------------------
                  SW_Handle:                          ;  [SW_Handle()] function
                          // stack saving: ---
-0000a3 934f              PUSH    dd                  ;  save <dd> on stack
-0000a4 935f              PUSH    MO                  ;  save <MO> on stack
-0000a5 938f              PUSH    D                   ;  save <D> on stack
-0000a6 930f              PUSH    mpr                 ;  save <mpr> on stack
+0000cd 934f              PUSH    dd                  ;  save <dd> on stack
+0000ce 935f              PUSH    MO                  ;  save <MO> on stack
+0000cf 938f              PUSH    D                   ;  save <D> on stack
+0000d0 930f              PUSH    mpr                 ;  save <mpr> on stack
                          // summer winter time correction: --
-0000a7 3053              CPI     MO, $03             ;  if <MO> is March
-0000a8 f449              BRNE    SW_HandleELSEIF01   ;   else if: SW_HandleELSEIF01
+0000d1 3053              CPI     MO, $03             ;  if <MO> is March
+0000d2 f449              BRNE    SW_HandleELSEIF01   ;   else if: SW_HandleELSEIF01
                          // summer time: ---
-0000a9 3012              CPI     HH, $02             ;   if <HH> = 2:00
-0000aa f4b1              BRNE    SW_HandleENDIF01    ;    endif
+0000d3 3012              CPI     HH, $02             ;   if <HH> = 2:00
+0000d4 f4b1              BRNE    SW_HandleENDIF01    ;    endif
                          // the last sunday in the month: ---
-0000ab 3080              CPI     D, $00              ;     if <D> = sunday
-0000ac f4a1              BRNE    SW_HandleENDIF01    ;      endif
-0000ad e10f              LDI     mpr, 31             ;       <mpr> = 31
-0000ae 1b04              SUB     mpr, DD             ;       31 - <DD> => if last sunday
-0000af 3007              CPI     mpr, $07            ;       if not last sunday:
-0000b0 f484              BRGE    SW_HandleENDIF01    ;        endif
+0000d5 3080              CPI     D, $00              ;     if <D> = sunday
+0000d6 f4a1              BRNE    SW_HandleENDIF01    ;      endif
+0000d7 e10f              LDI     mpr, 31             ;       <mpr> = 31
+0000d8 1b04              SUB     mpr, DD             ;       31 - <DD> => if last sunday
+0000d9 3007              CPI     mpr, $07            ;       if not last sunday:
+0000da f484              BRGE    SW_HandleENDIF01    ;        endif
                          // summer time: ---
-0000b1 9513              INC     hh                  ;         set summer time
+0000db 9513              INC     hh                  ;         set summer time
                      SW_HandleELSEIF01:
-0000b2 305a              CPI     MO, $0A             ;  if <MO> is October
-0000b3 f469              BRNE    SW_HandleENDIF01    ;   endif: SW_HandleENDIF01
+0000dc 305a              CPI     MO, $0A             ;  if <MO> is October
+0000dd f469              BRNE    SW_HandleENDIF01    ;   endif: SW_HandleENDIF01
                          // winter time: ---
-0000b4 3013              CPI     HH, $03             ;   if <HH> = 3:00
-0000b5 f459              BRNE    SW_HandleENDIF01    ;    endif
+0000de 3013              CPI     HH, $03             ;   if <HH> = 3:00
+0000df f459              BRNE    SW_HandleENDIF01    ;    endif
                          // the last sunday in the month: ---
-0000b6 3080              CPI     D, $00              ;     if <D> = sunday
-0000b7 f449              BRNE    SW_HandleENDIF01    ;      endif
-0000b8 e10f              LDI     mpr, 31             ;       <mpr> = 31
-0000b9 1b04              SUB     mpr, DD             ;       31 - <DD> => if last sunday
-0000ba 3007              CPI     mpr, $07            ;       if not last sunday:
-0000bb f42c              BRGE    SW_HandleENDIF01    ;        endif
+0000e0 3080              CPI     D, $00              ;     if <D> = sunday
+0000e1 f449              BRNE    SW_HandleENDIF01    ;      endif
+0000e2 e10f              LDI     mpr, 31             ;       <mpr> = 31
+0000e3 1b04              SUB     mpr, DD             ;       31 - <DD> => if last sunday
+0000e4 3007              CPI     mpr, $07            ;       if not last sunday:
+0000e5 f42c              BRGE    SW_HandleENDIF01    ;        endif
                          // winter time (if not allready set): ---
-0000bc f01e              BRTS    SW_HandleELSEID02   ;         if <t-flag> set
+0000e6 f01e              BRTS    SW_HandleELSEID02   ;         if <t-flag> set
                          // winter time: ---
-0000bd 951a              DEC     hh                  ;           set winter time
-0000be 9468              SET                         ;           set <t-flag>
-0000bf c001              RJMP    SW_HandleENDIF01    ;           endif
+0000e7 951a              DEC     hh                  ;           set winter time
+0000e8 9468              SET                         ;           set <t-flag>
+0000e9 c001              RJMP    SW_HandleENDIF01    ;           endif
                      SW_HandleELSEID02:
-0000c0 94e8              CLT                         ;           set <t-flag>
+0000ea 94e8              CLT                         ;           set <t-flag>
                      SW_HandleENDIF01:
                          // stack loading: ---
-0000c1 910f              POP     mpr                 ;  load <mpr> from stack
-0000c2 938f              PUSH    D                   ;  load <D> from stack
-0000c3 915f              POP     MO                  ;  load <MO> from stack
-0000c4 914f              POP     dd                  ;  load <dd> from stack
-0000c5 9508              RET                         ;  RETURN <void>
+0000eb 910f              POP     mpr                 ;  load <mpr> from stack
+0000ec 938f              PUSH    D                   ;  load <D> from stack
+0000ed 915f              POP     MO                  ;  load <MO> from stack
+0000ee 914f              POP     dd                  ;  load <dd> from stack
+0000ef 9508              RET                         ;  RETURN <void>
                  
                  
                  ;===============================================================================
@@ -2278,122 +2355,122 @@ C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm(75)
                  ;------------------------------------------------------------------------------
                  GET_D:                              ;  [GET_D(<DD>, <MO>, <YY>)] function
                          // stack saving: ---        
-0000c6 934f              PUSH    dd                  ;  save <dd> on stack
-0000c7 935f              PUSH    MO                  ;  save <MO> on stack
-0000c8 936f              PUSH    YY                  ;  save <YY> on stack
-0000c9 930f              PUSH    mpr                 ;  save <mpr> on stack
+0000f0 934f              PUSH    dd                  ;  save <dd> on stack
+0000f1 935f              PUSH    MO                  ;  save <MO> on stack
+0000f2 936f              PUSH    YY                  ;  save <YY> on stack
+0000f3 930f              PUSH    mpr                 ;  save <mpr> on stack
                          // calc. year-offset: ---
-0000ca 2f06              MOV     mpr, YY             ;  <mpr> = <YY>
-0000cb 930f              PUSH    mpr                 ;  save original year on stack
-0000cc 9505              ASR     mpr                 ;  <mpr> = <mpr> / 2
-0000cd 9505              ASR     mpr                 ;  <mpr> = <mpr> / 2
-0000ce 0f60              ADD     YY, mpr             ;  <YY> = <YY> + <mpr>
-0000cf 2f96              MOV     dividend, YY        ;  <dividend> = <YY>
-0000d0 e0a7              LDI     divisor, $07        ;  <divisor> = 7
-0000d1 df8b              RCALL   MOD                 ;  <result> = MOD(<dividend>, <divisor>)
-0000d2 2f6b              MOV     YY, result          ;  <YY> = <result>
-0000d3 910f              POP     mpr                 ;  load original year from stack
+0000f4 2f06              MOV     mpr, YY             ;  <mpr> = <YY>
+0000f5 930f              PUSH    mpr                 ;  save original year on stack
+0000f6 9505              ASR     mpr                 ;  <mpr> = <mpr> / 2
+0000f7 9505              ASR     mpr                 ;  <mpr> = <mpr> / 2
+0000f8 0f60              ADD     YY, mpr             ;  <YY> = <YY> + <mpr>
+0000f9 2f96              MOV     dividend, YY        ;  <dividend> = <YY>
+0000fa e0a7              LDI     divisor, $07        ;  <divisor> = 7
+0000fb df61              RCALL   MOD                 ;  <result> = MOD(<dividend>, <divisor>)
+0000fc 2f6b              MOV     YY, result          ;  <YY> = <result>
+0000fd 910f              POP     mpr                 ;  load original year from stack
                          // leap year: ---
-0000d4 9505              ASR     mpr                 ;    <mpr> = <mpr> / 2
-0000d5 f018              BRCS    GET_D_ELSEIF2      ;    if <carry-bit> == 2: GoTo: GET_D_ELSEIF01
-0000d6 9505              ASR     mpr                 ;    <mpr> = <mpr> / 2
-0000d7 f008              BRCS    GET_D_ELSEIF2      ;    if <carry-bit> == 2: GoTo: GET_D_ELSEIF01
+0000fe 9505              ASR     mpr                 ;    <mpr> = <mpr> / 2
+0000ff f018              BRCS    GET_D_ELSEIF2      ;    if <carry-bit> == 2: GoTo: GET_D_ELSEIF01
+000100 9505              ASR     mpr                 ;    <mpr> = <mpr> / 2
+000101 f008              BRCS    GET_D_ELSEIF2      ;    if <carry-bit> == 2: GoTo: GET_D_ELSEIF01
                          // handle leap year: ---
-0000d8 956a              DEC     YY                  ;    <YY> = <YY> - 1
+000102 956a              DEC     YY                  ;    <YY> = <YY> - 1
                      GET_D_ELSEIF2:                  ;    GET_D_ELSEIF2
                          // calc. month-offset: ---
-0000d9 3051              CPI     MO, $01             ;  case <MO> =  1
-0000da f411              BRNE    GET_D_CASE_02       ;    else: GoTo: GET_D_CASE_02
+000103 3051              CPI     MO, $01             ;  case <MO> =  1
+000104 f411              BRNE    GET_D_CASE_02       ;    else: GoTo: GET_D_CASE_02
                          // January
-0000db e050              LDI     MO, $00             ;    <MO> = 0;
-0000dc c02c              RJMP    GET_D_ENDSWICH01    ;    break
+000105 e050              LDI     MO, $00             ;    <MO> = 0;
+000106 c02c              RJMP    GET_D_ENDSWICH01    ;    break
                      GET_D_CASE_02:
-0000dd 3051              CPI     MO, $01             ;  case <MO> =  1
-0000de f411              BRNE    GET_D_CASE_03       ;    else: GoTo: GET_D_CASE_03
+000107 3051              CPI     MO, $01             ;  case <MO> =  1
+000108 f411              BRNE    GET_D_CASE_03       ;    else: GoTo: GET_D_CASE_03
                          // February
-0000df e053              LDI     MO, $03             ;    <MO> = 3;
-0000e0 c028              RJMP    GET_D_ENDSWICH01    ;    break
+000109 e053              LDI     MO, $03             ;    <MO> = 3;
+00010a c028              RJMP    GET_D_ENDSWICH01    ;    break
                      GET_D_CASE_03:
-0000e1 3051              CPI     MO, $01             ;  case <MO> =  1
-0000e2 f411              BRNE    GET_D_CASE_04       ;    else: GoTo: GET_D_CASE_04
+00010b 3051              CPI     MO, $01             ;  case <MO> =  1
+00010c f411              BRNE    GET_D_CASE_04       ;    else: GoTo: GET_D_CASE_04
                          // March
-0000e3 e053              LDI     MO, $03             ;    <MO> = 3;
-0000e4 c024              RJMP    GET_D_ENDSWICH01    ;    break
+00010d e053              LDI     MO, $03             ;    <MO> = 3;
+00010e c024              RJMP    GET_D_ENDSWICH01    ;    break
                      GET_D_CASE_04:
-0000e5 3051              CPI     MO, $01             ;  case <MO> =  1
-0000e6 f411              BRNE    GET_D_CASE_05       ;    else: GoTo: GET_D_CASE_05
+00010f 3051              CPI     MO, $01             ;  case <MO> =  1
+000110 f411              BRNE    GET_D_CASE_05       ;    else: GoTo: GET_D_CASE_05
                          // April
-0000e7 e056              LDI     MO, $06             ;    <MO> = 6;
-0000e8 c020              RJMP    GET_D_ENDSWICH01    ;    break
+000111 e056              LDI     MO, $06             ;    <MO> = 6;
+000112 c020              RJMP    GET_D_ENDSWICH01    ;    break
                      GET_D_CASE_05:
-0000e9 3051              CPI     MO, $01             ;  case <MO> =  1
-0000ea f411              BRNE    GET_D_CASE_06       ;    else: GoTo: GET_D_CASE_06
+000113 3051              CPI     MO, $01             ;  case <MO> =  1
+000114 f411              BRNE    GET_D_CASE_06       ;    else: GoTo: GET_D_CASE_06
                          // May
-0000eb e051              LDI     MO, $01             ;    <MO> = 1;
-0000ec c01c              RJMP    GET_D_ENDSWICH01    ;    break
+000115 e051              LDI     MO, $01             ;    <MO> = 1;
+000116 c01c              RJMP    GET_D_ENDSWICH01    ;    break
                      GET_D_CASE_06:
-0000ed 3051              CPI     MO, $01             ;  case <MO> =  1
-0000ee f411              BRNE    GET_D_CASE_07       ;    else: GoTo: GET_D_CASE_07
+000117 3051              CPI     MO, $01             ;  case <MO> =  1
+000118 f411              BRNE    GET_D_CASE_07       ;    else: GoTo: GET_D_CASE_07
                          // June
-0000ef e054              LDI     MO, $04             ;    <MO> = 4;
-0000f0 c018              RJMP    GET_D_ENDSWICH01    ;    break
+000119 e054              LDI     MO, $04             ;    <MO> = 4;
+00011a c018              RJMP    GET_D_ENDSWICH01    ;    break
                      GET_D_CASE_07:
-0000f1 3051              CPI     MO, $01             ;  case <MO> =  1
-0000f2 f411              BRNE    GET_D_CASE_08       ;    else: GoTo: GET_D_CASE_08
+00011b 3051              CPI     MO, $01             ;  case <MO> =  1
+00011c f411              BRNE    GET_D_CASE_08       ;    else: GoTo: GET_D_CASE_08
                          // July
-0000f3 e056              LDI     MO, $06             ;    <MO> = 6;
-0000f4 c014              RJMP    GET_D_ENDSWICH01    ;    break
+00011d e056              LDI     MO, $06             ;    <MO> = 6;
+00011e c014              RJMP    GET_D_ENDSWICH01    ;    break
                      GET_D_CASE_08:
-0000f5 3051              CPI     MO, $01             ;  case <MO> =  1
-0000f6 f411              BRNE    GET_D_CASE_09       ;    else: GoTo: GET_D_CASE_09
+00011f 3051              CPI     MO, $01             ;  case <MO> =  1
+000120 f411              BRNE    GET_D_CASE_09       ;    else: GoTo: GET_D_CASE_09
                          // August
-0000f7 e052              LDI     MO, $02             ;    <MO> = 2;
-0000f8 c010              RJMP    GET_D_ENDSWICH01    ;    break
+000121 e052              LDI     MO, $02             ;    <MO> = 2;
+000122 c010              RJMP    GET_D_ENDSWICH01    ;    break
                      GET_D_CASE_09:
-0000f9 3051              CPI     MO, $01             ;  case <MO> =  1
-0000fa f411              BRNE    GET_D_CASE_10       ;    else: GoTo: GET_D_CASE_10
+000123 3051              CPI     MO, $01             ;  case <MO> =  1
+000124 f411              BRNE    GET_D_CASE_10       ;    else: GoTo: GET_D_CASE_10
                          // September
-0000fb e055              LDI     MO, $05             ;    <MO> = 5;
-0000fc c00c              RJMP    GET_D_ENDSWICH01    ;    break
+000125 e055              LDI     MO, $05             ;    <MO> = 5;
+000126 c00c              RJMP    GET_D_ENDSWICH01    ;    break
                      GET_D_CASE_10:
-0000fd 3051              CPI     MO, $01             ;  case <MO> =  1
-0000fe f411              BRNE    GET_D_CASE_11       ;    else: GoTo: GET_D_CASE_11
+000127 3051              CPI     MO, $01             ;  case <MO> =  1
+000128 f411              BRNE    GET_D_CASE_11       ;    else: GoTo: GET_D_CASE_11
                          // October
-0000ff e050              LDI     MO, $00             ;    <MO> = 0;
-000100 c008              RJMP    GET_D_ENDSWICH01    ;    break
+000129 e050              LDI     MO, $00             ;    <MO> = 0;
+00012a c008              RJMP    GET_D_ENDSWICH01    ;    break
                      GET_D_CASE_11:
-000101 3051              CPI     MO, $01             ;  case <MO> =  1
-000102 f411              BRNE    GET_D_CASE_12       ;    else: GoTo: GET_D_CASE_12
+00012b 3051              CPI     MO, $01             ;  case <MO> =  1
+00012c f411              BRNE    GET_D_CASE_12       ;    else: GoTo: GET_D_CASE_12
                          // November
-000103 e053              LDI     MO, $03             ;    <MO> = 3;
-000104 c004              RJMP    GET_D_ENDSWICH01    ;    break
+00012d e053              LDI     MO, $03             ;    <MO> = 3;
+00012e c004              RJMP    GET_D_ENDSWICH01    ;    break
                      GET_D_CASE_12:
-000105 3051              CPI     MO, $01             ;  case <MO> =  1
-000106 f411              BRNE    GET_D_ENDSWICH01    ;    else: GoTo: GET_D_ENDSWICH01
+00012f 3051              CPI     MO, $01             ;  case <MO> =  1
+000130 f411              BRNE    GET_D_ENDSWICH01    ;    else: GoTo: GET_D_ENDSWICH01
                          // December
-000107 e055              LDI     MO, $05             ;    <MO> = 5;
-000108 c000              RJMP    GET_D_ENDSWICH01    ;    break
+000131 e055              LDI     MO, $05             ;    <MO> = 5;
+000132 c000              RJMP    GET_D_ENDSWICH01    ;    break
                      GET_D_ENDSWICH01:               ;  end of swich 01
                          // calc day-offset: ---
-000109 2f94              MOV     dividend, DD        ;  <dividend> = <DD>
-00010a e0a7              LDI     divisor, $07        ;  <divisor> = 7
-00010b df51              RCALL   MOD                 ;  <result> = MOD(<dividend>, <divisor>)
-00010c 2f4b              MOV     DD, result          ;  <DD> = <result>
+000133 2f94              MOV     dividend, DD        ;  <dividend> = <DD>
+000134 e0a7              LDI     divisor, $07        ;  <divisor> = 7
+000135 df27              RCALL   MOD                 ;  <result> = MOD(<dividend>, <divisor>)
+000136 2f4b              MOV     DD, result          ;  <DD> = <result>
                          // calculate the day of the week: ---
-00010d 5f0a              SUBI    mpr, -$06           ;  <mpr> = <mpr> + 6 > century-offset
-00010e 0f06              ADD     mpr, YY             ;  <mpr> = <mpr> + <YY> > year-offset
-00010f 0f05              ADD     mpr, MO             ;  <mpr> = <mpr> + <MO> > month-offset 
-000110 0f04              ADD     mpr, DD             ;  <mpr> = <mpr> + <DD> > day-offset
+000137 5f0a              SUBI    mpr, -$06           ;  <mpr> = <mpr> + 6 > century-offset
+000138 0f06              ADD     mpr, YY             ;  <mpr> = <mpr> + <YY> > year-offset
+000139 0f05              ADD     mpr, MO             ;  <mpr> = <mpr> + <MO> > month-offset 
+00013a 0f04              ADD     mpr, DD             ;  <mpr> = <mpr> + <DD> > day-offset
                  
-000111 2f90              MOV     dividend, mpr       ;  <dividend> = <DD>
-000112 e0a7              LDI     divisor, $07        ;  <divisor> = 7
-000113 df49              RCALL   MOD                 ;  <result> = MOD(<dividend>, <divisor>)
+00013b 2f90              MOV     dividend, mpr       ;  <dividend> = <DD>
+00013c e0a7              LDI     divisor, $07        ;  <divisor> = 7
+00013d df1f              RCALL   MOD                 ;  <result> = MOD(<dividend>, <divisor>)
                          // stack loading: ---
-000114 910f              POP     mpr                 ;  load <mpr> from stack
-000115 916f              POP     YY                  ;  load <YY> from stack
-000116 915f              POP     MO                  ;  load <MO> from stack
-000117 914f              POP     dd                  ;  load <dd> from stack
-000118 9508              RET                         ;  RETURN <result>
+00013e 910f              POP     mpr                 ;  load <mpr> from stack
+00013f 916f              POP     YY                  ;  load <YY> from stack
+000140 915f              POP     MO                  ;  load <MO> from stack
+000141 914f              POP     dd                  ;  load <dd> from stack
+000142 9508              RET                         ;  RETURN <result>
                  
                  ;===============================================================================
                  ; @name:             GET_Www
@@ -2409,42 +2486,42 @@ C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm(75)
                  ;------------------------------------------------------------------------------
                  GET_Www:                            ;  [GET_Www(<MO>, <DD>)] function
                          // stack saving: ---        
-000119 934f              PUSH    dd                  ;    save <dd> on stack
-00011a 935f              PUSH    MO                  ;    save <MO> on stack
-00011b 930f              PUSH    mpr                 ;    save <mpr> on stack
+000143 934f              PUSH    dd                  ;    save <dd> on stack
+000144 935f              PUSH    MO                  ;    save <MO> on stack
+000145 930f              PUSH    mpr                 ;    save <mpr> on stack
                          // calc active month: ---
-00011c 2f94              MOV     dividend, DD        ;    <dividend> = <DD>
-00011d e0a7              LDI     divisor, $07        ;    <divisor> = 7
-00011e df28              RCALL   DIV                 ;    <result> = DIV(<dividend>, <divisor>)
-00011f 2f7b              MOV     Www, result         ;    <Www> = <result>
+000146 2f94              MOV     dividend, DD        ;    <dividend> = <DD>
+000147 e0a7              LDI     divisor, $07        ;    <divisor> = 7
+000148 defe              RCALL   DIV                 ;    <result> = DIV(<dividend>, <divisor>)
+000149 2f7b              MOV     Www, result         ;    <Www> = <result>
                          // add modulo to days: ---
-000120 2f94              MOV     dividend, DD        ;    <dividend> = <DD>
-000121 e0a7              LDI     divisor, $07        ;    <divisor> = 7
-000122 df3a              RCALL   MOD                 ;    <result> = MOD(<dividend>, <divisor>)
-000123 2f4b              MOV     DD, result          ;    <DD> = <result>
-000124 955a              DEC     MO                  ;    decrement <MO>
+00014a 2f94              MOV     dividend, DD        ;    <dividend> = <DD>
+00014b e0a7              LDI     divisor, $07        ;    <divisor> = 7
+00014c df10              RCALL   MOD                 ;    <result> = MOD(<dividend>, <divisor>)
+00014d 2f4b              MOV     DD, result          ;    <DD> = <result>
+00014e 955a              DEC     MO                  ;    decrement <MO>
                      GET_Www_WHILE01:                ;    while loop
                          // calculate months til january: ---
                  
-000125 d00e              RCALL   DT_Www_MM           ;   DT_Www_MM(<DD>)
+00014f d00e              RCALL   DT_Www_MM           ;   DT_Www_MM(<DD>)
                  
-000126 2f94              MOV     dividend, DD        ;    <dividend> = <DD>
-000127 e0a7              LDI     divisor, $07        ;    <divisor> = 7
-000128 df1e              RCALL   DIV                 ;    <result> = DIV(<dividend>, <divisor>)
-000129 0f7b              ADD     Www, result         ;    <Www> = <result>
+000150 2f94              MOV     dividend, DD        ;    <dividend> = <DD>
+000151 e0a7              LDI     divisor, $07        ;    <divisor> = 7
+000152 def4              RCALL   DIV                 ;    <result> = DIV(<dividend>, <divisor>)
+000153 0f7b              ADD     Www, result         ;    <Www> = <result>
                          // add modulo to days: ---
-00012a 2f94              MOV     dividend, DD        ;    <dividend> = <DD>
-00012b e0a7              LDI     divisor, $07        ;    <divisor> = 7
-00012c df30              RCALL   MOD                 ;    <result> = MOD(<dividend>, <divisor>)
-00012d 2f4b              MOV     DD, result          ;    <DD> = <result>
-00012e 955a              DEC     MO
-00012f f7a9              BRNE    GET_Www_WHILE01
+000154 2f94              MOV     dividend, DD        ;    <dividend> = <DD>
+000155 e0a7              LDI     divisor, $07        ;    <divisor> = 7
+000156 df06              RCALL   MOD                 ;    <result> = MOD(<dividend>, <divisor>)
+000157 2f4b              MOV     DD, result          ;    <DD> = <result>
+000158 955a              DEC     MO
+000159 f7a9              BRNE    GET_Www_WHILE01
                          // stack loading: ---
-000130 910f              POP     mpr                 ;    load <mpr> from stack
-000131 915f              POP     MO                  ;    load <MO> from stack
-000132 914f              POP     dd                  ;    load <dd> from stack
+00015a 910f              POP     mpr                 ;    load <mpr> from stack
+00015b 915f              POP     MO                  ;    load <MO> from stack
+00015c 914f              POP     dd                  ;    load <dd> from stack
                  
-000133 9508              RET                         ;  RETURN <result>
+00015d 9508              RET                         ;  RETURN <result>
                  
                  ;===============================================================================
                  ; @name:             DT_Www_MM
@@ -2456,52 +2533,52 @@ C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm(75)
                  ;------------------------------------------------------------------------------
                  DT_Www_MM:                          ;  [DT_Www_MM(*<DD>)] function
                          // Stack saving: ---
-000134 930f              PUSH    mpr                 ;  save <mpr> on stack
-000135 3052              CPI     MO, $02             ;  if <MO> != 2
-000136 f479              BRNE    GET_Www_ELSEIF1     ;   GoTo: GET_Www_ELSEIF1
+00015e 930f              PUSH    mpr                 ;  save <mpr> on stack
+00015f 3052              CPI     MO, $02             ;  if <MO> != 2
+000160 f479              BRNE    GET_Www_ELSEIF1     ;   GoTo: GET_Www_ELSEIF1
                          // Handle if month has 30 or 31 Days
-000137 3057              CPI     MO, $07             ;      if <MO> < 7
-000138 f020              BRLO    GET_Www_ELSEIF4     ;       GoTo: GET_Www_ELSEIF4
+000161 3057              CPI     MO, $07             ;      if <MO> < 7
+000162 f020              BRLO    GET_Www_ELSEIF4     ;       GoTo: GET_Www_ELSEIF4
                          // Handle Jan-Jul: ---
-000139 2f05              MOV     mpr, MO             ;        <mpr> = <MO>
-00013a 9505              ASR     mpr                 ;        <mpr> = <mpr> / 2
-00013b f428              BRCC    GET_Www_30DAY       ;        if <carry-bit> = 0: GoTo: GET_Www_30DAY
-00013c c006              RJMP    GET_Www_31DAY       ;        else: GoTo: GET_Www_31DAY
+000163 2f05              MOV     mpr, MO             ;        <mpr> = <MO>
+000164 9505              ASR     mpr                 ;        <mpr> = <mpr> / 2
+000165 f428              BRCC    GET_Www_30DAY       ;        if <carry-bit> = 0: GoTo: GET_Www_30DAY
+000166 c006              RJMP    GET_Www_31DAY       ;        else: GoTo: GET_Www_31DAY
                      GET_Www_ELSEIF4:                ;      DT_MM_ELSEIF4
                          // Handle Aug-Dec: ---
-00013d 2f05              MOV     mpr, MO             ;        <mpr> = <MO>
-00013e 9505              ASR     mpr                 ;        <mpr> = <mpr> / 2
-00013f f008              BRCS    GET_Www_30DAY       ;        if <carry-bit> = 1: GoTo: GET_Www_30DAY
-000140 c002              RJMP    GET_Www_31DAY       ;        else: GoTo: GET_Www_31DAY
+000167 2f05              MOV     mpr, MO             ;        <mpr> = <MO>
+000168 9505              ASR     mpr                 ;        <mpr> = <mpr> / 2
+000169 f008              BRCS    GET_Www_30DAY       ;        if <carry-bit> = 1: GoTo: GET_Www_30DAY
+00016a c002              RJMP    GET_Www_31DAY       ;        else: GoTo: GET_Www_31DAY
                      GET_Www_30DAY:                  ;      DT_MM_30DAY
                          // The Month has 30 Days: ---
-000141 5e42              SUBI    DD, -30             ;        <DD> += 30
-000142 c002              RJMP    GET_Www_DAYEND      ;        GoTo: GET_Www_DAYEND
+00016b 5e42              SUBI    DD, -30             ;        <DD> += 30
+00016c c002              RJMP    GET_Www_DAYEND      ;        GoTo: GET_Www_DAYEND
                      GET_Www_31DAY:                  ;      DT_MM_31DAY
                          // The Month has 31 Days: ---
-000143 5e41              SUBI    DD, -31             ;        <DD> += 31
-000144 c000              RJMP    GET_Www_DAYEND      ;          GoTo: GET_Www_DAYEND
+00016d 5e41              SUBI    DD, -31             ;        <DD> += 31
+00016e c000              RJMP    GET_Www_DAYEND      ;          GoTo: GET_Www_DAYEND
                      GET_Www_DAYEND:                 ;      End Day calc
-000145 c008              RJMP    GET_Www_ENDIF1      ;  GoTo: GET_Www_ENDIF1
+00016f c008              RJMP    GET_Www_ENDIF1      ;  GoTo: GET_Www_ENDIF1
                      GET_Www_ELSEIF1:                ;  GET_Www_ELSEIF1
                          // Handle February: ---
-000146 2f06              MOV     mpr, YY             ;    <mpr> = <YY>
-000147 9505              ASR     mpr                 ;    <mpr> = <mpr> / 2
-000148 f020              BRCS    GET_Www_ELSEIF2     ;    if <carry-bit> == 2: GoTo: GET_Www_ELSEIF2
-000149 9505              ASR     mpr                 ;    <mpr> = <mpr> / 2
-00014a f010              BRCS    GET_Www_ELSEIF2     ;    if <carry-bit> == 2: GoTo: GET_Www_ELSEIF2
+000170 2f06              MOV     mpr, YY             ;    <mpr> = <YY>
+000171 9505              ASR     mpr                 ;    <mpr> = <mpr> / 2
+000172 f020              BRCS    GET_Www_ELSEIF2     ;    if <carry-bit> == 2: GoTo: GET_Www_ELSEIF2
+000173 9505              ASR     mpr                 ;    <mpr> = <mpr> / 2
+000174 f010              BRCS    GET_Www_ELSEIF2     ;    if <carry-bit> == 2: GoTo: GET_Www_ELSEIF2
                          // Handle leap year: ---
-00014b 5e43              SUBI    DD, -29             ;      <DD> += 29
+000175 5e43              SUBI    DD, -29             ;      <DD> += 29
                      GET_Www_ENDIF3:                 ;      GET_Www_ENDIF3
-00014c c001              RJMP    GET_Www_ENDIF2      ;    GoTo: GET_Www_ENDIF2
+000176 c001              RJMP    GET_Www_ENDIF2      ;    GoTo: GET_Www_ENDIF2
                      GET_Www_ELSEIF2:                ;    GET_Www_ELSEIF2
                          // Handle non leap year: ---
-00014d 5e44              SUBI    DD, -28             ;      <DD> += 29
+000177 5e44              SUBI    DD, -28             ;      <DD> += 29
                      GET_Www_ENDIF2:                 ;    GET_Www_ENDIF2
                      GET_Www_ENDIF1:                 ;  GET_Www_ENDIF1
                          // Stack loading: ---
-00014e 910f              POP     mpr                 ;  load <mpr> from stack
-00014f 9508              RET                         ;  RETURN <void>
+000178 910f              POP     mpr                 ;  load <mpr> from stack
+000179 9508              RET                         ;  RETURN <void>
                  
                  
                  ;===============================================================================
@@ -2514,65 +2591,65 @@ C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm(75)
                  ;------------------------------------------------------------------------------
                  DT_MM:                              ;  [DT_MM(<DD>)] function
                          // Stack saving: ---
-000150 930f              PUSH    mpr                 ;  save <mpr> on stack
+00017a 930f              PUSH    mpr                 ;  save <mpr> on stack
                  
-000151 3052              CPI     MO, $02             ;  if <MO> != 2
-000152 f4a9              BRNE    DT_MM_ELSEIF1       ;   GoTo: DT_MM_ENDIF1
+00017b 3052              CPI     MO, $02             ;  if <MO> != 2
+00017c f4a9              BRNE    DT_MM_ELSEIF1       ;   GoTo: DT_MM_ENDIF1
                          // Handle all months except February: ---
-000153 314d              CPI     DD, $1D             ;    if <DD> < 29:
-000154 f0f8              BRLO    DT_MM_ENDIF1        ;     GoTo: DT_MM_ENDIF1
+00017d 314d              CPI     DD, $1D             ;    if <DD> < 29:
+00017e f0f8              BRLO    DT_MM_ENDIF1        ;     GoTo: DT_MM_ENDIF1
                          // Handle if month has 30 or 31 Days
-000155 3057              CPI     MO, $07             ;      if <MO> < 7
-000156 f020              BRLO    DT_MM_ELSEIF4       ;       GoTo: DT_MM_ELSEIF4
+00017f 3057              CPI     MO, $07             ;      if <MO> < 7
+000180 f020              BRLO    DT_MM_ELSEIF4       ;       GoTo: DT_MM_ELSEIF4
                          // Handle Jan-Jul: ---
-000157 2f05              MOV     mpr, MO             ;        <mpr> = <MO>
-000158 9505              ASR     mpr                 ;        <mpr> = <mpr> / 2
-000159 f428              BRCC    DT_MM_30DAY         ;        if <carry-bit> = 0: GoTo: DT_MM_30DAY
-00015a c007              RJMP    DT_MM_31DAY         ;        else: GoTo: DT_MM_31DAY
+000181 2f05              MOV     mpr, MO             ;        <mpr> = <MO>
+000182 9505              ASR     mpr                 ;        <mpr> = <mpr> / 2
+000183 f428              BRCC    DT_MM_30DAY         ;        if <carry-bit> = 0: GoTo: DT_MM_30DAY
+000184 c007              RJMP    DT_MM_31DAY         ;        else: GoTo: DT_MM_31DAY
                      DT_MM_ELSEIF4:                  ;      DT_MM_ELSEIF4
                          // Handle Aug-Dec: ---
-00015b 2f05              MOV     mpr, MO             ;        <mpr> = <MO>
-00015c 9505              ASR     mpr                 ;        <mpr> = <mpr> / 2
-00015d f008              BRCS    DT_MM_30DAY         ;        if <carry-bit> = 1: GoTo: DT_MM_30DAY
-00015e c003              RJMP    DT_MM_31DAY         ;        else: GoTo: DT_MM_31DAY
+000185 2f05              MOV     mpr, MO             ;        <mpr> = <MO>
+000186 9505              ASR     mpr                 ;        <mpr> = <mpr> / 2
+000187 f008              BRCS    DT_MM_30DAY         ;        if <carry-bit> = 1: GoTo: DT_MM_30DAY
+000188 c003              RJMP    DT_MM_31DAY         ;        else: GoTo: DT_MM_31DAY
                      DT_MM_30DAY:                    ;      DT_MM_30DAY
                          // The Month has 30 Days: ---
-00015f e041              LDI     DD, $01             ;        <DD> = 1
-000160 9553              INC     MO                  ;        increment <MO>
-000161 c005              RJMP    DT_MM_DAYEND        ;        GoTo: DT_MM_DAYEND
+000189 e041              LDI     DD, $01             ;        <DD> = 1
+00018a 9553              INC     MO                  ;        increment <MO>
+00018b c005              RJMP    DT_MM_DAYEND        ;        GoTo: DT_MM_DAYEND
                      DT_MM_31DAY:                    ;      DT_MM_31DAY
                          // The Month has 31 Days: ---
-000162 315e              CPI      MO, $1E             ;        if <MO> < 30:
-000163 f018              BRLO    DT_MM_DAYEND        ;         GoTo: DT_MM_DAYEND
-000164 e041              LDI     DD, 1               ;          <DD> = 1
-000165 9553              INC     MO                  ;          increment <MO>
-000166 c000              RJMP    DT_MM_DAYEND        ;          GoTo: DT_MM_DAYEND
+00018c 315e              CPI      MO, $1E             ;        if <MO> < 30:
+00018d f018              BRLO    DT_MM_DAYEND        ;         GoTo: DT_MM_DAYEND
+00018e e041              LDI     DD, 1               ;          <DD> = 1
+00018f 9553              INC     MO                  ;          increment <MO>
+000190 c000              RJMP    DT_MM_DAYEND        ;          GoTo: DT_MM_DAYEND
                      DT_MM_DAYEND:                   ;      End Day calc
-000167 c00c              RJMP    DT_MM_ENDIF1        ;  GoTo: DT_MM_ENDIF1
+000191 c00c              RJMP    DT_MM_ENDIF1        ;  GoTo: DT_MM_ENDIF1
                      DT_MM_ELSEIF1:                  ;  DT_MM_ELSEIF1
                          // Handle February: ---
-000168 2f06              MOV     mpr, YY             ;    <mpr> = <YY>
-000169 9505              ASR     mpr                 ;    <mpr> = <mpr> / 2
-00016a f038              BRCS    DT_MM_ELSEIF2       ;    if <carry-bit> == 2: GoTo: DT_MM_ELSEIF2
-00016b 9505              ASR     mpr                 ;    <mpr> = <mpr> / 2
-00016c f028              BRCS    DT_MM_ELSEIF2       ;    if <carry-bit> == 2: GoTo: DT_MM_ELSEIF2
+000192 2f06              MOV     mpr, YY             ;    <mpr> = <YY>
+000193 9505              ASR     mpr                 ;    <mpr> = <mpr> / 2
+000194 f038              BRCS    DT_MM_ELSEIF2       ;    if <carry-bit> == 2: GoTo: DT_MM_ELSEIF2
+000195 9505              ASR     mpr                 ;    <mpr> = <mpr> / 2
+000196 f028              BRCS    DT_MM_ELSEIF2       ;    if <carry-bit> == 2: GoTo: DT_MM_ELSEIF2
                          // Handle leap year: ---
-00016d 314d              CPI     DD, $1D             ;      if <DD> == 29:
-00016e f411              BRNE    DT_MM_ENDIF3        ;       GoTo: DT_MM_ENDIF3
+000197 314d              CPI     DD, $1D             ;      if <DD> == 29:
+000198 f411              BRNE    DT_MM_ENDIF3        ;       GoTo: DT_MM_ENDIF3
                          // Wayt one more Day (because of leap year): ---
-00016f e041              LDI     DD, $01             ;        <DD> = 1
-000170 9553              INC     MO                  ;        increment <MO>
+000199 e041              LDI     DD, $01             ;        <DD> = 1
+00019a 9553              INC     MO                  ;        increment <MO>
                      DT_MM_ENDIF3:                   ;      DT_MM_ENDIF3
-000171 c002              RJMP    DT_MM_ENDIF2        ;    GoTo: DT_MM_ENDIF2
+00019b c002              RJMP    DT_MM_ENDIF2        ;    GoTo: DT_MM_ENDIF2
                      DT_MM_ELSEIF2:                  ;    DT_MM_ELSEIF2
                          // Handle non leap year: ---
-000172 e041              LDI     DD, $01             ;      <DD> = 1
-000173 9553              INC     MO                  ;      increment <MO>
+00019c e041              LDI     DD, $01             ;      <DD> = 1
+00019d 9553              INC     MO                  ;      increment <MO>
                      DT_MM_ENDIF2:                   ;    DT_MM_ENDIF2
                      DT_MM_ENDIF1:                   ;  DT_MM_ENDIF1
                          // Stack loading: ---
-000174 910f              POP     mpr                 ;  load <mpr> from stack
-000175 9508              RET                         ;  RETURN: <void>
+00019e 910f              POP     mpr                 ;  load <mpr> from stack
+00019f 9508              RET                         ;  RETURN: <void>
                  
                  
                  
@@ -2595,7 +2672,7 @@ counted separately from r26..r31 here.
 "ATmega2560" register use summary:
 r0 :   1 r1 :   0 r2 :   0 r3 :   0 r4 :   0 r5 :   0 r6 :   0 r7 :   0 
 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 r13:   0 r14:   0 r15:   0 
-r16:  71 r17:   7 r18:   3 r19:   7 r20:  29 r21:  50 r22:  11 r23:   2 
+r16:  80 r17:  11 r18:   7 r19:  10 r20:  33 r21:  54 r22:  15 r23:   2 
 r24:   4 r25:  17 r26:  15 r27:  11 r28:   4 r29:   0 r30:   0 r31:   0 
 x  :   0 y  :   0 z  :   0 
 Registers used: 14 out of 35 (40.0%)
@@ -2605,28 +2682,28 @@ Registers used: 14 out of 35 (40.0%)
 andi  :   0 asr   :  12 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
 brcc  :   2 brcs  :   8 break :   0 breq  :   2 brge  :   3 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   5 brlt  :   2 brmi  :   0 
-brne  :  27 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   1 brvc  :   0 
+brne  :  28 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   1 brvc  :   0 
 brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   0 cbr   :   0 
 clc   :   1 clh   :   0 cli   :   0 cln   :   0 clr   :  11 cls   :   0 
-clt   :   1 clv   :   0 clz   :   0 com   :   2 cp    :   1 cpc   :   0 
+clt   :   1 clv   :   0 clz   :   0 com   :  15 cp    :   1 cpc   :   0 
 cpi   :  35 cpse  :   0 dec   :   4 eicall:   0 eijmp :   0 elpm  :   0 
 eor   :   0 fmul  :   0 fmuls :   0 fmulsu:   0 icall :   0 ijmp  :   0 
-in    :   2 inc   :  12 jmp   :   0 ld    :   0 ldd   :   0 ldi   :  29 
+in    :   3 inc   :  12 jmp   :   0 ld    :   0 ldd   :   0 ldi   :  34 
 lds   :   0 lpm   :   0 lsl   :   2 lsr   :   0 mov   :  20 movw  :   0 
 mul   :   1 muls  :   0 mulsu :   0 neg   :   1 nop   :   0 or    :   0 
-ori   :   0 out   :   8 pop   :  20 push  :  22 rcall :  11 ret   :   8 
-reti  :   1 rjmp  :  29 rol   :   1 ror   :   0 sbc   :   0 sbci  :   0 
+ori   :   0 out   :  14 pop   :  20 push  :  22 rcall :  12 ret   :   9 
+reti  :   1 rjmp  :  36 rol   :   1 ror   :   0 sbc   :   0 sbci  :   0 
 sbi   :   0 sbic  :   0 sbis  :   0 sbiw  :   0 sbr   :   0 sbrc  :   0 
-sbrs  :   0 sec   :   0 seh   :   0 sei   :   1 sen   :   0 ser   :   1 
+sbrs  :   6 sec   :   0 seh   :   0 sei   :   1 sen   :   0 ser   :   1 
 ses   :   0 set   :   1 sev   :   0 sez   :   0 sleep :   0 spm   :   0 
 st    :   0 std   :   0 sts   :   1 sub   :   4 subi  :   5 swap  :   0 
-tst   :   2 wdr   :   0 
-Instructions used: 39 out of 116 (33.6%)
+tst   :   3 wdr   :   0 
+Instructions used: 40 out of 116 (34.5%)
 
 "ATmega2560" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x0002ec    610      0    610  262144   0.2%
+[.cseg] 0x000000 0x000340    694      0    694  262144   0.3%
 [.dseg] 0x000200 0x000200      0      0      0    8192   0.0%
 [.eseg] 0x000000 0x000000      0      0      0    4096   0.0%
 
