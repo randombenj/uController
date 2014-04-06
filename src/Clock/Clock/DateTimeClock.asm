@@ -116,7 +116,7 @@ Reset:	SER	    mpr			        ; Output:= LED
 ;--- Hauptprogramm ---	
 Main:		                        ;  [Main()] function
         
-    /*Main_LOOP01:
+    Main_LOOP01:
         RCALL   Out_Handle          ;    Handle output
         CPI     count, HIGH(MaxCount)
         BRLT    Main_LOOP01         ;    count < $7A: wait longer
@@ -128,7 +128,7 @@ Main:		                        ;  [Main()] function
 
         CLR     mpr                 ;    mpr = $00
         OUT     TCNT0, mpr          ;    $00 in hardware counter LSB
-        CLR     count               ;    count = $00 (MSB)*/
+        CLR     count               ;    count = $00 (MSB)
 
         RCALL   DT_Handle           ;    DT_Handle()
 
@@ -238,7 +238,7 @@ DT_Handle:                          ;  [DT_Handle()] function
         
         // TODO: Calc <Www> and <D>
         RCALL   Get_D               ;    calc day of week
-
+        RCALL   Get_Www             ;    calc weeknumber
 
         // Calc time:   ---
         INC     ss                  ;    incrment <ss>
@@ -492,7 +492,7 @@ GET_Www:                            ;  [GET_Www(<MO>, <DD>)] function
         // calc active month: ---
         MOV     dividend, DD        ;    <dividend> = <DD>
         LDI     divisor, $07        ;    <divisor> = 7
-        RCALL   DIV                 ;    <result> = DIV(<dividend>, <divisor>)
+        RCALL   div8u               ;    <result> = DIV(<dividend>, <divisor>)
         MOV     Www, result         ;    <Www> = <result>
         // add modulo to days: ---
         MOV     dividend, DD        ;    <dividend> = <DD>
@@ -507,7 +507,7 @@ GET_Www:                            ;  [GET_Www(<MO>, <DD>)] function
 
         MOV     dividend, DD        ;    <dividend> = <DD>
         LDI     divisor, $07        ;    <divisor> = 7
-        RCALL   DIV                 ;    <result> = DIV(<dividend>, <divisor>)
+        RCALL   div8u               ;    <result> = DIV(<dividend>, <divisor>)
         ADD     Www, result         ;    <Www> = <result>
         // add modulo to days: ---
         MOV     dividend, DD        ;    <dividend> = <DD>
@@ -516,6 +516,8 @@ GET_Www:                            ;  [GET_Www(<MO>, <DD>)] function
         MOV     DD, result          ;    <DD> = <result>
         DEC     MO
         BRNE    GET_Www_WHILE01
+        // weeknumber beginns with 1 not 0: ---
+        INC     Www                 ;    <Www>++
         // stack loading: ---
         POP     mpr                 ;    load <mpr> from stack
         POP     MO                  ;    load <MO> from stack
@@ -534,21 +536,21 @@ GET_Www:                            ;  [GET_Www(<MO>, <DD>)] function
 DT_Www_MM:                          ;  [DT_Www_MM(*<DD>)] function
         // Stack saving: ---
         PUSH    mpr                 ;  save <mpr> on stack
-        CPI     MO, $02             ;  if <MO> != 2
-        BRNE    GET_Www_ELSEIF1     ;   GoTo: GET_Www_ELSEIF1
+        CPI     MO, $02             ;  if <MO> == 2
+        BREQ    GET_Www_ELSEIF1     ;   GoTo: GET_Www_ELSEIF1 (february)
         // Handle if month has 30 or 31 Days
         CPI     MO, $07             ;      if <MO> < 7
         BRLO    GET_Www_ELSEIF4     ;       GoTo: GET_Www_ELSEIF4
-        // Handle Jan-Jul: ---
-        MOV     mpr, MO             ;        <mpr> = <MO>
-        ASR     mpr                 ;        <mpr> = <mpr> / 2
-        BRCC    GET_Www_30DAY       ;        if <carry-bit> = 0: GoTo: GET_Www_30DAY
-        RJMP    GET_Www_31DAY       ;        else: GoTo: GET_Www_31DAY
-    GET_Www_ELSEIF4:                ;      DT_MM_ELSEIF4
         // Handle Aug-Dec: ---
         MOV     mpr, MO             ;        <mpr> = <MO>
         ASR     mpr                 ;        <mpr> = <mpr> / 2
-        BRCS    GET_Www_30DAY       ;        if <carry-bit> = 1: GoTo: GET_Www_30DAY
+        BRCS    GET_Www_30DAY       ;        if <carry-bit> = 0: GoTo: GET_Www_30DAY
+        RJMP    GET_Www_31DAY       ;        else: GoTo: GET_Www_31DAY
+    GET_Www_ELSEIF4:                ;      DT_MM_ELSEIF4
+        // Handle Jan-Jul: ---
+        MOV     mpr, MO             ;        <mpr> = <MO>
+        ASR     mpr                 ;        <mpr> = <mpr> / 2
+        BRCC    GET_Www_30DAY       ;        if <carry-bit> = 1: GoTo: GET_Www_30DAY
         RJMP    GET_Www_31DAY       ;        else: GoTo: GET_Www_31DAY
     GET_Www_30DAY:                  ;      DT_MM_30DAY
         // The Month has 30 Days: ---
@@ -594,23 +596,23 @@ DT_MM:                              ;  [DT_MM(<DD>)] function
         PUSH    mpr                 ;  save <mpr> on stack
 
         CPI     MO, $02             ;  if <MO> != 2
-        BRNE    DT_MM_ELSEIF1       ;   GoTo: DT_MM_ENDIF1
+        BREQ    DT_MM_ELSEIF1       ;   GoTo: DT_MM_ENDIF1
         // Handle all months except February: ---
         CPI     DD, $1D             ;    if <DD> < 29:
         BRLO    DT_MM_ENDIF1        ;     GoTo: DT_MM_ENDIF1
         // Handle if month has 30 or 31 Days
         CPI     MO, $07             ;      if <MO> < 7
         BRLO    DT_MM_ELSEIF4       ;       GoTo: DT_MM_ELSEIF4
-        // Handle Jan-Jul: ---
-        MOV     mpr, MO             ;        <mpr> = <MO>
-        ASR     mpr                 ;        <mpr> = <mpr> / 2
-        BRCC    DT_MM_30DAY         ;        if <carry-bit> = 0: GoTo: DT_MM_30DAY
-        RJMP    DT_MM_31DAY         ;        else: GoTo: DT_MM_31DAY
-    DT_MM_ELSEIF4:                  ;      DT_MM_ELSEIF4
         // Handle Aug-Dec: ---
         MOV     mpr, MO             ;        <mpr> = <MO>
         ASR     mpr                 ;        <mpr> = <mpr> / 2
-        BRCS    DT_MM_30DAY         ;        if <carry-bit> = 1: GoTo: DT_MM_30DAY
+        BRCS    DT_MM_30DAY         ;        if <carry-bit> = 0: GoTo: DT_MM_30DAY
+        RJMP    DT_MM_31DAY         ;        else: GoTo: DT_MM_31DAY
+    DT_MM_ELSEIF4:                  ;      DT_MM_ELSEIF4
+        // Handle Jan-Jul: ---
+        MOV     mpr, MO             ;        <mpr> = <MO>
+        ASR     mpr                 ;        <mpr> = <mpr> / 2
+        BRCC    DT_MM_30DAY         ;        if <carry-bit> = 1: GoTo: DT_MM_30DAY
         RJMP    DT_MM_31DAY         ;        else: GoTo: DT_MM_31DAY
     DT_MM_30DAY:                    ;      DT_MM_30DAY
         // The Month has 30 Days: ---
