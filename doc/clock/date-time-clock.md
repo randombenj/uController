@@ -54,7 +54,9 @@ In this case I used the **W1S** function from my delay.inc file.
 ;--- main function ---	
 Main:		                        ;  [Main()] function
         
-        RCALL   W1S                 ;    W1S() - wait one second
+        
+        // your code to delay one second ...
+        
         RCALL   DT_Handle           ;    DT_Handle() - handles the date-time-clock
 
         RJMP    Main                ;  Endless Loop 
