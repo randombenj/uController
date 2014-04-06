@@ -9,17 +9,9 @@
 ;-
 ;- Beschreibung:
 ;-	
-;-  Eine Zeit-Datums Uhr mit folgenden werten	
-;-				
+;-  Eine Zeit-Datums Uhr auf Assembler Basis
 ;-
-;- Entwicklungsablauf:
-;- Ver:  Datum:	 Autor:    Entwicklungsschritt:                        Zeit:
-;- 0.1.0  01.01.13  FAB    Ganzes Programm erstellt				          Min.
-;- 0.1.1  01.03.14  FAB    Summer winter time   				      30  Min.
-;-
-;-										Totalzeit:	 Min.
-;-
-;- Copyright: Benj Fassbind, Sonneggstrasse 13, 6410 Goldau (2013)
+;- Copyright: Benj Fassbind, Sonneggstrasse 13, 6410 Goldau (2014)
 ;------------------------------------------------------------------------------
 
 ;--- Kontrollerangabe ---
