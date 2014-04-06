@@ -109,14 +109,14 @@ Reset:	SER	    mpr			        ; Output:= LED
         ; set beginn datetime
         LDI     MM, 22
         LDI     HH, 20
-        LDI     DD, 30
-        LDI     MO, 3
+        LDI     DD, 7
+        LDI     MO, 4
         LDI     YY, 14
 
 ;--- Hauptprogramm ---	
 Main:		                        ;  [Main()] function
         
-    Main_LOOP01:
+    /*Main_LOOP01:
         RCALL   Out_Handle          ;    Handle output
         CPI     count, HIGH(MaxCount)
         BRLT    Main_LOOP01         ;    count < $7A: wait longer
@@ -128,7 +128,7 @@ Main:		                        ;  [Main()] function
 
         CLR     mpr                 ;    mpr = $00
         OUT     TCNT0, mpr          ;    $00 in hardware counter LSB
-        CLR     count               ;    count = $00 (MSB)
+        CLR     count               ;    count = $00 (MSB)*/
 
         RCALL   DT_Handle           ;    DT_Handle()
 
@@ -237,6 +237,8 @@ Tc0i:                               ; [Tc0i(<count>)] function
 DT_Handle:                          ;  [DT_Handle()] function
         
         // TODO: Calc <Www> and <D>
+        RCALL   Get_D               ;    calc day of week
+
 
         // Calc time:   ---
         INC     ss                  ;    incrment <ss>
@@ -379,67 +381,67 @@ GET_D:                              ;  [GET_D(<DD>, <MO>, <YY>)] function
         LDI     MO, $00             ;    <MO> = 0;
         RJMP    GET_D_ENDSWICH01    ;    break
     GET_D_CASE_02:
-        CPI     MO, $01             ;  case <MO> =  1
+        CPI     MO, $02             ;  case <MO> =  2
         BRNE    GET_D_CASE_03       ;    else: GoTo: GET_D_CASE_03
         // February
         LDI     MO, $03             ;    <MO> = 3;
         RJMP    GET_D_ENDSWICH01    ;    break
     GET_D_CASE_03:
-        CPI     MO, $01             ;  case <MO> =  1
+        CPI     MO, $03             ;  case <MO> =  3
         BRNE    GET_D_CASE_04       ;    else: GoTo: GET_D_CASE_04
         // March
         LDI     MO, $03             ;    <MO> = 3;
         RJMP    GET_D_ENDSWICH01    ;    break
     GET_D_CASE_04:
-        CPI     MO, $01             ;  case <MO> =  1
+        CPI     MO, $04             ;  case <MO> =  4
         BRNE    GET_D_CASE_05       ;    else: GoTo: GET_D_CASE_05
         // April
         LDI     MO, $06             ;    <MO> = 6;
         RJMP    GET_D_ENDSWICH01    ;    break
     GET_D_CASE_05:
-        CPI     MO, $01             ;  case <MO> =  1
+        CPI     MO, $05             ;  case <MO> =  5
         BRNE    GET_D_CASE_06       ;    else: GoTo: GET_D_CASE_06
         // May
         LDI     MO, $01             ;    <MO> = 1;
         RJMP    GET_D_ENDSWICH01    ;    break
     GET_D_CASE_06:
-        CPI     MO, $01             ;  case <MO> =  1
+        CPI     MO, $06             ;  case <MO> =  6
         BRNE    GET_D_CASE_07       ;    else: GoTo: GET_D_CASE_07
         // June
         LDI     MO, $04             ;    <MO> = 4;
         RJMP    GET_D_ENDSWICH01    ;    break
     GET_D_CASE_07:
-        CPI     MO, $01             ;  case <MO> =  1
+        CPI     MO, $07             ;  case <MO> =  7
         BRNE    GET_D_CASE_08       ;    else: GoTo: GET_D_CASE_08
         // July
         LDI     MO, $06             ;    <MO> = 6;
         RJMP    GET_D_ENDSWICH01    ;    break
     GET_D_CASE_08:
-        CPI     MO, $01             ;  case <MO> =  1
+        CPI     MO, $08             ;  case <MO> =  8
         BRNE    GET_D_CASE_09       ;    else: GoTo: GET_D_CASE_09
         // August
         LDI     MO, $02             ;    <MO> = 2;
         RJMP    GET_D_ENDSWICH01    ;    break
     GET_D_CASE_09:
-        CPI     MO, $01             ;  case <MO> =  1
+        CPI     MO, $09             ;  case <MO> =  9
         BRNE    GET_D_CASE_10       ;    else: GoTo: GET_D_CASE_10
         // September
         LDI     MO, $05             ;    <MO> = 5;
         RJMP    GET_D_ENDSWICH01    ;    break
     GET_D_CASE_10:
-        CPI     MO, $01             ;  case <MO> =  1
+        CPI     MO, $0A             ;  case <MO> =  10
         BRNE    GET_D_CASE_11       ;    else: GoTo: GET_D_CASE_11
         // October
         LDI     MO, $00             ;    <MO> = 0;
         RJMP    GET_D_ENDSWICH01    ;    break
     GET_D_CASE_11:
-        CPI     MO, $01             ;  case <MO> =  1
+        CPI     MO, $0B             ;  case <MO> =  11
         BRNE    GET_D_CASE_12       ;    else: GoTo: GET_D_CASE_12
         // November
         LDI     MO, $03             ;    <MO> = 3;
         RJMP    GET_D_ENDSWICH01    ;    break
     GET_D_CASE_12:
-        CPI     MO, $01             ;  case <MO> =  1
+        CPI     MO, $0C             ;  case <MO> =  12
         BRNE    GET_D_ENDSWICH01    ;    else: GoTo: GET_D_ENDSWICH01
         // December
         LDI     MO, $05             ;    <MO> = 5;
@@ -451,6 +453,7 @@ GET_D:                              ;  [GET_D(<DD>, <MO>, <YY>)] function
         RCALL   MOD                 ;  <result> = MOD(<dividend>, <divisor>)
         MOV     DD, result          ;  <DD> = <result>
         // calculate the day of the week: ---
+        CLR     mpr                 ;  <mpr> = $00
         SUBI    mpr, -$06           ;  <mpr> = <mpr> + 6 > century-offset
         ADD     mpr, YY             ;  <mpr> = <mpr> + <YY> > year-offset
         ADD     mpr, MO             ;  <mpr> = <mpr> + <MO> > month-offset 
@@ -459,6 +462,9 @@ GET_D:                              ;  [GET_D(<DD>, <MO>, <YY>)] function
         MOV     dividend, mpr       ;  <dividend> = <DD>
         LDI     divisor, $07        ;  <divisor> = 7
         RCALL   MOD                 ;  <result> = MOD(<dividend>, <divisor>)
+
+        MOV     D, result           ;  <D> = result
+
         // stack loading: ---
         POP     mpr                 ;  load <mpr> from stack
         POP     YY                  ;  load <YY> from stack

@@ -1,18 +1,18 @@
 <ASSEMBLER_INFO>
  <VERSION>2.1.52</VERSION>
  <DEVICE>"ATmega2560"</DEVICE>
- <WORKING_DIR>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\Debug</WORKING_DIR>
+ <WORKING_DIR>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\Debug</WORKING_DIR>
  <INCLUDE_PATH>
   <DIR>C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include</DIR>
   <DIR></DIR>
  </INCLUDE_PATH>
- <SOURCE_FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</SOURCE_FILE>
+ <SOURCE_FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</SOURCE_FILE>
  <INCLUDED_FILES>
   <FILE>C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR Assembler\Native\2.1.39.1005\avrassembler\Include\m2560def.inc</FILE>
-  <FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE>
+  <FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE>
  </INCLUDED_FILES>
  <OBJECT_FILES>
-  <FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\Debug/DateTimeClock.obj</FILE>
+  <FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\Debug/DateTimeClock.obj</FILE>
  </OBJECT_FILES>
  <HEX_FILES>
   <FILE>DateTimeClock.hex</FILE>
@@ -22,67 +22,69 @@
   <FILE>DateTimeClock.lss</FILE>
  </OUTPUT_FILES>
  <LABELS>
-  <Reset><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>83</LINE></Reset>
-  <Tc0i><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>220</LINE></Tc0i>
-  <DIV><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>39</LINE></DIV>
-  <DevByZero><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>69</LINE></DevByZero>
-  <While><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>51</LINE></While>
-  <EndWhile><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>68</LINE></EndWhile>
-  <EndSub><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>66</LINE></EndSub>
-  <MOD><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>92</LINE></MOD>
-  <MOD_ENDIF01><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>107</LINE></MOD_ENDIF01>
-  <Main><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>117</LINE></Main>
-  <Main_LOOP01><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>119</LINE></Main_LOOP01>
-  <Out_Handle><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>146</LINE></Out_Handle>
-  <Main_LOOP02><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>124</LINE></Main_LOOP02>
-  <DT_Handle><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>237</LINE></DT_Handle>
-  <Out_HandleIF01><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>160</LINE></Out_HandleIF01>
-  <Out_HandleENDIF01><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>209</LINE></Out_HandleENDIF01>
-  <Out_HandleELSEIF01><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>169</LINE></Out_HandleELSEIF01>
-  <Out_HandleELSEIF02><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>177</LINE></Out_HandleELSEIF02>
-  <Out_HandleELSEIF03><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>185</LINE></Out_HandleELSEIF03>
-  <Out_HandleELSEIF04><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>193</LINE></Out_HandleELSEIF04>
-  <Out_HandleELSEIF05><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>201</LINE></Out_HandleELSEIF05>
-  <DT_Handle_ENDIF1><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>268</LINE></DT_Handle_ENDIF1>
-  <DT_MM><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>586</LINE></DT_MM>
-  <SW_Handle><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>285</LINE></SW_Handle>
-  <SW_HandleELSEIF01><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>306</LINE></SW_HandleELSEIF01>
-  <SW_HandleENDIF01><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>327</LINE></SW_HandleENDIF01>
-  <SW_HandleELSEID02><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>325</LINE></SW_HandleELSEID02>
-  <GET_D><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>350</LINE></GET_D>
-  <GET_D_ELSEIF2><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>374</LINE></GET_D_ELSEIF2>
-  <GET_D_CASE_02><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>381</LINE></GET_D_CASE_02>
-  <GET_D_ENDSWICH01><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>447</LINE></GET_D_ENDSWICH01>
-  <GET_D_CASE_03><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>387</LINE></GET_D_CASE_03>
-  <GET_D_CASE_04><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>393</LINE></GET_D_CASE_04>
-  <GET_D_CASE_05><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>399</LINE></GET_D_CASE_05>
-  <GET_D_CASE_06><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>405</LINE></GET_D_CASE_06>
-  <GET_D_CASE_07><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>411</LINE></GET_D_CASE_07>
-  <GET_D_CASE_08><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>417</LINE></GET_D_CASE_08>
-  <GET_D_CASE_09><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>423</LINE></GET_D_CASE_09>
-  <GET_D_CASE_10><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>429</LINE></GET_D_CASE_10>
-  <GET_D_CASE_11><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>435</LINE></GET_D_CASE_11>
-  <GET_D_CASE_12><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>441</LINE></GET_D_CASE_12>
-  <GET_Www><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>481</LINE></GET_Www>
-  <GET_Www_WHILE01><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>497</LINE></GET_Www_WHILE01>
-  <DT_Www_MM><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>528</LINE></DT_Www_MM>
-  <GET_Www_ELSEIF1><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>557</LINE></GET_Www_ELSEIF1>
-  <GET_Www_ELSEIF4><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>541</LINE></GET_Www_ELSEIF4>
-  <GET_Www_30DAY><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>547</LINE></GET_Www_30DAY>
-  <GET_Www_31DAY><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>551</LINE></GET_Www_31DAY>
-  <GET_Www_DAYEND><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>555</LINE></GET_Www_DAYEND>
-  <GET_Www_ENDIF1><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>572</LINE></GET_Www_ENDIF1>
-  <GET_Www_ELSEIF2><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>568</LINE></GET_Www_ELSEIF2>
-  <GET_Www_ENDIF3><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>566</LINE></GET_Www_ENDIF3>
-  <GET_Www_ENDIF2><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>571</LINE></GET_Www_ENDIF2>
-  <DT_MM_ELSEIF1><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>623</LINE></DT_MM_ELSEIF1>
-  <DT_MM_ENDIF1><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>643</LINE></DT_MM_ENDIF1>
-  <DT_MM_ELSEIF4><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>603</LINE></DT_MM_ELSEIF4>
-  <DT_MM_30DAY><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>609</LINE></DT_MM_30DAY>
-  <DT_MM_31DAY><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>614</LINE></DT_MM_31DAY>
-  <DT_MM_DAYEND><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>621</LINE></DT_MM_DAYEND>
-  <DT_MM_ELSEIF2><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>638</LINE></DT_MM_ELSEIF2>
-  <DT_MM_ENDIF3><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>636</LINE></DT_MM_ENDIF3>
-  <DT_MM_ENDIF2><FILE>C:\Users\Benj\workspace\GitHub\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>642</LINE></DT_MM_ENDIF2>
+  <Reset><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>83</LINE></Reset>
+  <Tc0i><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>220</LINE></Tc0i>
+  <DIV><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>39</LINE></DIV>
+  <DevByZero><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>69</LINE></DevByZero>
+  <While><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>51</LINE></While>
+  <EndWhile><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>68</LINE></EndWhile>
+  <EndSub><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>66</LINE></EndSub>
+  <div8u><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>103</LINE></div8u>
+  <d8u_1><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>112</LINE></d8u_1>
+  <d8u_2><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>126</LINE></d8u_2>
+  <d8u_3><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>133</LINE></d8u_3>
+  <MOD><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>151</LINE></MOD>
+  <MOD_ENDIF01><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\..\..\..\lib\math.inc</FILE><LINE>166</LINE></MOD_ENDIF01>
+  <Main><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>117</LINE></Main>
+  <DT_Handle><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>237</LINE></DT_Handle>
+  <Out_Handle><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>146</LINE></Out_Handle>
+  <Out_HandleIF01><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>160</LINE></Out_HandleIF01>
+  <Out_HandleENDIF01><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>209</LINE></Out_HandleENDIF01>
+  <Out_HandleELSEIF01><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>169</LINE></Out_HandleELSEIF01>
+  <Out_HandleELSEIF02><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>177</LINE></Out_HandleELSEIF02>
+  <Out_HandleELSEIF03><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>185</LINE></Out_HandleELSEIF03>
+  <Out_HandleELSEIF04><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>193</LINE></Out_HandleELSEIF04>
+  <Out_HandleELSEIF05><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>201</LINE></Out_HandleELSEIF05>
+  <Get_D><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>352</LINE></Get_D>
+  <DT_Handle_ENDIF1><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>270</LINE></DT_Handle_ENDIF1>
+  <DT_MM><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>592</LINE></DT_MM>
+  <SW_Handle><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>287</LINE></SW_Handle>
+  <SW_HandleELSEIF01><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>308</LINE></SW_HandleELSEIF01>
+  <SW_HandleENDIF01><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>329</LINE></SW_HandleENDIF01>
+  <SW_HandleELSEID02><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>327</LINE></SW_HandleELSEID02>
+  <GET_D_ELSEIF2><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>376</LINE></GET_D_ELSEIF2>
+  <GET_D_CASE_02><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>383</LINE></GET_D_CASE_02>
+  <GET_D_ENDSWICH01><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>449</LINE></GET_D_ENDSWICH01>
+  <GET_D_CASE_03><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>389</LINE></GET_D_CASE_03>
+  <GET_D_CASE_04><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>395</LINE></GET_D_CASE_04>
+  <GET_D_CASE_05><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>401</LINE></GET_D_CASE_05>
+  <GET_D_CASE_06><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>407</LINE></GET_D_CASE_06>
+  <GET_D_CASE_07><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>413</LINE></GET_D_CASE_07>
+  <GET_D_CASE_08><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>419</LINE></GET_D_CASE_08>
+  <GET_D_CASE_09><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>425</LINE></GET_D_CASE_09>
+  <GET_D_CASE_10><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>431</LINE></GET_D_CASE_10>
+  <GET_D_CASE_11><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>437</LINE></GET_D_CASE_11>
+  <GET_D_CASE_12><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>443</LINE></GET_D_CASE_12>
+  <GET_Www><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>487</LINE></GET_Www>
+  <GET_Www_WHILE01><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>503</LINE></GET_Www_WHILE01>
+  <DT_Www_MM><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>534</LINE></DT_Www_MM>
+  <GET_Www_ELSEIF1><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>563</LINE></GET_Www_ELSEIF1>
+  <GET_Www_ELSEIF4><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>547</LINE></GET_Www_ELSEIF4>
+  <GET_Www_30DAY><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>553</LINE></GET_Www_30DAY>
+  <GET_Www_31DAY><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>557</LINE></GET_Www_31DAY>
+  <GET_Www_DAYEND><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>561</LINE></GET_Www_DAYEND>
+  <GET_Www_ENDIF1><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>578</LINE></GET_Www_ENDIF1>
+  <GET_Www_ELSEIF2><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>574</LINE></GET_Www_ELSEIF2>
+  <GET_Www_ENDIF3><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>572</LINE></GET_Www_ENDIF3>
+  <GET_Www_ENDIF2><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>577</LINE></GET_Www_ENDIF2>
+  <DT_MM_ELSEIF1><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>629</LINE></DT_MM_ELSEIF1>
+  <DT_MM_ENDIF1><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>649</LINE></DT_MM_ENDIF1>
+  <DT_MM_ELSEIF4><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>609</LINE></DT_MM_ELSEIF4>
+  <DT_MM_30DAY><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>615</LINE></DT_MM_30DAY>
+  <DT_MM_31DAY><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>620</LINE></DT_MM_31DAY>
+  <DT_MM_DAYEND><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>627</LINE></DT_MM_DAYEND>
+  <DT_MM_ELSEIF2><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>644</LINE></DT_MM_ELSEIF2>
+  <DT_MM_ENDIF3><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>642</LINE></DT_MM_ENDIF3>
+  <DT_MM_ENDIF2><FILE>C:\Users\Beni\Documents\GitHub\uControllerNew\uController\src\Clock\Clock\DateTimeClock.asm</FILE><LINE>648</LINE></DT_MM_ENDIF2>
  </LABELS>
 </ASSEMBLER_INFO>

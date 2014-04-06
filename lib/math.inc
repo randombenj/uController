@@ -75,6 +75,65 @@ DIV:
 
         RET                         ;   RETURN: <result>
 
+;***************************************************************************
+;*
+;* "div8u" - 8/8 Bit Unsigned Division
+;*
+;* This subroutine divides the two register variables "dividend" (dividend) and 
+;* "divisor" (divisor). The result is placed in "result" and the remainder in
+;* "remind".
+;*  
+;* Number of words	:14
+;* Number of cycles	:97
+;* Low registers used	:1 (remind)
+;* High registers used  :3 (result/dividend,divisor,count)
+;*
+;***************************************************************************
+                                    
+;***** Subroutine Register Variables
+                                    
+/*.def	remind	=r15		;remainder
+.def	result	=r16		;result
+.def	dividend	=r16		;dividend
+.def	divisor	=r17		;divisor
+.def	count	=r18		;loop counter*/
+                                    
+;***** Code
+                                    
+div8u:	
+        // stack speichern: ---
+        PUSH    dividend            ;    <dividend> auf stack speichern
+        PUSH    divisor             ;    <divisor> auf stack speichern
+        PUSH    mpr                 ;    <mpr> auf stack speichern   
+        PUSH    count               
+
+        sub	    mpr,mpr	            ;clear remainder and carry
+        ldi	    count,9	            ;init loop counter
+    d8u_1:	
+        rol	    dividend	        ;shift left dividend
+        dec	    count		        ;decrement counter
+        brne	d8u_2		        ;if done
+
+        MOV     result, dividend    ;result is in dividend
+
+        // stack laden: ---
+        POP     count
+        POP     mpr                 ;    <mpr> von stack laden
+        POP     divisor             ;    <divisor> von stack laden
+        POP     dividend            ;    <dividend> von stack laden
+
+        ret			                ;    return
+    d8u_2:	
+        rol 	mpr		            ;shift dividend into remainder
+        sub	    mpr,divisor	        ;remainder = remainder - divisor
+        brcc	d8u_3		        ;if result negative
+        add	    mpr,divisor	        ;    restore remainder
+        clc			                ;    clear carry to be shifted into result
+        rjmp	d8u_1		        ;else
+    d8u_3:	
+        sec			                ;    set carry to be shifted into result
+        rjmp	d8u_1
+
 ;===============================================================================
 ; Funktion:             DIV
 ; Datum:                21.2.2014
@@ -96,7 +155,7 @@ MOD:                                ;  [MOD(<dividend>, <divisor>)] function
         PUSH    mpr                 ;    <mpr> auf stack speichern
 
         // modulo: ---
-        RCALL   DIV                 ;    <result> = DIV(<dividend>, <divisor>)
+        RCALL   div8u               ;    <result> = DIV(<dividend>, <divisor>)
         MUL     result, divisor     ;    <R1:R0> = resultat * divisor
         SUB     dividend, R0        ;    <dividend> = <R0> - <dividend>
 
