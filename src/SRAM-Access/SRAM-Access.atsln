@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{18226A42-8477-4023-8AD2-40C49DA407C9}") = "SRAM-Access", "SRAM-Access\SRAM-Access.asmproj", "{E51A2B74-42D2-4333-A69B-9FD53BA24F7A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E51A2B74-42D2-4333-A69B-9FD53BA24F7A}.Debug|AVR.ActiveCfg = Debug|AVR
+		{E51A2B74-42D2-4333-A69B-9FD53BA24F7A}.Debug|AVR.Build.0 = Debug|AVR
+		{E51A2B74-42D2-4333-A69B-9FD53BA24F7A}.Release|AVR.ActiveCfg = Release|AVR
+		{E51A2B74-42D2-4333-A69B-9FD53BA24F7A}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
