@@ -1,11 +1,13 @@
 #How to: assembly
 
-This is a tutorial to learn the (AVR-)Assembly language. This tutorial focuses on how to build assembly 
-instructions based on higher languages like c/c++ etc. 
+This is a tutorial to learn the AVR-Assembly language. It also covers what Microcontrollers are and why/where
+wou should or shouldn't programm assembly. 
 
-> !The tutorial is entirely based on my experience and stuff I read about assembly on the interwebs.
+> The tutorial is entirely based on my experience and stuff I read about assembly on the interwebs.
 
 Ideas for improvment are welcome. :smile:
+
+---
 
 ##Content
 * [Interduction](#interduction)
@@ -25,25 +27,27 @@ I have some experience on high level language such as c#, c, sql ...
 All those languages are translated (in one way ore the other) to code the computer understands,
 its quiet interesstiong to understand how thigs work on the deepest level.
 
-> And µControllers are awesome ;D
+Additionaly microcontrollers have the scale that its possible to understande what's going on under the hood.
+In the case of the ATMega2560 (8 bit MCU) this is about a 450 page size PDF. 
 
 ###What is assembly
 
 > [Assembly language Wikipedia](http://en.wikipedia.org/wiki/Assembly_language)
 
 Assembly is a programming language, a **low level** programming laugage.
-**Generaly** one assembly instruction takes one CPU cycle (in RISC arcitecture). That means if you have a 8MHz RISC CPU you can perform 
-make at best 8000000 assembly instructions per second.
-
-> So a Intel i7 4770k@3.5GHz can make up to 3500000000 instructions per second (if it were a RISC arcitecure)!
-
-![OMG Cat ^^](http://img.wonkette.com/wp-content/uploads/2013/10/OMG-cat.jpg)
+**Generaly** one assembly instruction takes one CPU cycle (in RISC arcitecture). That means if you have a 8MHz RISC CPU it can make at best 8000000 assembly instructions per second (some instructions require more then one CPU clock to run). 
 
 ####Advantages and Disatvantages
 
+There are so many good high-level programming languages, so where and why does it make sense to programm assembly? 
+When you write an operating system the first little bit of code is most likly assembly 
+(see the Linux Kernel for example). Also if you are programming microcontrollers and need very high performance, 
+assembly is your choize. My personal motivation to learn assembly, is to learn how a basic computer-system works 
+from the verry basics.
+
 Atvangates | Disatvantages
 --- | ---
-As sayd before: Assembly is very, very fast, **Its the fastest way to program any Electronic Device** | To write good and readable assembly code you have to document your vode very well. Its not as comfoteable to write like higher programming languages like c, c++, c#, java, javascript ... But the highest disatvantage might be that you have to learn **new assembly commands for every new CPU/MCU you want to program with Assembly.**
+As sayd before: Assembly is very, very fast, **Its the fastest way to program any Electronic Device** | To write good and readable assembly code you have to document your code very well. Its not as comfoteable to write like higher programming languages like c, c++, c#, java, javascript ... But the highest disatvantage might be that you have to learn **new assembly commands for every new CPU/MCU you want to program with Assembly.**
 
 ##Where to start
 
@@ -68,34 +72,36 @@ RISC CPUs are less complex then CISC CPUs. What does this mean? This menans that
 
 ###Requirements
 
-> Do I need a µController?
+- **Microcontroller**
 
-Actualy no, AVR-Studio has a buitl in simulator wich can simulate your favourite µController.
-But its quiet fun to see the program you built running on a thing you can hold in one hand.
+You don't actualy need a Microcontroller in AVR studio you can use the simulator, but if you buy 
+one, the possibilities what to do with it are only limited by your imagination.
 
-> Where to buy a µController if I want one?
+To use the Microcontroller you also need a programmer to flash your programms to the MCU itselve.
+Because of this I recomend buying the [STK600](http://www.atmel.com/tools/stk600.aspx) 
+(which is actualy a programmer for vaious AVR MCUs and includes the ATMega2560 MCU) 
+or the Arduino which has its own programmer included (the arduino's microcontroller is also from AVR).
+If you have a Raspberry PI you can use it as well to learn assembly. The pi however has an ARM CPU
+so instead of learning the AVR assembly language you have to learn the AVR assembly language.
 
-The [STK600](http://www.atmel.com/tools/stk600.aspx) starter kit comes with a programmer, and a ATMega2560 (the µController).
-Or you can buy a raspberry pi and use it to program assembly (or to do other things such as: installing linux ^^, 
-host your own webpages on your own little server ...).
-
-> What IDE do I need?
+- **Development Environement**
 
 For windows I would recomend the free IDE [AVR Studio 6](http://www.atmel.ch/microsite/atmel_studio6/).
 
-> How do I know all assembly instructions?
+- **Know the assembly**
 
 The most important thing to learn the Assembly language for your CPU/MCU is to have a instruction-table. 
 You can find Instruction tables for your device on the Internet. 
 
 * [ATMega2560](http://www.atmel.ch/Images/doc2549.pdf) on page 416
+* Arduino's [ATmega328](http://www.atmel.com/Images/doc8161.pdf) on page 427
 * [Raspberry PI (ARM v7)](http://infocenter.arm.com/help/topic/com.arm.doc.ddi0301h/DDI0301H_arm1176jzfs_r0p7_trm.pdf) on page 58
 
 ###RESET code
 
 For my projects I use the [header](https://github.com/randombenj/uController/blob/master/AVR_Header.asm) file wich we got from the µController-course.
 
-> **!Documentation is verry important when writing assembly code.**
+> **Documentation is verry important when writing assembly code.**
 
 A code comment in assembly beginss with `;`
 
