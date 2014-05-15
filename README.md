@@ -1,6 +1,9 @@
 #µController
 
-µController course to learn the avr-assembly language.
+ > [how to: assembly](https://github.com/randombenj/uController/blob/master/doc/how-to-assembly.md)
+
+This repository contains a number of small assembly programms to learn the basics of microcontrollers and 
+assembly programming.
 
 ![µContrller](http://upload.wikimedia.org/wikipedia/commons/2/26/Microchip_PIC24HJ32GP202.jpg)
 
