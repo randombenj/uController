@@ -4,5 +4,8 @@
 *.atsuo
 *.user
 
+# BAK files from the struktogrammer
+*.BAK
+
 # Build results
 **/[Dd]ebug/

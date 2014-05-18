@@ -1,26 +1,21 @@
 ;===============================================================================
-;- Program:             display
+;- @program:            display-driver       
+;- -----------------------------------------------------------------------------
+;- @filename:            Display.asm
+;- @version:             1.0.0
+;- @autor:               Benj Fassbind
 ;-
-;- Filename:            display.asm
-;- Version:             1.0.0
-;- Autor:               Benj Fassbind
+;- @purpose:             uP-Schulung
 ;-
-;- Purpose:             uP-Schulung
-;-
-;- Description:
-;-          
-;-                    
-;-
-;- Entwicklungsablauf:
-;- Version:  Datum:     Autor:   Entwicklungsschritt:               Zeit:
-;- 1.0.0     01.01.13   FAB      Ganzes Programm erstellt               Min.
-;-
-;-                                                  Totalzeit:      Min.
-;-
-;- Copyright: Benj Fassbind, Sonneggstrasse 13, 6410 Goldau (2013)
-;------------------------------------------------------------------------------
+;- @description:
+;-  
+;-  The LCD driver "speaks" with the LCD interface and puts content on the
+;-  LCD screen. For this purpose various functions are implemented in 
+;-  AVR-Assembly
+;-                   
+;- Copyright (c) 2014 Benj Fassbind
 
-;--- uController ---
+;--- uCONTROLLER (ATMega2560) ---
 .include "m2560def.inc"
 
 ;--- INTERRUPT-ADDRESS-VECTORS ---
@@ -144,7 +139,7 @@
         NOP                     ;  0x0070
 
 ;--- Include-Files ---
-
+.include "..\..\..\lib\delay.inc"
 
 
 
@@ -155,8 +150,30 @@
 .equ     SWITCH       = PIND          ; Input for SWITCH
 .equ     SWITCH_D     = DDRD          ; Data direction Port for SWITCH
 
+.equ     LCD          = PORTC         ; LCD output on Port C
+.equ     LCD_D        = DDRC          ; Data direction Port for LCD
+
 ;--- variables ---
 .def      mpr         = R16           ; multipurpose register
+
+;--- delay variables ---
+.def      ms          = R17           ; milli seconds register
+
+;--- lcd variables ---
+.def      RAM_ADDR    = R18           ; ram (cursor) pointer on lcd
+
+/* CONTROL_MEM: ---
+ The control memory is used for the Display ON/OFF Control,
+ because this command has to set both the LCD and the cursor
+ on or off. But for this driver we want seperate functions
+ for each LCD and cursor on/off.
+
+ 'bit-0' is used to store the LCD status (1 = on; 0 = off)
+ 'bit-1' is used to store the cursor status (1 = on; 0 = off)
+
+ Everything else will be ignored. Clear this register on reset. */
+.def      CONTROL_MEM = R19           ; control memory (lcd and cursor are on/off)       
+
 
 
 
@@ -165,16 +182,20 @@
 ;------------------------------------------------------------------------------
 
 ;--- Initialisation ---
-Reset:    SER         mpr                       ; Output:= LED
+Reset:    SER         mpr                       ; Output = LED
           OUT         LED_D, mpr
 
-          CLR         mpr                       ; Input:= Switch-values
+          OUT         LCD_D, mpr                ; Output = LCD
+
+          CLR         mpr                       ; Input = Switch-values
           OUT         SWITCH_D, mpr
 
           LDI         mpr, LOW(RAMEND)          ; Initialise stack
           OUT         SPL,mpr
           LDI         mpr, HIGH(RAMEND)
           OUT         SPH,mpr
+
+          CLR         CONTROL_MEM               ; clear the control memory
 
 
 ;--- Main program: ---     
@@ -195,8 +216,39 @@ Main:     										; main function
 ;
 ;------------------------------------------------------------------------------
 LCD_INI:										; display initialisation
-		
-		 
+        
+         PUSH       mpr                         ;  save mpr to stack
+
+      /* Wait more than 30ms after 
+         Vdd rises to 4.5V.
+
+         FUNCTION SET: ---
+
+         Ennable 4-bit mode with MPU.
+         The LCD is set to 2-line mode
+         with 5x8 dots characters. */
+
+         // TODO: what does: 'When 4-bit bus mode, it needs to transfer 4-bit data twice.' mean?
+         
+         // 4-bit mode with MPU
+		 RCALL      W100MS                      ;  wait for more than 30ms
+         LDI        mpr, 0x02                   ;  'function set' instruction
+         OUT        LCD, mpr                    ;  send 'function set' HN
+
+         // 2-line mode and 5x8 dots char
+         LDI        mpr, 0x0C                   ;  'function set' instruction
+         OUT        LCD, mpr                    ;  send 'function set' LN
+
+         RCALL      W100US                      ;  wait for more than 39ns
+         RCALL      LCD_ON                      ;  turn the LCD on
+         // TODO: and cursor?
+
+         RCALL      W100US                      ;  wait for more than 39ns
+         RCALL      LCD_CLR                     ;  clear the display
+         RCALL      W10MS                       ;  wait for more than 1.53ms
+         // TODO: entry mode set?
+
+         POP        mpr                         ;  load mpr from stack
 
 		 RET									; return from function
 
@@ -310,7 +362,7 @@ LCD_HEX:										; outputs a hex value
 ;  The output int16 value
 ;
 ;------------------------------------------------------------------------------
-LLCD_INT16:										; outputs a int16 value
+LCD_INT16:										; outputs a int16 value
 
 		
 
