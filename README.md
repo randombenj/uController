@@ -22,3 +22,4 @@ assembly programming.
 
 * [header](https://github.com/randombenj/uController/blob/master/AVR_Header.asm)
 * [date-time-clock](https://github.com/randombenj/uController/blob/master/doc/clock/date-time-clock.md)
+* [lcd-driver](https://github.com/randombenj/uController/blob/master/doc/lcd-driver/lcd-driver.md)
