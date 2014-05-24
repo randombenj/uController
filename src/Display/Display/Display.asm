@@ -199,23 +199,23 @@ Reset:    SER         mpr                       ; Output = LED
 
 
 ;--- Main program: ---     
-Main:     										; main function
-		  
-		  
-		  
-		  RJMP		  Main						; endless loop
+Main:                                           ; main function
+          
+          
+          
+          RJMP      Main                        ; endless loop
 
 ;------------------------------------------------------------------------------
 ; Subroutines
 ;------------------------------------------------------------------------------
 ;==============================================================================
-; @name:	LCD_INI
+; @name:    LCD_INI
 ; @description:
 ;  Initialises the Display. Sets up the communication from the Display to the
 ;  microcontroller.
 ;
 ;------------------------------------------------------------------------------
-LCD_INI:										; display initialisation
+LCD_INI:                                        ; display initialisation
         
          PUSH       mpr                         ;  save mpr to stack
 
@@ -226,12 +226,34 @@ LCD_INI:										; display initialisation
 
          Ennable 4-bit mode with MPU.
          The LCD is set to 2-line mode
-         with 5x8 dots characters. */
-
-         // TODO: what does: 'When 4-bit bus mode, it needs to transfer 4-bit data twice.' mean?
+         with 5x8 dots characters.
          
+         The three 0x03 is required because
+         we don't know in which state the 
+         controll is when the lcd is in 
+         8-bit mode it stays there until you
+         switch to 4-bit mode:
+
+         state: 
+         -------
+         8-bit
+         4-bit HB
+         4-bit LB
+         4-bit LO8 */
+
+         // Be shure to turn on 8-bit mode.
+         LDI        mpr, 0x03                   ;  'function set' 8-bit mode
+
+         RCALL      W100MS                      ;  wait for more than 30ms
+         OUT        LCD, mpr                    ;  send 'function set' 8-bit mode
+
+         RCALL      W10MS                       ;  wait at least 4.1ms
+         OUT        LCD, mpr                    ;  send 'function set' 8-bit mode
+
+         RCALL      W100US                      ;  wait at least 100us
+         OUT        LCD, mpr                    ;  send 'function set' 8-bit mode
+
          // 4-bit mode with MPU
-		 RCALL      W100MS                      ;  wait for more than 30ms
          LDI        mpr, 0x02                   ;  'function set' instruction
          OUT        LCD, mpr                    ;  send 'function set' HN
 
@@ -239,60 +261,104 @@ LCD_INI:										; display initialisation
          LDI        mpr, 0x0C                   ;  'function set' instruction
          OUT        LCD, mpr                    ;  send 'function set' LN
 
-         RCALL      W100US                      ;  wait for more than 39ns
          RCALL      LCD_ON                      ;  turn the LCD on
-         // TODO: and cursor?
 
          RCALL      W100US                      ;  wait for more than 39ns
          RCALL      LCD_CLR                     ;  clear the display
          RCALL      W10MS                       ;  wait for more than 1.53ms
-         // TODO: entry mode set?
+
+      /* Entry mode set means that, 
+         when writing the cursor moves to the
+         right */
 
          POP        mpr                         ;  load mpr from stack
 
-		 RET									; return from function
+         RET                                    ; return from function
 
 
 
 ;==============================================================================
-; @name:	LCD_ON
+; @name:    LCD_ON
 ; @description:
 ;  Turns the LCD-Display on.
 ;
 ;------------------------------------------------------------------------------
-LCD_ON:											; turn display on
-		
-		
+LCD_ON:                                         ; turn display on
+        PUSH       mpr                          ;  save mpr to stack
 
-		RET										; return from function
+        RCALL      W100US                       ;  wait for more than 39ns
+        LDI        mpr, 0x00                    ;  'display on/of' HN = 0x00        
+        OUT        LCD, mpr                     ;  send 'display on/of' HN = 0x00
+        
+        // control if curser is on or off
+        SBRS       CONTROL_MEM, 1               ;  curser status in control memory
+        RJMP       LCD_ON_ELSEIF01
+
+        // curser has to be turned on
+        LDI        mpr, 0x0E                    ;  turn display and cursor on
+        OUT        LCD, mpr                     ;  send 'display on/off control'
+        RJMP       LCD_ON_ENDIF01
+    LCD_ON_ELSEIF01:
+        
+        // curser has to be turned off
+        LDI        mpr, 0x0C                    ;  turn display on
+        OUT        LCD, mpr                     ;  send 'display on/off control'
+    LCD_ON_ENDIF01:   
+
+        POP         mpr                         ;  load mpr from stack
+
+        RET                                     ; return from function
 
 ;==============================================================================
-; @name:	LCD_OFF
+; @name:    CUR_ON
+; @description:
+;  Turns the Cursor on.
+;
+;------------------------------------------------------------------------------
+CUR_ON:                                         ; turn cursor on
+        
+        
+
+        RET                                     ; return from function
+
+;==============================================================================
+; @name:    LCD_OFF
 ; @description:
 ;  Turns the LCD-Display off.
 ;
 ;------------------------------------------------------------------------------
-LCD_OFF:										; turn display off
+LCD_OFF:                                        ; turn display off
 
-		
+        
 
-		RET										; return from function
-
+        RET                                     ; return from function
 
 ;==============================================================================
-; @name:	LCD_CLR
+; @name:    CUR_OFF
+; @description:
+;  Turns the cursor off.
+;
+;------------------------------------------------------------------------------
+CUR_OFF:                                        ; turn cursor off
+    
+        
+
+        RET                                     ; return from function
+
+;==============================================================================
+; @name:    LCD_CLR
 ; @description:
 ;  Clears the LCD-Display content.
 ;
 ;------------------------------------------------------------------------------
-LCD_CLR:										; clears the display
+LCD_CLR:                                        ; clears the display
 
-		
+        
 
-		RET										; return from function
+        RET                                     ; return from function
 
 ;==============================================================================
-; @name:	LCD_RAM
+; @name:    LCD_RAM
 ; @description:
 ;  Sets the curser to the given RAM address. The RAM address defines where
 ;  on the display the content is put.
@@ -301,14 +367,14 @@ LCD_CLR:										; clears the display
 ;  The address to set the curser to.
 ;
 ;------------------------------------------------------------------------------
-LCD_RAM:										; sets the ram address
+LCD_RAM:                                        ; sets the ram address
 
-		
+        
 
-		RET										; return from function
+        RET                                     ; return from function
 
 ;==============================================================================
-; @name:	LCD_CHR
+; @name:    LCD_CHR
 ; @description:
 ;  Writes a ascii character to the display.
 ;
@@ -316,14 +382,14 @@ LCD_RAM:										; sets the ram address
 ;  The output char
 ;
 ;------------------------------------------------------------------------------
-LCD_CHR:										; puts a char to the display
+LCD_CHR:                                        ; puts a char to the display
 
-		
+        
 
-		RET										; return from function
+        RET                                     ; return from function
 
 ;==============================================================================
-; @name:	LCD_STR
+; @name:    LCD_STR
 ; @description:
 ;  Writes a string to the display from the beginn address to the $00 char.
 ;
@@ -331,15 +397,15 @@ LCD_CHR:										; puts a char to the display
 ;  The output string address
 ;
 ;------------------------------------------------------------------------------
-LCD_STR:										; puts a string to the display
+LCD_STR:                                        ; puts a string to the display
 
-		
+        
 
-		RET										; return from function
+        RET                                     ; return from function
 
 
 ;==============================================================================
-; @name:	LCD_HEX
+; @name:    LCD_HEX
 ; @description:
 ;  Writes a hex number to the display.
 ;
@@ -347,14 +413,14 @@ LCD_STR:										; puts a string to the display
 ;  The output hex value
 ;
 ;------------------------------------------------------------------------------
-LCD_HEX:										; outputs a hex value
+LCD_HEX:                                        ; outputs a hex value
 
-		
+        
 
-		RET										; return from function
+        RET                                     ; return from function
 
 ;==============================================================================
-; @name:	LCD_INT16
+; @name:    LCD_INT16
 ; @description:
 ;  Writes a int16 number to the display.
 ;
@@ -362,11 +428,11 @@ LCD_HEX:										; outputs a hex value
 ;  The output int16 value
 ;
 ;------------------------------------------------------------------------------
-LCD_INT16:										; outputs a int16 value
+LCD_INT16:                                      ; outputs a int16 value
 
-		
+        
 
-		RET										; return from function
+        RET                                     ; return from function
 
 
 
