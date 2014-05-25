@@ -200,8 +200,8 @@ Reset:    SER         mpr                       ; Output = LED
 
 ;--- Main program: ---     
 Main:                                           ; main function
-          
-          
+          RCALL     LCD_INI                     ;  initialise the lcd
+          RCALL     CUR_ON                      ;  turn cursor on
           
           RJMP      Main                        ; endless loop
 
@@ -213,6 +213,23 @@ Main:                                           ; main function
 ; @description:
 ;  Initialises the Display. Sets up the communication from the Display to the
 ;  microcontroller.
+; 
+;  INITIALISATION FLOWCHART:
+;
+;   -> delay 100ms (Vdd rises to 4.5V)
+;
+;   'reset' the lcd
+;
+;  'function set'
+;   -> delay 100us
+;
+;  'display on/off control'
+;   -> delay 100us
+;
+;  CALL: LCD_ON
+;
+;  'entry mode set'
+;   -> delay 100us
 ;
 ;------------------------------------------------------------------------------
 LCD_INI:                                        ; display initialisation
@@ -241,7 +258,7 @@ LCD_INI:                                        ; display initialisation
          4-bit LB
          4-bit LO8 */
 
-         // Be shure to turn on 8-bit mode.
+         // Be shure to turn on 8-bit mode. (resets the LCD)
          LDI        mpr, 0x03                   ;  'function set' 8-bit mode
 
          RCALL      W100MS                      ;  wait for more than 30ms
@@ -258,18 +275,30 @@ LCD_INI:                                        ; display initialisation
          OUT        LCD, mpr                    ;  send 'function set' HN
 
          // 2-line mode and 5x8 dots char
-         LDI        mpr, 0x0C                   ;  'function set' instruction
+         LDI        mpr, 0x08                   ;  'function set' instruction
          OUT        LCD, mpr                    ;  send 'function set' LN
+
+         RCALL      W100US                      ;  wait for more than 39ns
 
          RCALL      LCD_ON                      ;  turn the LCD on
 
-         RCALL      W100US                      ;  wait for more than 39ns
          RCALL      LCD_CLR                     ;  clear the display
-         RCALL      W10MS                       ;  wait for more than 1.53ms
 
       /* Entry mode set means that, 
          when writing the cursor moves to the
-         right */
+         right.
+         
+         We want to increment the cursor
+         (move to the right when writing)
+         and not shift the display.*/
+         LDI        mpr, 0x00                   ;  'entry mode set' HN
+         OUT        LCD, mpr                    ;  send 'entry mode set' HN
+
+         // increment cursor, don't shift
+         LDI        mpr, 0x06                   ;  'entry mode set' LN
+         OUT        LCD, mpr                    ;  send 'entry mode set' LN
+
+         RCALL      W100US                      ;  wait for the command to finish
 
          POP        mpr                         ;  load mpr from stack
 
@@ -286,27 +315,23 @@ LCD_INI:                                        ; display initialisation
 LCD_ON:                                         ; turn display on
         PUSH       mpr                          ;  save mpr to stack
 
-        RCALL      W100US                       ;  wait for more than 39ns
         LDI        mpr, 0x00                    ;  'display on/of' HN = 0x00        
         OUT        LCD, mpr                     ;  send 'display on/of' HN = 0x00
         
-        // control if curser is on or off
-        SBRS       CONTROL_MEM, 1               ;  curser status in control memory
-        RJMP       LCD_ON_ELSEIF01
+        LDI        mpr, 0x0C                    ;  display on
 
-        // curser has to be turned on
-        LDI        mpr, 0x0E                    ;  turn display and cursor on
+        // handle cursor
+        SBRC       CONTROL_MEM, 1               ;  if curser has to be turned on:
+        SBR        mpr, 2                       ;  turn curser on
+
+        // save lcd state to control memory
+        SBR        CONTROL_MEM, 1               ;  display state: on
+
         OUT        LCD, mpr                     ;  send 'display on/off control'
-        RJMP       LCD_ON_ENDIF01
-    LCD_ON_ELSEIF01:
-        
-        // curser has to be turned off
-        LDI        mpr, 0x0C                    ;  turn display on
-        OUT        LCD, mpr                     ;  send 'display on/off control'
-    LCD_ON_ENDIF01:   
+
+        RCALL      W100US                       ;  wait for more than 39ns
 
         POP         mpr                         ;  load mpr from stack
-
         RET                                     ; return from function
 
 ;==============================================================================
@@ -316,9 +341,25 @@ LCD_ON:                                         ; turn display on
 ;
 ;------------------------------------------------------------------------------
 CUR_ON:                                         ; turn cursor on
-        
-        
+        PUSH       mpr                          ;  save mpr to stack
 
+        LDI        mpr, 0x00                    ;  'display on/of' HN = 0x00        
+        OUT        LCD, mpr                     ;  send 'display on/of' HN = 0x00
+        
+        LDI        mpr, 0x0A                    ;  cursor on
+
+        // handle display
+        SBRC       CONTROL_MEM, 0               ;  if display has to be turned on:
+        SBR        mpr, 4                       ;  turn display on
+
+        // save cursor state to control memory
+        SBR        CONTROL_MEM, 2               ;  cursor state: on
+
+        OUT        LCD, mpr                     ;  send 'display on/off control'
+
+        RCALL      W100US                       ;  wait for more than 39ns
+
+        POP         mpr                         ;  load mpr from stack
         RET                                     ; return from function
 
 ;==============================================================================
@@ -328,9 +369,25 @@ CUR_ON:                                         ; turn cursor on
 ;
 ;------------------------------------------------------------------------------
 LCD_OFF:                                        ; turn display off
+        PUSH       mpr                          ;  save mpr to stack
 
+        LDI        mpr, 0x00                    ;  'display on/of' HN = 0x00        
+        OUT        LCD, mpr                     ;  send 'display on/of' HN = 0x00
         
+        LDI        mpr, 0x08                    ;  display off
 
+        // handle cursor
+        SBRC       CONTROL_MEM, 1               ;  if curser has to be turned on:
+        SBR        mpr, 2                       ;  turn curser on
+
+        // save lcd state to control memory
+        CBR        CONTROL_MEM, 1               ;  display state: off
+
+        OUT        LCD, mpr                     ;  send 'display on/off control'
+
+        RCALL      W100US                       ;  wait for more than 39ns
+
+        POP         mpr                         ;  load mpr from stack
         RET                                     ; return from function
 
 ;==============================================================================
@@ -340,21 +397,49 @@ LCD_OFF:                                        ; turn display off
 ;
 ;------------------------------------------------------------------------------
 CUR_OFF:                                        ; turn cursor off
-    
-        
+        PUSH       mpr                          ;  save mpr to stack
 
+        LDI        mpr, 0x00                    ;  'display on/of' HN = 0x00        
+        OUT        LCD, mpr                     ;  send 'display on/of' HN = 0x00
+        
+        LDI        mpr, 0x08                    ;  cursor on
+
+        // handle display
+        SBRC       CONTROL_MEM, 0               ;  if display has to be turned on:
+        SBR        mpr, 4                       ;  turn display on
+
+        // save cursor state to control memory
+        CBR        CONTROL_MEM, 2               ;  cursor state: off
+
+        OUT        LCD, mpr                     ;  send 'display on/off control'
+
+        RCALL      W100US                       ;  wait for more than 39ns
+
+        POP         mpr                         ;  load mpr from stack
         RET                                     ; return from function
 
 ;==============================================================================
 ; @name:    LCD_CLR
 ; @description:
-;  Clears the LCD-Display content.
+;  Clears the LCD-Display content. DDRAM address will be set to 0x00 on
+;  the display.
+;  Brings the cursor to the left edge on the first line of the display.
 ;
 ;------------------------------------------------------------------------------
 LCD_CLR:                                        ; clears the display
+        PUSH       mpr                          ;  save mpr to stack
 
-        
+        RCALL      W100US                       ;  wait for more than 39ns
 
+        LDI        mpr, 0x00                    ;  'clear display' HN
+        OUT        LCD, mpr                     ;  send 'clear display' HN
+
+        LDI        mpr, 0x01                    ;  'clear display' LN command
+        OUT        LCD, mpr                     ;  send 'clear display' LN
+
+        RCALL      W10MS                        ;  wait for more than 1.53ms
+
+        POP        mpr                          ;  load mpr from stack
         RET                                     ; return from function
 
 ;==============================================================================
