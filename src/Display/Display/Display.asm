@@ -159,19 +159,45 @@
 ;--- lcd instructions ---
 
 ;------------------------------------------------------------
+; FUNCTION SET:
+;------------------------------------------------------------
+;  RS | R/W | DB7 | DB6 | DB5 | DB4 | DB3 | DB2 | DB1 | DB0 |
+;------------------------------------------------------------
+;  0  |  0  |  0  |  0  |  1  |  DL |  N  |  F  |  -  |  -  |
+;------------------------------------------------------------
+; DL: interface data length control bit (4 bit mode)
+; N:  line number (2 line)
+; F:  font type (5x8 bit)
+.equ    FUNCTIONSET   = 0x28
+
+;------------------------------------------------------------
 ; SET DDRAM ADDRESS:
 ;------------------------------------------------------------
 ;  RS | R/W | DB7 | DB6 | DB5 | DB4 | DB3 | DB2 | DB1 | DB0 |
 ;------------------------------------------------------------
 ;  0  |  0  |  1  | AC6 | AC5 | AC4 | AC3 | AC2 | AC1 | AC0 |
 ;------------------------------------------------------------
-; set display data ram address (raw command) 
-.equ    SETDDRAM      = 0x80          
+; set display data ram address (raw command)
+.equ    SETDDRAM      = 0x80 
+ 
+;------------------------------------------------------------
+; ENTRY MODE SET:
+;------------------------------------------------------------
+;  RS | R/W | DB7 | DB6 | DB5 | DB4 | DB3 | DB2 | DB1 | DB0 |
+;------------------------------------------------------------
+;  0  |  0  |  1  |  0  |  0  |  0  |  0  |  1  | I/D |  SH |
+;------------------------------------------------------------
+; I/D: increment / decrement of DDRAM address (move to right)
+; SH:  shift of entire display (no shift)
+.equ    ENTRYMODESET  = 0x06  
+
+     
 
 
 ;--- variables ---
 .def      mpr         = R16           ; multipurpose register
 .def      inst        = R20           ; instruction register
+.def      hex         = R21           ; register for hex number
 
 ;--- delay variables ---
 .def      ms          = R17           ; milli seconds register
@@ -223,10 +249,13 @@ reset:    SER         mpr                       ; Output = LED
 ;--- Main program: ---     
 main:                                           ; main function
        // string output (Z register = str address)
-          LDI       ZH, HIGH(string << 1)       ;  load string refference (high byte)
+          /*LDI       ZH, HIGH(string << 1)       ;  load string refference (high byte)
           LDI       ZL, LOW(string << 1)        ;  load string refference (low byte)
 
-          RCALL     LCD_STR                     ;  write string to lcd
+          RCALL     LCD_STR                     ;  write string to lcd*/
+
+		  LDI       hex, 0xA1                   ;  load hex number to write
+		  RCALL     LCD_HEX                     ;  write hex data to lcd
 
     endl:
           RJMP      endl                        ; endless loop
@@ -563,7 +592,7 @@ LCD_RAM:                                        ; sets the ram address
         
         SBR         RAM_ADDR, SETDDRAM          ;  set ddram command
         
-        // HIGH NIBBLE
+     // HIGH NIBBLE
         SWAP        RAM_ADDR                    ;  first send the high nibble
         MOV         inst, RAM_ADDR              ;  set instruction
         ANDI        inst, $0F                   ;  send only high nibble
@@ -648,9 +677,32 @@ LCD_STR:                                        ; puts a string to the display
 ;
 ;------------------------------------------------------------------------------
 LCD_HEX:                                        ; outputs a hex value
+		PUSH        hex                         ;  save hex to stack
+		PUSH        mpr                         ;  save number to stack
+        // TODO: wenn hex + x dann ascii
+     // Put hex prefix '0x' on screen
+        LDI			mpr, '0'					
+		RCALL		LCD_CHR
 
-        
+		LDI			mpr, 'x'
+		RCALL       LCD_CHR
+		
+	 // HIGH NIBBLE (of hex number)
+        SWAP        hex                         ;  first convert the high nibble
+        MOV         mpr, hex                    ;  move the character to the mpr
+        ANDI        mpr, $0F                    ;  send only high nibble
+        RCALL       TO_CHAR                     ;  convert to hex character
+		RCALL       LCD_CHR                     ;  write character to lcd
 
+     // LOW NIBBLE  (of hex number)
+        SWAP        hex                         ;  second convert the low nibble
+        MOV         mpr, hex                    ;  move the character to the mpr
+        ANDI        mpr, $0F                    ;  send only low nibble
+        RCALL       TO_CHAR                     ;  convert to hex character
+		RCALL       LCD_CHR                     ;  write character to lcd
+         
+        POP         mpr                         ;  load number from stack
+        POP         hex                         ;  load hex from stack
         RET                                     ; return from function
 
 ;==============================================================================
@@ -667,6 +719,35 @@ LCD_INT16:                                      ; outputs a int16 value
         
 
         RET                                     ; return from function
+
+;==============================================================================
+; @name:    TO_CHAR
+; @description:
+;  Converts a 4bit number to a hex ascii character
+;
+; @param {uint_4} mpr
+;  The 4 bit number to convert into a ascii character 
+;  (low nibble contains number)
+;
+; @return {char} mpr
+;  The converted ascii character
+;------------------------------------------------------------------------------
+TO_CHAR:                                        ; converts number to hex ascii
+       
+       CPI         mpr, 0x09				    ;  when the number is
+	   BRLO        TO_CHAR_ELSEIF01             ;  lower then
+
+    // convert character (A...F) to ascii
+	   SUBI        mpr, -0x37                   ;   convert to character (A...F)
+	   RJMP        TO_CHAR_ENDIF01              ;   don't execute else statement
+    TO_CHAR_ELSEIF01:
+
+	// convert number (1...9) to ascii
+	   SUBI        mpr, -0x30                   ;   convert to character (1...9)
+    TO_CHAR_ENDIF01:
+
+       RET                                      ; return form function
+
 
 ;==============================================================================
 ; DATA DEFFINITION
