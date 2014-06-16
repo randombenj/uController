@@ -11,7 +11,7 @@
 ;-  
 ;-  The LCD driver "speaks" with the LCD interface and puts content on the
 ;-  LCD screen. For this purpose various functions are implemented in 
-;-  AVR-Assembly
+;-  AVR-Assembly. The Interface with the MPU is 4 bit long.
 ;-                   
 ;- Copyright (c) 2014 Benj Fassbind
 
@@ -168,18 +168,8 @@
 ; DL: interface data length control bit (4 bit mode)
 ; N:  line number (2 line)
 ; F:  font type (5x8 bit)
-.equ    FUNCTIONSET   = 0x28
+.equ    FUNCTION_SET  = 0x28
 
-;------------------------------------------------------------
-; SET DDRAM ADDRESS:
-;------------------------------------------------------------
-;  RS | R/W | DB7 | DB6 | DB5 | DB4 | DB3 | DB2 | DB1 | DB0 |
-;------------------------------------------------------------
-;  0  |  0  |  1  | AC6 | AC5 | AC4 | AC3 | AC2 | AC1 | AC0 |
-;------------------------------------------------------------
-; set display data ram address (raw command)
-.equ    SETDDRAM      = 0x80 
- 
 ;------------------------------------------------------------
 ; ENTRY MODE SET:
 ;------------------------------------------------------------
@@ -189,10 +179,41 @@
 ;------------------------------------------------------------
 ; I/D: increment / decrement of DDRAM address (move to right)
 ; SH:  shift of entire display (no shift)
-.equ    ENTRYMODESET  = 0x06  
+.equ    ENTRYMODE_SET = 0x06  
 
-     
+;------------------------------------------------------------
+; LCD ON / CURSOR ON:
+;------------------------------------------------------------
+;  RS | R/W | DB7 | DB6 | DB5 | DB4 | DB3 | DB2 | DB1 | DB0 |
+;------------------------------------------------------------
+;  0  |  0  |  0  |  0  |  0  |  0  |  1  |  D  |  C  |  B  |
+;------------------------------------------------------------
+; turn LCD/Cursor/blink On or Off (raw command)
+; D: display on/off
+; C: cursor on/off
+; B: cursor blink on/off (off)
+.equ    LCD_CUR_CTRL  = 0x08  
 
+;------------------------------------------------------------
+; CLEAR THE LCD:
+;------------------------------------------------------------
+;  RS | R/W | DB7 | DB6 | DB5 | DB4 | DB3 | DB2 | DB1 | DB0 |
+;------------------------------------------------------------
+;  0  |  0  |  0  |  0  |  0  |  0  |  0  |  0  |  0  |  1  |
+;------------------------------------------------------------
+; writes 0x20 ' ' (space) to all DDRAM addresses and return
+; cursor home (address: 0x00)
+.equ    CLEAR_LCD  = 0x01  
+
+;------------------------------------------------------------
+; SET DDRAM ADDRESS:
+;------------------------------------------------------------
+;  RS | R/W | DB7 | DB6 | DB5 | DB4 | DB3 | DB2 | DB1 | DB0 |
+;------------------------------------------------------------
+;  0  |  0  |  1  | AC6 | AC5 | AC4 | AC3 | AC2 | AC1 | AC0 |
+;------------------------------------------------------------
+; set display data ram address (raw command)
+.equ    SET_DDRAM     = 0x80 
 
 ;--- variables ---
 .def      mpr         = R16           ; multipurpose register
@@ -254,8 +275,8 @@ main:                                           ; main function
 
           RCALL     LCD_STR                     ;  write string to lcd*/
 
-		  LDI       hex, 0xA1                   ;  load hex number to write
-		  RCALL     LCD_HEX                     ;  write hex data to lcd
+          LDI       hex, 0xA1                   ;  load hex number to write
+          RCALL     LCD_HEX                     ;  write hex data to lcd
 
     endl:
           RJMP      endl                        ; endless loop
@@ -590,18 +611,18 @@ LCD_RAM:                                        ; sets the ram address
         PUSH        RAM_ADDR                    ;  save ram address to stack
         PUSH        inst                        ;  save instruction to stack
         
-        SBR         RAM_ADDR, SETDDRAM          ;  set ddram command
+        SBR         RAM_ADDR, SET_DDRAM         ;  set ddram command
         
      // HIGH NIBBLE
         SWAP        RAM_ADDR                    ;  first send the high nibble
         MOV         inst, RAM_ADDR              ;  set instruction
-        ANDI        inst, $0F                   ;  send only high nibble
+        ANDI        inst, 0x0F                  ;  send only high nibble
         RCALL       LCD_WRITE                   ;  write to the lcd
 
      // LOW NIBBLE
         SWAP        RAM_ADDR                    ;  first send the low nibble
         MOV         inst, RAM_ADDR              ;  set instruction
-        ANDI        inst, $0F                   ;  send only low nibble
+        ANDI        inst, 0x0F                  ;  send only low nibble
         RCALL       LCD_WRITE                   ;  write to the lcd
         
         RCALL       W1MS                        ;  wait for the lcd to process
@@ -630,13 +651,13 @@ LCD_CHR:                                        ; puts a char to the display
      // HIGH NIBBLE
         SWAP        mpr                         ;  first send the high nibble
         MOV         inst, mpr                   ;  move the character to the instruction register
-        ANDI        inst, $0F                   ;  send only high nibble
+        ANDI        inst, 0x0F                  ;  send only high nibble
         RCALL       LCD_WRITE_DATA              ;  send data to the lcd
 
      // LOW NIBBLE
         SWAP        mpr                         ;  first send the low nibble
         MOV         inst, mpr                   ;  move the character to the instruction register
-        ANDI        inst, $0F                   ;  send only low nibble
+        ANDI        inst, 0x0F                  ;  send only low nibble
         RCALL       LCD_WRITE_DATA              ;  send data to the lcd
 
         POP         mpr                         ;  load mpr from stack
@@ -677,29 +698,29 @@ LCD_STR:                                        ; puts a string to the display
 ;
 ;------------------------------------------------------------------------------
 LCD_HEX:                                        ; outputs a hex value
-		PUSH        hex                         ;  save hex to stack
-		PUSH        mpr                         ;  save number to stack
+        PUSH        hex                         ;  save hex to stack
+        PUSH        mpr                         ;  save number to stack
         // TODO: wenn hex + x dann ascii
      // Put hex prefix '0x' on screen
-        LDI			mpr, '0'					
-		RCALL		LCD_CHR
+        LDI         mpr, '0'                    
+        RCALL       LCD_CHR
 
-		LDI			mpr, 'x'
-		RCALL       LCD_CHR
-		
-	 // HIGH NIBBLE (of hex number)
+        LDI         mpr, 'x'
+        RCALL       LCD_CHR
+        
+     // HIGH NIBBLE (of hex number)
         SWAP        hex                         ;  first convert the high nibble
         MOV         mpr, hex                    ;  move the character to the mpr
-        ANDI        mpr, $0F                    ;  send only high nibble
+        ANDI        mpr, 0x0F                   ;  send only high nibble
         RCALL       TO_CHAR                     ;  convert to hex character
-		RCALL       LCD_CHR                     ;  write character to lcd
+        RCALL       LCD_CHR                     ;  write character to lcd
 
      // LOW NIBBLE  (of hex number)
         SWAP        hex                         ;  second convert the low nibble
         MOV         mpr, hex                    ;  move the character to the mpr
-        ANDI        mpr, $0F                    ;  send only low nibble
+        ANDI        mpr, 0x0F                   ;  send only low nibble
         RCALL       TO_CHAR                     ;  convert to hex character
-		RCALL       LCD_CHR                     ;  write character to lcd
+        RCALL       LCD_CHR                     ;  write character to lcd
          
         POP         mpr                         ;  load number from stack
         POP         hex                         ;  load hex from stack
@@ -734,16 +755,16 @@ LCD_INT16:                                      ; outputs a int16 value
 ;------------------------------------------------------------------------------
 TO_CHAR:                                        ; converts number to hex ascii
        
-       CPI         mpr, 0x09				    ;  when the number is
-	   BRLO        TO_CHAR_ELSEIF01             ;  lower then
+       CPI         mpr, 0x09                    ;  when the number is
+       BRLO        TO_CHAR_ELSEIF01             ;  lower then
 
     // convert character (A...F) to ascii
-	   SUBI        mpr, -0x37                   ;   convert to character (A...F)
-	   RJMP        TO_CHAR_ENDIF01              ;   don't execute else statement
+       SUBI        mpr, -0x37                   ;   convert to character (A...F)
+       RJMP        TO_CHAR_ENDIF01              ;   don't execute else statement
     TO_CHAR_ELSEIF01:
 
-	// convert number (1...9) to ascii
-	   SUBI        mpr, -0x30                   ;   convert to character (1...9)
+    // convert number (1...9) to ascii
+       SUBI        mpr, -0x30                   ;   convert to character (1...9)
     TO_CHAR_ENDIF01:
 
        RET                                      ; return form function
@@ -753,4 +774,4 @@ TO_CHAR:                                        ; converts number to hex ascii
 ; DATA DEFFINITION
 ;------------------------------------------------------------------------------
 string: 
-        .db        "Hello World",0
+        .db        "Hello World", 0
