@@ -179,6 +179,14 @@
 ;------------------------------------------------------------
 ; I/D: increment / decrement of DDRAM address (move to right)
 ; SH:  shift of entire display (no shift)
+;
+; Entry mode set means that, 
+; when writing the cursor moves to the
+; right.
+;         
+; We want to increment the cursor
+; (move to the right when writing)
+; and not shift the display.
 .equ    ENTRYMODE_SET = 0x06  
 
 ;------------------------------------------------------------
@@ -192,7 +200,9 @@
 ; D: display on/off
 ; C: cursor on/off
 ; B: cursor blink on/off (off)
-.equ    LCD_CUR_CTRL  = 0x08  
+.equ    LCD_CTRL_RAW  = 0x08  // raw command (all off)
+.equ    LCD_CTRL_CUR  = 0x0A  // raw command (cursor on)
+.equ    LCD_CTRL_LCD  = 0x0C  // raw command (lcd on)
 
 ;------------------------------------------------------------
 ; CLEAR THE LCD:
@@ -270,13 +280,10 @@ reset:    SER         mpr                       ; Output = LED
 ;--- Main program: ---     
 main:                                           ; main function
        // string output (Z register = str address)
-          /*LDI       ZH, HIGH(string << 1)       ;  load string refference (high byte)
+          LDI       ZH, HIGH(string << 1)       ;  load string refference (high byte)
           LDI       ZL, LOW(string << 1)        ;  load string refference (low byte)
 
-          RCALL     LCD_STR                     ;  write string to lcd*/
-
-          LDI       hex, 0xA1                   ;  load hex number to write
-          RCALL     LCD_HEX                     ;  write hex data to lcd
+          RCALL     LCD_STR                     ;  write string to lcd
 
     endl:
           RJMP      endl                        ; endless loop
@@ -284,11 +291,149 @@ main:                                           ; main function
 ;------------------------------------------------------------------------------
 ; Subroutines
 ;------------------------------------------------------------------------------
+
+;==============================================================================
+; @name:    LCD_WRITE
+; @description:
+;  Sends a instruction or data to the LCD
+; @param {uint_8} inst
+;  The instruction/data to sent to the LCD
+;
+;------------------------------------------------------------------------------
+LCD_WRITE:                                      ; writes to the LCD (4 bit mode)
+       
+        PUSH        inst                        ;  save instruction to stack
+        PUSH        mpr                         ;  save mpr to stack
+
+        MOV         mpr, inst                   ;  save instruction value
+     // HIGH NIBBLE
+        SWAP        inst                        ;  first send the high nibble
+        ANDI        inst, 0x0F                  ;  send only high nibble
+        RCALL       LCD_WRITE4BIT               ;  write to the lcd
+       
+     // LOW NIBBLE
+        MOV         inst, mpr                   ;  load instruction value
+        ANDI        inst, 0x0F                  ;  send only low nibble
+        RCALL       LCD_WRITE4BIT               ;  write to the lcd
+
+        POP         mpr                         ;  load mpr from stack
+        POP         inst                        ;  load instruction from stack
+
+        RET                                     ; return from function
+
+;==============================================================================
+; @name:    LCD_WRITE_DATA
+; @description:
+;  Sends data to the LCD
+; @param {uint_8} inst
+;  The data to sent to the LCD
+;
+;------------------------------------------------------------------------------
+LCD_WRITE_DATA:                                 ; writes data to the LCD
+
+        PUSH        inst                        ;  save instruction to stack
+        PUSH        mpr                         ;  save mpr to stack
+        
+     /* When putting data to the LCD in 4 bit mode
+        first send the high followed 
+        by the low nibble */
+
+        MOV         mpr, inst                   ;  save data
+     // HIGH NIBBLE
+        SWAP        inst                        ;  first send the high nibble
+        ANDI        inst, 0x0F                  ;  send only high nibble
+        RCALL       LCD_WRITE4BIT_DATA          ;  write to the lcd
+
+     // LOW NIBBLE
+        MOV         inst, mpr                   ;  load data
+        ANDI        inst, 0x0F                  ;  send only low nibble
+        RCALL       LCD_WRITE4BIT_DATA          ;  write to the lcd
+
+        RCALL       W100US                      ;  wait for the LCD to process the data
+        
+        POP         mpr                         ;  load mpr from stack        
+        POP         inst                        ;  load instruction from stack
+
+        RET                                     ; return from function
+
+;==============================================================================
+; @name:    LCD_WRITE4BIT
+; @description:
+;  Direct instruction/data LCD 4Bit Interface
+; @param {uint_8} inst
+;  The 4bit instruction/data to sent to the LCD
+;
+;------------------------------------------------------------------------------
+LCD_WRITE4BIT:                                  ; writes to the LCD (4 bit mode)
+
+        PUSH        inst                        ;  save instruction to stack
+
+        SBI         LCD, 5                      ;  set 'ennable command'   
+
+     /* ENABLE Rise/Fall Time 20ns
+        + ENABLE hold time (min. 230ns) */ 
+        NOP                                     ;  delays @8mhz for 125ns
+        NOP                                     ;  delays @8mhz for 125ns
+        
+     /* While data is sent to the LCD the
+        Enable sould be set */
+        SBR        inst, ENABLE                 ;  set enable for next instruction
+        
+     /* If Register select is set set it
+        while data is sent to the LCD */
+        SBIC       LCD, 4                       ;  if data is sent to LCD
+        SBR        inst, REG_SELECT             ;   set register select for next instruction
+
+     /* Send data to the LCD and wait 
+        at least 80ns for the LCD to read */
+        OUT        LCD, inst                    ;  send instruction to LCD
+        NOP                                     ;  delays @8mhz for 125ns
+        NOP                                     ;  delays @8mhz for 125ns  
+
+        CBI         LCD, 5                      ;  clear 'ennable command'
+        
+     /* Hold data for at least 10ns
+        after enable falls to 0 */ 
+        NOP                                     ;  delays @8mhz for 125ns
+        NOP                                     ;  delays @8mhz for 125ns
+        
+     /* clear the data sent to the LCD */
+        LDI         inst, 0x00                  ;  prepare 'clear'
+        OUT         LCD, inst                   ;  clear content
+                
+        POP         inst                        ;  load instruction from stack
+
+        RET                                     ; return from function
+
+;==============================================================================
+; @name:    LCD_WRITE4BIT_DATA
+; @description:
+;  Direct 4bit data interface with the LCD
+; @param {uint_8} inst
+;  The 4bit data to sent to the LCD
+;
+;------------------------------------------------------------------------------
+LCD_WRITE4BIT_DATA:                             ; writes data to the LCD (4 bit interface)
+
+        PUSH        inst                        ;  save instruction to stack
+        
+        SBI         LCD, 4                      ;  send 'register select
+     /* Registerselect setup time 40ns */
+        NOP                                     ;  delays @8mhz for 125ns
+        NOP                                     ;  delays @8mhz for 125ns  
+
+        RCALL       LCD_WRITE4BIT               ;  write data to lcd
+        RCALL       W100US                      ;  wait for the LCD to process the data
+                
+        POP         inst                        ;  load instruction from stack
+
+        RET                                     ; return from function
+
 ;==============================================================================
 ; @name:    LCD_INI
 ; @description:
 ;  Initialises the Display. Sets up the communication from the Display to the
-;  microcontroller.
+;  microcontroller. (Only for 4 bit mode)
 ; 
 ;  INITIALISATION FLOWCHART:
 ;
@@ -338,26 +483,24 @@ LCD_INI:                                        ; display initialisation
          LDI        inst, 0x03                  ;  'function set' 8-bit mode
 
          RCALL      W100MS                      ;  wait for more than 30ms
-         RCALL      LCD_WRITE                   ;  send 'function set' 8-bit mode
+         RCALL      LCD_WRITE4BIT               ;  send 'function set' 8-bit mode
 
          RCALL      W10MS                       ;  wait at least 4.1ms
-         RCALL      LCD_WRITE                   ;  send 'function set' 8-bit mode
+         RCALL      LCD_WRITE4BIT               ;  send 'function set' 8-bit mode
 
          RCALL      W1MS                        ;  wait at least 100us
-         RCALL      LCD_WRITE                   ;  send 'function set' 8-bit mode
+         RCALL      LCD_WRITE4BIT               ;  send 'function set' 8-bit mode
          
          RCALL      W10MS                       ;  wait at least 4.1ms
          LDI        inst, 0x02                  ;  'function set' instruction
-         RCALL      LCD_WRITE                   ;  send 'function set' HN
+         RCALL      LCD_WRITE4BIT               ;  send 'function set' HN
 
          RCALL      W100US                      ;  wait for more than 40us
-      // 4-bit mode with MPU 
-         LDI        inst, 0x02                  ;  'function set' instruction
-         RCALL      LCD_WRITE                   ;  send 'function set' HN
-         
-      // 2-line mode and 5x8 dots char
-         LDI        inst, 0x08                  ;  'function set' instruction
-         RCALL      LCD_WRITE                   ;  send 'function set' LN
+
+     /*  4-bit interface with MPU   
+         2-line mode and 5x8 dots char */
+         LDI        inst, FUNCTION_SET          ;  write 'function set' command
+         RCALL      LCD_WRITE                   ;  send 'function set' command
 
          RCALL      W100US                      ;  wait for more than 39ms
 
@@ -365,100 +508,15 @@ LCD_INI:                                        ; display initialisation
 
          RCALL      LCD_CLR                     ;  clear the display
 
-      /* Entry mode set means that, 
-         when writing the cursor moves to the
-         right.
-         
-         We want to increment the cursor
-         (move to the right when writing)
-         and not shift the display.*/
-         LDI        inst, 0x00                  ;  'entry mode set' HN
-         RCALL      LCD_WRITE                   ;  send 'entry mode set' HN
-
       // increment cursor, don't shift
-         LDI        inst, 0x06                  ;  'entry mode set' LN
-         RCALL      LCD_WRITE                   ;  send 'entry mode set' LN
+         LDI        inst, ENTRYMODE_SET         ;  'entry mode set'
+         RCALL      LCD_WRITE                   ;  send 'entry mode set'
 
          RCALL      W1MS                        ;  wait for the command to finish
 
          POP        inst                        ;  load instrution from stack
 
          RET                                    ; return from function
-
-;==============================================================================
-; @name:    LCD_WRITE
-; @description:
-;  Sends a instruction or data to the LCD
-; @param {uint_8} inst
-;  The instruction/data to sent to the LCD
-;
-;------------------------------------------------------------------------------
-LCD_WRITE:                                      ; writes to the LCD
-
-        PUSH        inst                        ;  save instruction to stack
-
-        SBI         LCD, 5                      ;  set 'ennable command'   
-
-     /* ENABLE Rise/Fall Time 20ns
-        + ENABLE hold time (min. 230ns) */ 
-        NOP                                     ;  delays @8mhz for 125ns
-        NOP                                     ;  delays @8mhz for 125ns
-        
-     /* While data is sent to the LCD the
-        Enable sould be set */
-        SBR        inst, ENABLE                 ;  set enable for next instruction
-        
-     /* If Register select is set set it
-        while data is sent to the LCD */
-        SBIC       LCD, 4                       ;  if data is sent to LCD
-        SBR        inst, REG_SELECT             ;   set register select for next instruction
-
-     /* Send data to the LCD and wait 
-        at least 80ns for the LCD to read */
-        OUT        LCD, inst                    ;  send instruction to LCD
-        NOP                                     ;  delays @8mhz for 125ns
-        NOP                                     ;  delays @8mhz for 125ns  
-
-        CBI         LCD, 5                      ;  clear 'ennable command'
-        
-     /* Hold data for at least 10ns
-        after enable falls to 0 */ 
-        NOP                                     ;  delays @8mhz for 125ns
-        NOP                                     ;  delays @8mhz for 125ns
-        
-     /* clear the data sent to the LCD */
-        LDI         inst, 0x00                  ;  prepare 'clear'
-        OUT         LCD, inst                   ;  clear content
-                
-        POP         inst                        ;  load instruction from stack
-
-        RET                                     ; return from function
-
-;==============================================================================
-; @name:    LCD_WRITE_DATA
-; @description:
-;  Sends data to the LCD
-; @param {uint_8} inst
-;  The data to sent to the LCD
-;
-;------------------------------------------------------------------------------
-LCD_WRITE_DATA:                                 ; writes data to the LCD
-
-        PUSH        inst                        ;  save instruction to stack
-        
-        SBI         LCD, 4                      ;  send 'register select
-     /* Registerselect setup time 40ns */
-        NOP                                     ;  delays @8mhz for 125ns
-        NOP                                     ;  delays @8mhz for 125ns  
-
-        RCALL       LCD_WRITE                   ;  write data to lcd
-        
-        RCALL       W100US                      ;  wait for the LCD to process the data
-                
-        POP         inst                        ;  load instruction from stack
-
-        RET                                     ; return from function
-
 
 ;==============================================================================
 ; @name:    LCD_ON
@@ -468,11 +526,8 @@ LCD_WRITE_DATA:                                 ; writes data to the LCD
 ;------------------------------------------------------------------------------
 LCD_ON:                                         ; turn display on
         PUSH       inst                         ;  save instruction to stack
-        
-        LDI        inst, 0x00                   ;  'display on/of' HN = 0x00
-        RCALL      LCD_WRITE                    ;  write instruction
-        
-        LDI        inst, 0x0C                   ;  display on
+
+        LDI        inst, LCD_CTRL_LCD           ;  display on
 
      // handle cursor
         SBRC       CONTROL_MEM, 1               ;  if curser has to be turned on:
@@ -497,10 +552,7 @@ LCD_ON:                                         ; turn display on
 CUR_ON:                                         ; turn cursor on
         PUSH       inst                         ;  save instruction to stack
         
-        LDI        inst, 0x00                   ;  'display on/of' HN = 0x00      
-        RCALL      LCD_WRITE                    ;  write instruction
-        
-        LDI        inst, 0x0A                   ;  cursor on
+        LDI        inst, LCD_CTRL_CUR           ;  cursor on
 
      // handle display
         SBRC       CONTROL_MEM, 0               ;  if display has to be turned on:
@@ -524,11 +576,8 @@ CUR_ON:                                         ; turn cursor on
 ;------------------------------------------------------------------------------
 LCD_OFF:                                        ; turn display off
         PUSH       inst                         ;  save instruction to stack
-
-        LDI        inst, 0x00                   ;  'display on/of' HN = 0x00        
-        RCALL      LCD_WRITE                    ;  send 'display on/of' HN = 0x00
         
-        LDI        inst, 0x08                   ;  display off
+        LDI        inst, LCD_CTRL_RAW           ;  display off
 
      // handle cursor
         SBRC       CONTROL_MEM, 1               ;  if curser has to be turned on:
@@ -552,11 +601,8 @@ LCD_OFF:                                        ; turn display off
 ;------------------------------------------------------------------------------
 CUR_OFF:                                        ; turn cursor off
         PUSH       inst                         ;  save inst to stack
-
-        LDI        inst, 0x00                   ;  'display on/of' HN = 0x00        
-        RCALL      LCD_WRITE                    ;  send 'display on/of' HN = 0x00
         
-        LDI        inst, 0x08                   ;  cursor on
+        LDI        inst, LCD_CTRL_RAW           ;  display off
 
      // handle display
         SBRC       CONTROL_MEM, 0               ;  if display has to be turned on:
@@ -583,10 +629,7 @@ CUR_OFF:                                        ; turn cursor off
 LCD_CLR:                                        ; clears the display
         PUSH       inst                         ;  save instruction to stack
         
-        LDI        inst, 0x00                   ;  'clear display' HN
-        RCALL      LCD_WRITE                    ;  write instruction
-        
-        LDI        inst, 0x01                   ;  'clear display' LN command
+        LDI        inst, CLEAR_LCD              ;  'clear display' command
         RCALL      LCD_WRITE                    ;  write instruction
 
         RCALL      W10MS                        ;  wait for more than 1.53ms
@@ -612,17 +655,7 @@ LCD_RAM:                                        ; sets the ram address
         PUSH        inst                        ;  save instruction to stack
         
         SBR         RAM_ADDR, SET_DDRAM         ;  set ddram command
-        
-     // HIGH NIBBLE
-        SWAP        RAM_ADDR                    ;  first send the high nibble
         MOV         inst, RAM_ADDR              ;  set instruction
-        ANDI        inst, 0x0F                  ;  send only high nibble
-        RCALL       LCD_WRITE                   ;  write to the lcd
-
-     // LOW NIBBLE
-        SWAP        RAM_ADDR                    ;  first send the low nibble
-        MOV         inst, RAM_ADDR              ;  set instruction
-        ANDI        inst, 0x0F                  ;  send only low nibble
         RCALL       LCD_WRITE                   ;  write to the lcd
         
         RCALL       W1MS                        ;  wait for the lcd to process
@@ -643,25 +676,13 @@ LCD_RAM:                                        ; sets the ram address
 LCD_CHR:                                        ; puts a char to the display
         PUSH        inst                        ;  save instruction to stack
         PUSH        mpr                         ;  save mpr to stack
-                   
-     /* When putting data to the mpr
-        first send the high followed 
-        by the low nibble */
-
-     // HIGH NIBBLE
-        SWAP        mpr                         ;  first send the high nibble
+        
         MOV         inst, mpr                   ;  move the character to the instruction register
-        ANDI        inst, 0x0F                  ;  send only high nibble
-        RCALL       LCD_WRITE_DATA              ;  send data to the lcd
-
-     // LOW NIBBLE
-        SWAP        mpr                         ;  first send the low nibble
-        MOV         inst, mpr                   ;  move the character to the instruction register
-        ANDI        inst, 0x0F                  ;  send only low nibble
         RCALL       LCD_WRITE_DATA              ;  send data to the lcd
 
         POP         mpr                         ;  load mpr from stack
         POP         inst                        ;  load instruction from stack
+
         RET                                     ; return from function
 
 ;==============================================================================
