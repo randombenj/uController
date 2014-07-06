@@ -285,6 +285,11 @@ main:                                           ; main function
 
           RCALL     LCD_STR                     ;  write string to lcd
 
+          LDI       XH, high(-111)
+          LDI       XL, low(-111)
+
+          RCALL     LCD_INT16
+
     endl:
           RJMP      endl                        ; endless loop
 
@@ -752,13 +757,81 @@ LCD_HEX:                                        ; outputs a hex value
 ; @description:
 ;  Writes a int16 number to the display.
 ;
-; @param {uint_16} X
+; @param {int_16} X
 ;  The output int16 value (X register)
 ;
 ;------------------------------------------------------------------------------
 LCD_INT16:                                      ; outputs a int16 value
+        PUSH     mpr                            ;  save mpr to stack
+     // save 16 bit nuber to stack
+        PUSH     XL
+        PUSH     XH
+ 
+     /* when the number is negative print a minus ('-')
+        and print the positive number (twos complement) */
+        SBRS    XH, 7                           ;  if nuber is positive
+        RJMP    LCD_INT16_ENDIF01               ;  skip signed
+     // number is signed
+        COM     XL                              ;  invert low byte (1's complement)
+        COM     XH                              ;  invert high byte (1's complement)
+     // add 0x0001 to X register
+        SUBI    XL, 0xFF                        
+        SBCI    XH, 0xFF
+     // print '-' to lcd
+        LDI     mpr, '-'
+        RCALL   LCD_CHR                         ;  print '-'
+    LCD_INT16_ENDIF01:
 
-        
+     // ten thousend
+        LDI      mpr, '0'-1
+LCD_NUMBER1:
+        INC      mpr
+        SUBI     XL, low(10000)
+        SBCI     XH, high(10000)
+        BRCC     LCD_NUMBER1
+        SUBI     XL, low(-10000)
+        SBCI     XH, high(-10000)
+        RCALL    LCD_CHR
+
+     // thousend
+        LDI      mpr, '0'-1
+LCD_NUMBER2:
+        INC      mpr
+        SUBI     XL, low(1000)
+        SBCI     XH, high(1000)
+        BRCC     LCD_NUMBER2
+        SUBI     XL, low(-1000)
+        SBCI     XH, high(-1000)
+        RCALL    LCD_CHR
+ 
+     // hundred
+        LDI      mpr, '0'-1
+LCD_NUMBER3:
+        INC      mpr
+        SUBI     XL, low(100)
+        SBCI     XH, high(100)
+        BRCC     LCD_NUMBER3
+        SUBI     XL, -100                   ; high byte can be ignored
+        RCALL    LCD_CHR
+ 
+     // ten
+        LDI      mpr, '0'-1
+LCD_NUMBER4:
+        INC      mpr
+        SUBI     XL, 10
+        BRCC     LCD_NUMBER4
+        SUBI     XL, -10
+        RCALL    LCD_CHR
+ 
+     // one
+        LDI      mpr, '0'
+        ADD      mpr, XL
+        RCALL    LCD_CHR
+
+     // load 16 bit number from stack
+        POP      XH
+        POP      XL
+        POP      mpr                            ;  load mpr from stack
 
         RET                                     ; return from function
 
