@@ -285,8 +285,7 @@ main:                                           ; main function
 
           RCALL     LCD_STR                     ;  write string to lcd
 
-          LDI       XH, high(-111)
-          LDI       XL, low(-111)
+          LDI       XL, low(0x16)
 
           RCALL     LCD_INT16
 
@@ -791,7 +790,12 @@ LCD_NUMBER1:
         BRCC     LCD_NUMBER1
         SUBI     XL, low(-10000)
         SBCI     XH, high(-10000)
+     // don't print leading zeros
+        CPI      mpr, '0'
+        BREQ     LCD_NUMBER1_END
         RCALL    LCD_CHR
+        SET
+LCD_NUMBER1_END:
 
      // thousend
         LDI      mpr, '0'-1
@@ -802,7 +806,14 @@ LCD_NUMBER2:
         BRCC     LCD_NUMBER2
         SUBI     XL, low(-1000)
         SBCI     XH, high(-1000)
+     // don't print leading zeros
+        BRTS     LCD_NUMBER2_PRINT          ;  any number (including zero) can be printed if t-flag set
+        CPI      mpr, '0'                   ;  else if the number to print is a zero
+        BREQ     LCD_NUMBER2_END            ;  it's a leading zero (don't print it)
+LCD_NUMBER2_PRINT:
         RCALL    LCD_CHR
+        SET                                 ;  set t-flag to know there are no more leading zeros
+LCD_NUMBER2_END:
  
      // hundred
         LDI      mpr, '0'-1
@@ -811,9 +822,16 @@ LCD_NUMBER3:
         SUBI     XL, low(100)
         SBCI     XH, high(100)
         BRCC     LCD_NUMBER3
-        SUBI     XL, -100                   ; high byte can be ignored
+        SUBI     XL, -100                   ;  high byte can be ignored
+     // don't print leading zeros
+        BRTS     LCD_NUMBER3_PRINT          ;  any number (including zero) can be printed if t-flag set
+        CPI      mpr, '0'                   ;  else if the number to print is a zero
+        BREQ     LCD_NUMBER3_END            ;  it's a leading zero (don't print it)
+LCD_NUMBER3_PRINT:
         RCALL    LCD_CHR
- 
+        SET                                 ;  set t-flag to know there are no more leading zeros
+LCD_NUMBER3_END:
+
      // ten
         LDI      mpr, '0'-1
 LCD_NUMBER4:
@@ -821,7 +839,13 @@ LCD_NUMBER4:
         SUBI     XL, 10
         BRCC     LCD_NUMBER4
         SUBI     XL, -10
+        // don't print leading zeros
+        BRTS     LCD_NUMBER4_PRINT          ;  any number (including zero) can be printed if t-flag set
+        CPI      mpr, '0'                   ;  else if the number to print is a zero
+        BREQ     LCD_NUMBER4_END            ;  it's a leading zero (don't print it)
+LCD_NUMBER4_PRINT:
         RCALL    LCD_CHR
+LCD_NUMBER4_END:
  
      // one
         LDI      mpr, '0'
