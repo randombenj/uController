@@ -21,7 +21,7 @@
 ;------------------------------------------------------------------------------
 
 ;--- Kontrollerangabe ---
-.include "m2560def.inc"
+.include "../../../lib/m2560def.inc"
 
 		RJMP	Reset
 
