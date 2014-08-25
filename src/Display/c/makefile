@@ -1,6 +1,6 @@
 TARGET              = lcd
 SRC                 = $(TARGET).c
-LIBS                = ../../../lib/c/bitmanipulation.h
+LIBS                = ../../../lib/c/bitmanipulation.h lcd.h
 
 MCU                 = atmega2560
 AVRDUDE_PROGRAMMER  = stk600
@@ -56,5 +56,4 @@ srec: $(BUILD_DIRECTORY)/$(TARGET).srec
 
 # command to program chip (invoked by running "make install")
 install:	$(BUILD_DIRECTORY)/$(TARGET).hex
-	avrdude -p $(AVRDUDE_TARGET) -c $(PROGRAMMER) -P $(PORT) -v  \
-         -U flash:w:$(BUILD_DIRECTORY)/$(TARGET).hex
+	avrdude -p $(MCU) -c $(AVRDUDE_PROGRAMMER) -P $(AVRDUDE_PORT) -U flash:w:$(BUILD_DIRECTORY)/$(TARGET).hex

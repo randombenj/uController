@@ -1,14 +1,24 @@
+#ifndef BITMANIPULATION_H_
+#define BITMANIPULATION_H_
+
 /**
 * Set bit at position in a register
 */
-#define set_bit(register, bit_position) register |= (bit_position << 1)
+#define SET_BIT(register, bit_position) (register |= (1 << bit_position))
 
 /**
 * Clear bit at position in a register
 */
-#define clear_bit(register, bit_position) register &= ~(bit_position << 1)
+#define CLEAR_BIT(register, bit_position) (register &= ~(1 << bit_position))
+
+/**
+* Invert bit at position
+*/
+#define INVERT_BIT(register, bit_position) (register ^= (1 << bit_position))
 
 /**
 * Check if bit at position is set
 */
-#define is_bit_set(register, bit_position) register | (bit_position << 1)
+#define IS_BIT_SET(register, bit_position) (register | (1 << bit_position))
+
+#endif // BITMANIPULATION_H_
