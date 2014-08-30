@@ -1,6 +1,13 @@
 #ifndef LCD_H_
 #define LCD_H_
 
+#include "../../../lib/c/type.h"
+
+// ENABLE at port postion 5
+#define    ENABLE 5
+// REGISTERSELECT at port position 4
+#define    REGISTERSELECT 4
+
 //------------------------------------------------------------
 // FUNCTION SET:
 //------------------------------------------------------------
@@ -11,7 +18,7 @@
 // DL: interface data length control bit (4 bit mode)
 // N:  line number (2 line)
 // F:  font type (5x8 bit)
-#define    FUNCTION_SET  = 0x28
+#define    FUNCTION_SET 0x28
 
 //------------------------------------------------------------
 // ENTRY MODE SET:
@@ -30,7 +37,7 @@
 // We want to increment the cursor
 // (move to the right when writing)
 // and not shift the display.
-#define    ENTRYMODE_SET = 0x06
+#define    ENTRYMODE_SET 0x06
 
 //------------------------------------------------------------
 // LCD ON / CURSOR ON:
@@ -43,9 +50,9 @@
 // D: display on/off
 // C: cursor on/off
 // B: cursor blink on/off (off)
-#define    LCD_CTRL_RAW  = 0x08  // raw command (all off)
-#define    LCD_CTRL_CUR  = 0x0A  // raw command (cursor on)
-#define    LCD_CTRL_LCD  = 0x0C  // raw command (lcd on)
+#define    LCD_CTRL_RAW 0x08  // raw command (all off)
+#define    LCD_CTRL_CUR 0x0A  // raw command (cursor on)
+#define    LCD_CTRL_LCD 0x0C  // raw command (lcd on)
 
 //------------------------------------------------------------
 // CLEAR THE LCD:
@@ -56,7 +63,7 @@
 //------------------------------------------------------------
 // writes 0x20 ' ' (space) to all DDRAM addresses and return
 // cursor home (address: 0x00)
-#define    CLEAR_LCD  = 0x01
+#define    CLEAR_LCD 0x01
 
 //------------------------------------------------------------
 // SET DDRAM ADDRESS:
@@ -66,7 +73,45 @@
 //  0  |  0  |  1  | AC6 | AC5 | AC4 | AC3 | AC2 | AC1 | AC0 |
 //------------------------------------------------------------
 // set display data ram address (raw command)
-#define    SET_DDRAM     = 0x80
+#define    SET_DDRAM 0x80
+
+/**
+ * Sends commmands to the LCD
+ * when using this functino, it does not matter wheter
+ * the lcd is in 4 or 8 bit mode.
+ * - Use this function in the code
+ * @param command
+ *  The command to be executed by the lcd
+ */
+void lcd_write(byte commmand);
+
+/**
+ * Writes data to the LCD
+ * when using this functino, it does not matter wheter
+ * the lcd is in 4 or 8 bit mode.
+ * - Use this function in the code
+ * @param data
+ *  The data to write on the LCD
+ */
+void lcd_write_data(byte data);
+
+/**
+ * Writes directly to the LCD in 4 bit mode.
+ * For one full 8 bit LCD command, this function
+ * has to be called twice.
+ * @param command
+ *  4 bits of the command to send to the LCD
+ */
+void lcd_write4bit(byte command);
+
+/**
+ * Writes data (characters) to the LCD in 4 bit mode.
+ * For one full write cycle, this function
+ * has to be called twice.
+ * @param data
+ *  4 bits of the data to send to the LCD
+ */
+void lcd_write4bit_data(byte data);
 
 /**
 * Initialise the LCD
@@ -85,6 +130,13 @@ void lcd_on();
  * Turns the LCD off
  */
 void lcd_off();
+
+/**
+ * Clears all content on the LCD
+ * by writeing ' ' (spaces) to all
+ * LCD characters.
+ */
+void lcd_clear();
 
 /**
  * Turns the cursor on the LCD off
