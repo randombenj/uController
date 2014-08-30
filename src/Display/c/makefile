@@ -1,6 +1,6 @@
 TARGET              = lcd
 SRC                 = $(TARGET).c
-LIBS                = ../../../lib/c/bitmanipulation.h lcd.h
+LIBS                = ../../../lib/c/bitmanipulation.h lcd.h ../../../lib/c/type.h
 
 MCU                 = atmega2560
 AVRDUDE_PROGRAMMER  = stk600
