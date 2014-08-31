@@ -5,26 +5,19 @@
 #include "../../../lib/c/bitmanipulation.h"
 #include "../../../lib/c/type.h"
 
-int main(void)
-{
-  lcd_init();
-  lcd_string(":D");
-  for(;;);
-}
-
-void lcd_write(byte_t command)
+void lcd_write(uint8_t command)
 {
   lcd_write4bit((SWAP_NIBBLES(command) & 0x0F)); // High nibble
   lcd_write4bit((command & 0x0F));               // Low nibble
 }
 
-void lcd_write_data(byte_t data)
+void lcd_write_data(uint8_t data)
 {
   lcd_write4bit_data((SWAP_NIBBLES(data) & 0x0F)); // High nibble
   lcd_write4bit_data((data & 0x0F));               // Low nibble
 }
 
-static void lcd_write4bit(byte_t command)
+static void lcd_write4bit(uint8_t command)
 {
   SET_BIT(LCD, ENABLE);
   _delay_us(20);
@@ -35,7 +28,7 @@ static void lcd_write4bit(byte_t command)
   LCD = 0x00;
 }
 
-static void lcd_write4bit_data(byte_t data)
+static void lcd_write4bit_data(uint8_t data)
 {
   SET_BIT(LCD, REGISTERSELECT);
   _delay_us(1);
@@ -163,7 +156,7 @@ void lcd_char(char character)
   lcd_write_data(character);
 }
 
-void lcd_hex(byte_t value)
+void lcd_hex(uint8_t value)
 {
   // Hexadecimal prefix '0x__'
   lcd_char('0');
@@ -188,4 +181,68 @@ void lcd_hex(byte_t value)
       ((value & 0x0F) + 0x30)
     )
   );
+}
+
+void lcd_set_position(int x, int y)
+{
+  uint8_t command = SET_DDRAM;
+  switch (y)
+  {
+    case 1:
+      command += (LCD_RAMADDRESS_LINE1 + x);
+      break;
+    case 2:
+      command += (LCD_RAMADDRESS_LINE2 + x);
+      break;
+    default:
+      return;
+  }
+  lcd_write(command);
+}
+
+void lcd_int16(int16_t number)
+{
+  bool is_leadin_zero = true;
+  char string[4] = {
+    '0', '0', '0', '0'
+  };
+
+  if (number < 0)
+  {
+    lcd_char('-');
+    number = (~(number) + 1); // Two's complement
+  }
+
+  while(number >= 10000)
+  {
+    number -= 10000;
+    string[0]++;
+  }
+  while(number >=  1000)
+  {
+    number -=  1000;
+    string[1]++;
+  }
+  while(number >=   100)
+  {
+    number -=   100;
+    string[2]++;
+  }
+  while(number >=   10)
+  {
+    number -=   10;
+    string[3]++;
+  }
+
+  int i = 0;
+  for(i = 0; i < 4; i++)
+  {
+    if (!is_leadin_zero || string[i] != '0')
+    {
+      is_leadin_zero = false;
+      lcd_char(string[i]);
+    }
+  }
+
+  lcd_char(((char)number + '0'));
 }

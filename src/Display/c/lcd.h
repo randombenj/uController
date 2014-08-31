@@ -1,8 +1,6 @@
 #ifndef LCD_H_
 #define LCD_H_
 
-#include "../../../lib/c/type.h"
-
 // LCD Port and Data Direction
 #define LCD               PORTA
 #define LCD_D             DDRA
@@ -68,8 +66,8 @@
 // B: cursor blink on/off (off)
 #define LCD_CONTROL          0x08  // raw command (all off)
 
-#define LCD_CONTROL_DISPLAY  0x0C  // lcd on
-#define LCD_CONTROL_CURSOR   0x0A  // cursor on
+#define LCD_CONTROL_DISPLAY  0x04  // lcd on
+#define LCD_CONTROL_CURSOR   0x02  // cursor on
 #define LCD_CONTROL_BLINK    0x01  // blink on
 
 /** lcd_control_memory: ---
@@ -78,7 +76,7 @@
  * on or off. But for this driver we want seperate functions
  * for each LCD and cursor on/off.
  */
-static byte_t lcd_control_memory = 0x00;
+static uint8_t lcd_control_memory = 0x00;
 
 /**
  * 'bit-0' is used to store the LCD status (1 = on; 0 = off)
@@ -110,6 +108,9 @@ static byte_t lcd_control_memory = 0x00;
 // set display data ram address (raw command)
 #define SET_DDRAM 0x80
 
+#define LCD_RAMADDRESS_LINE1 0x00
+#define LCD_RAMADDRESS_LINE2 0x40
+
 /**
  * Sends commmands to the LCD
  * when using this functino, it does not matter wheter
@@ -118,7 +119,7 @@ static byte_t lcd_control_memory = 0x00;
  * @param command
  *  The command to be executed by the lcd
  */
-void lcd_write(byte_t commmand);
+void lcd_write(uint8_t commmand);
 
 /**
  * Writes data to the LCD
@@ -128,7 +129,7 @@ void lcd_write(byte_t commmand);
  * @param data
  *  The data to write on the LCD
  */
-void lcd_write_data(byte_t data);
+void lcd_write_data(uint8_t data);
 
 /**
  * Writes directly to the LCD in 4 bit mode.
@@ -137,7 +138,7 @@ void lcd_write_data(byte_t data);
  * @param command
  *  4 bits of the command to send to the LCD
  */
-static void lcd_write4bit(byte_t command);
+static void lcd_write4bit(uint8_t command);
 
 /**
  * Writes data (characters) to the LCD in 4 bit mode.
@@ -146,7 +147,7 @@ static void lcd_write4bit(byte_t command);
  * @param data
  *  4 bits of the data to send to the LCD
  */
-static void lcd_write4bit_data(byte_t data);
+static void lcd_write4bit_data(uint8_t data);
 
 /**
 * Initialise the LCD
@@ -197,7 +198,7 @@ void lcd_set_position(int x, int y);
  * @param value
  *  The 8-bit value to put on the LCD
  */
-void lcd_hex(byte_t value);
+void lcd_hex(uint8_t value);
 
 /**
  * Puts a character on the LCD
@@ -212,5 +213,12 @@ void lcd_char(char character);
  *  String to put on LCD
  */
 void lcd_string(char string[]);
+
+/**
+ * Puts a 16 bit (signed) integer to the LCD
+ * @param number
+ *  The number to put on the screen
+ */
+void lcd_int16(int16_t number);
 
 #endif // LCD_H_
