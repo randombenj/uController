@@ -3,10 +3,14 @@
 
 #include "../../../lib/c/type.h"
 
+// LCD Port and Data Direction
+#define LCD               PORTA
+#define LCD_D             DDRA
+
 // ENABLE at port postion 5
-#define    ENABLE 5
+#define ENABLE            PA5
 // REGISTERSELECT at port position 4
-#define    REGISTERSELECT 4
+#define REGISTERSELECT    PA4
 
 //------------------------------------------------------------
 // FUNCTION SET:
@@ -18,7 +22,14 @@
 // DL: interface data length control bit (4 bit mode)
 // N:  line number (2 line)
 // F:  font type (5x8 bit)
-#define    FUNCTION_SET 0x28
+#define FUNCTION_SET            0x20
+
+#define FUNCTION_SET_4BIT       0x00
+#define FUNCTION_SET_8BIT       0x10
+#define FUNCTION_SET_1LINE      0x00
+#define FUNCTION_SET_2LINE      0x08
+#define FUNCTION_SET_5X8        0x00
+#define FUNCTION_SET_5X11       0x04
 
 //------------------------------------------------------------
 // ENTRY MODE SET:
@@ -37,7 +48,12 @@
 // We want to increment the cursor
 // (move to the right when writing)
 // and not shift the display.
-#define    ENTRYMODE_SET 0x06
+#define ENTRYMODE_SET            0x04
+
+#define ENTRYMODE_SET_INCREMENT  0x02
+#define ENTRYMODE_SET_DECREMENT  0x00
+#define ENTRYMODE_SET_SHIFT      0x01
+#define ENTRYMODE_SET_NO_SHIFT   0x00
 
 //------------------------------------------------------------
 // LCD ON / CURSOR ON:
@@ -50,9 +66,28 @@
 // D: display on/off
 // C: cursor on/off
 // B: cursor blink on/off (off)
-#define    LCD_CTRL_RAW 0x08  // raw command (all off)
-#define    LCD_CTRL_CUR 0x0A  // raw command (cursor on)
-#define    LCD_CTRL_LCD 0x0C  // raw command (lcd on)
+#define LCD_CONTROL          0x08  // raw command (all off)
+
+#define LCD_CONTROL_DISPLAY  0x0C  // lcd on
+#define LCD_CONTROL_CURSOR   0x0A  // cursor on
+#define LCD_CONTROL_BLINK    0x01  // blink on
+
+/** lcd_control_memory: ---
+ * The control memory is used for the Display ON/OFF Control,
+ * because this command has to set both the LCD and the cursor
+ * on or off. But for this driver we want seperate functions
+ * for each LCD and cursor on/off.
+ */
+static byte_t lcd_control_memory = 0x00;
+
+/**
+ * 'bit-0' is used to store the LCD status (1 = on; 0 = off)
+ * 'bit-1' is used to store the cursor status (1 = on; 0 = off)
+ * 'bit-2' is used to store the blink status (1 = on; 0 = off)
+ */
+#define LCD_CONTROL_MEMORY_DISPLAY_POSITION  0x00
+#define LCD_CONTROL_MEMORY_CURSOR_POSITION   0x01
+#define LCD_CONTROL_MEMORY_BLINK_POSITION    0x02
 
 //------------------------------------------------------------
 // CLEAR THE LCD:
@@ -63,7 +98,7 @@
 //------------------------------------------------------------
 // writes 0x20 ' ' (space) to all DDRAM addresses and return
 // cursor home (address: 0x00)
-#define    CLEAR_LCD 0x01
+#define CLEAR_LCD 0x01
 
 //------------------------------------------------------------
 // SET DDRAM ADDRESS:
@@ -73,7 +108,7 @@
 //  0  |  0  |  1  | AC6 | AC5 | AC4 | AC3 | AC2 | AC1 | AC0 |
 //------------------------------------------------------------
 // set display data ram address (raw command)
-#define    SET_DDRAM 0x80
+#define SET_DDRAM 0x80
 
 /**
  * Sends commmands to the LCD
@@ -83,7 +118,7 @@
  * @param command
  *  The command to be executed by the lcd
  */
-void lcd_write(byte commmand);
+void lcd_write(byte_t commmand);
 
 /**
  * Writes data to the LCD
@@ -93,7 +128,7 @@ void lcd_write(byte commmand);
  * @param data
  *  The data to write on the LCD
  */
-void lcd_write_data(byte data);
+void lcd_write_data(byte_t data);
 
 /**
  * Writes directly to the LCD in 4 bit mode.
@@ -102,7 +137,7 @@ void lcd_write_data(byte data);
  * @param command
  *  4 bits of the command to send to the LCD
  */
-void lcd_write4bit(byte command);
+static void lcd_write4bit(byte_t command);
 
 /**
  * Writes data (characters) to the LCD in 4 bit mode.
@@ -111,7 +146,7 @@ void lcd_write4bit(byte command);
  * @param data
  *  4 bits of the data to send to the LCD
  */
-void lcd_write4bit_data(byte data);
+static void lcd_write4bit_data(byte_t data);
 
 /**
 * Initialise the LCD
@@ -156,6 +191,13 @@ void lcd_cursor_on();
  *   The Y coordinates of the cursor on the LCD
  */
 void lcd_set_position(int x, int y);
+
+/**
+ * Puts a number in hexadecimal format to the LCD
+ * @param value
+ *  The 8-bit value to put on the LCD
+ */
+void lcd_hex(byte_t value);
 
 /**
  * Puts a character on the LCD

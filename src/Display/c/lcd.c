@@ -5,31 +5,26 @@
 #include "../../../lib/c/bitmanipulation.h"
 #include "../../../lib/c/type.h"
 
-#define LCD               PORTA
-#define LCD_D             DDRA
-
-
 int main(void)
 {
-  LCD_D = 0xFF;
   lcd_init();
-  lcd_char('A');
+  lcd_string(":D");
   for(;;);
 }
 
-void lcd_write(byte command)
+void lcd_write(byte_t command)
 {
   lcd_write4bit((SWAP_NIBBLES(command) & 0x0F)); // High nibble
   lcd_write4bit((command & 0x0F));               // Low nibble
 }
 
-void lcd_write_data(byte data)
+void lcd_write_data(byte_t data)
 {
   lcd_write4bit_data((SWAP_NIBBLES(data) & 0x0F)); // High nibble
   lcd_write4bit_data((data & 0x0F));               // Low nibble
 }
 
-void lcd_write4bit(byte command)
+static void lcd_write4bit(byte_t command)
 {
   SET_BIT(LCD, ENABLE);
   _delay_us(20);
@@ -40,7 +35,7 @@ void lcd_write4bit(byte command)
   LCD = 0x00;
 }
 
-void lcd_write4bit_data(byte data)
+static void lcd_write4bit_data(byte_t data)
 {
   SET_BIT(LCD, REGISTERSELECT);
   _delay_us(1);
@@ -50,6 +45,8 @@ void lcd_write4bit_data(byte data)
 
 void lcd_init()
 {
+  // Set data direction (write)
+  LCD_D = 0xFF;
   // Be shure to turn on 8-bit mode. (Soft resets the LCD)
   _delay_ms(100);
   lcd_write4bit(0x03);
@@ -59,25 +56,92 @@ void lcd_init()
   lcd_write4bit(0x03);
   _delay_ms(10);
 
-  lcd_write4bit(0x02);
+  // Set lcd in 4 bit mode (high nibble only)
+  lcd_write4bit(
+    SWAP_NIBBLES(
+      (
+        FUNCTION_SET |
+        FUNCTION_SET_4BIT
+      )
+    )
+  );
   _delay_us(100);
 
-  lcd_write(FUNCTION_SET);
+  lcd_write(
+    FUNCTION_SET |
+    FUNCTION_SET_4BIT |
+    FUNCTION_SET_2LINE |
+    FUNCTION_SET_5X8
+  );
   _delay_us(100);
 
   lcd_on();
   lcd_clear();
 
-  lcd_write(ENTRYMODE_SET);
+  lcd_write(
+    ENTRYMODE_SET |
+    ENTRYMODE_SET_INCREMENT |
+    ENTRYMODE_SET_NO_SHIFT
+  );
   _delay_ms(1);
 }
 
 void lcd_on()
 {
-  byte command = LCD_CTRL_LCD;
-  // TODO: Cursor
-  lcd_write(command);
+  lcd_write(LCD_CONTROL | LCD_CONTROL_DISPLAY |
+  ( // Turn cursor on if it has to be turned on
+    (IS_BIT_SET(lcd_control_memory, LCD_CONTROL_MEMORY_CURSOR_POSITION)) ?
+    LCD_CONTROL_CURSOR :
+    0x00
+  ));
   _delay_us(100);
+
+  // Remember that the Display is now turned on
+  SET_BIT(lcd_control_memory, LCD_CONTROL_MEMORY_DISPLAY_POSITION);
+}
+
+void lcd_off()
+{
+  lcd_write(LCD_CONTROL |
+  ( // Turn cursor on if it has to be turned on
+    (IS_BIT_SET(lcd_control_memory, LCD_CONTROL_MEMORY_CURSOR_POSITION)) ?
+    LCD_CONTROL_CURSOR :
+    0x00
+  ));
+  _delay_us(100);
+
+  // Remember that the Display is now turned on
+  CLEAR_BIT(lcd_control_memory, LCD_CONTROL_MEMORY_DISPLAY_POSITION);
+}
+
+void lcd_cursor_on()
+{
+  lcd_write(LCD_CONTROL | LCD_CONTROL_CURSOR |
+    ( // Turn Display on if it has to be turned on
+      (IS_BIT_SET(lcd_control_memory, LCD_CONTROL_MEMORY_DISPLAY_POSITION)) ?
+      LCD_CONTROL_DISPLAY :
+      0x00
+    )
+  );
+  _delay_us(100);
+
+  // Remember that the cursor is now turned on
+  SET_BIT(lcd_control_memory, LCD_CONTROL_MEMORY_CURSOR_POSITION);
+}
+
+void lcd_cursor_off()
+{
+  lcd_write(LCD_CONTROL |
+    ( // Turn Display on if it has to be turned on
+      (IS_BIT_SET(lcd_control_memory, LCD_CONTROL_MEMORY_DISPLAY_POSITION)) ?
+      LCD_CONTROL_DISPLAY :
+      0x00
+    )
+  );
+  _delay_us(100);
+
+  // Remember that the cursor is now turned on
+  CLEAR_BIT(lcd_control_memory, LCD_CONTROL_MEMORY_CURSOR_POSITION);
 }
 
 void lcd_clear()
@@ -86,8 +150,42 @@ void lcd_clear()
   _delay_ms(10);
 }
 
+void lcd_string(char string[])
+{
+  while (*string != '\0')
+  {
+    lcd_char(*string++);
+  }
+}
 
 void lcd_char(char character)
 {
   lcd_write_data(character);
+}
+
+void lcd_hex(byte_t value)
+{
+  // Hexadecimal prefix '0x__'
+  lcd_char('0');
+  lcd_char('x');
+  // High nibble
+  lcd_char(
+    (
+      ((SWAP_NIBBLES(value) & 0x0F) > 10) ?
+      // Value 10 - 15 (A...F) to ascii
+      ((SWAP_NIBBLES(value) & 0x0F) + 0x37) :
+      // Value 0 - 9 (0...9) to ascii
+      ((SWAP_NIBBLES(value) & 0x0F) + 0x30)
+    )
+  );
+  // Low nibble
+  lcd_char(
+    (
+      ((value & 0x0F) > 10) ?
+      // Value 10 - 15 (A...F) to ascii
+      ((value & 0x0F) + 0x37) :
+      // Value 0 - 9 (0...9) to ascii
+      ((value & 0x0F) + 0x30)
+    )
+  );
 }
