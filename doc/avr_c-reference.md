@@ -5,8 +5,8 @@
 
 # Content
 
- * [I/O](#IO)
-   * [Get IO port reference](#Get_IO_port_reference)
+ * [I/O](#io)
+   * [Get IO port reference](#get-io-port-reference)
 
 
 ## I/O
