@@ -9,6 +9,6 @@
  * @return
  *  Returns the scan code of the keyboard
  */
-uint8_t scan_keyboard(uint8_t *port, uint8_t *port_ddr);
+uint8_t scan_keyboard(volatile uint8_t *port, volatile uint8_t *port_ddr);
 
 #endif // KEYBOARDSCANNER_H_
