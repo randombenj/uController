@@ -31,6 +31,9 @@ int main (void)
 
 ```
 
+This code will access the port with assembly commands `LD` and `ST`,
+not `IN` and `OUT`
+
 **Explanation**
 
 If we, for example take PORTB of the ATMega2560,
