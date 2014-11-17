@@ -183,15 +183,15 @@ void lcd_hex(uint8_t value)
   );
 }
 
-void lcd_set_position(int x, int y)
+void lcd_set_position(uint8_t x, uint8_t y)
 {
   uint8_t command = SET_DDRAM;
   switch (y)
   {
-    case 1:
+    case 0:
       command += (LCD_RAMADDRESS_LINE1 + x);
       break;
-    case 2:
+    case 1:
       command += (LCD_RAMADDRESS_LINE2 + x);
       break;
     default:

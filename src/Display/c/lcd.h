@@ -191,7 +191,7 @@ void lcd_cursor_on();
  * @param y
  *   The Y coordinates of the cursor on the LCD
  */
-void lcd_set_position(int x, int y);
+void lcd_set_position(uint8_t x, uint8_t y);
 
 /**
  * Puts a number in hexadecimal format to the LCD
