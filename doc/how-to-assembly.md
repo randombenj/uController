@@ -1,7 +1,6 @@
 #How to: assembly
 
-This is a tutorial to learn the AVR-Assembly language. It also covers what Microcontrollers are and why/where
-wou should or shouldn't programm assembly. 
+This is a tutorial to learn the AVR-Assembly language. It also covers what Microcontrollers are and why/where you should or shouldn't programm assembly.
 
 > The tutorial is entirely based on my experience and stuff I read about assembly on the interwebs.
 
@@ -24,8 +23,8 @@ Ideas for improvment are welcome. :smile:
 Why this tutorial?
 
 I have some experience on high level language such as c#, c, sql ...
-All those languages are translated (in one way ore the other) to code the computer understands,
-its quiet interesstiong to understand how thigs work on the deepest level.
+All those languages are translated (in one way or the other) to code the computer understands,
+its quiet interesting to understand how things work on the deepest level.
 
 Additionaly microcontrollers have the scale that its possible to understande what's going on under the hood.
 In the case of the ATMega2560 (8 bit MCU) this is about a 450 page size PDF. 
@@ -43,32 +42,32 @@ There are so many good high-level programming languages, so where and why does i
 When you write an operating system the first little bit of code is most likly assembly 
 (see the Linux Kernel for example). Also if you are programming microcontrollers and need very high performance, 
 assembly is your choize. My personal motivation to learn assembly, is to learn how a basic computer-system works 
-from the verry basics.
+from the very basics.
 
-Atvangates | Disatvantages
+Advantages | Disadvantages
 --- | ---
-As sayd before: Assembly is very, very fast, **Its the fastest way to program any Electronic Device** | To write good and readable assembly code you have to document your code very well. Its not as comfoteable to write like higher programming languages like c, c++, c#, java, javascript ... But the highest disatvantage might be that you have to learn **new assembly commands for every new CPU/MCU you want to program with Assembly.**
+As said before: Assembly is very, very fast, **Its the fastest way to program any electronic Device** | To write good and readable assembly code you have to document your code very well. Its not as comfortable as higher programming languages like c, c++, c#, java, javascript ... But the highest disadvantage might be that you have to learn **new assembly commands for every new CPU/MCU you want to program with Assembly.**. An other thing is that you have to rewrite your program for every CPU typ the program will run on.
 
 ##Where to start
 
 ###The Controller
 
-> If i want to buy a µController wich one should I choose?
+> If i want to buy a µController which one should I choose?
 
  * The [STK600](http://www.atmel.com/tools/stk600.aspx) is a µController starter kit and comes with the ATMega2560 MCU.
- * [Arduino](http://arduino.cc/) also uses µControllers from Atmel for example the [Arduino Uno](http://arduino.cc/en/Main/ArduinoBoardUno) uses the ATmega328 microcontroller from Atmel. The Arduino boards also have a great comunity.
- * The Raspberry PI. Its not esspecialy a microcontroller but you can in fact program any cpu with assembly. For "only" programming in assembly languaage the Raspberry is nearly overpowered.
- * If you want a real chalange you can write your own little "hello-world" operating system with assembly for your Desktop PC: [Tutorial: Hello-World OS](http://mikeos.berlios.de/write-your-own-os.html)
+ * [Arduino](http://arduino.cc/) also uses µControllers from Atmel for example the [Arduino Uno](http://arduino.cc/en/Main/ArduinoBoardUno) uses the ATmega328 microcontroller from Atmel. The Arduino boards also have a great community.
+ * The Raspberry PI. Its not especially a microcontroller but you can in fact program any CPU with assembly. For "only" programming in assembly language the Raspberry is a bit overpowered.
+ * If you want a real challenge you can write your own little "hello-world" operating system with assembly for your Desktop PC: [Tutorial: Hello-World OS](http://mikeos.berlios.de/write-your-own-os.html)
 
 ####Hardware basics
 
 **RISC vs CISC**
 
-RISC and CISC stand for [*Reduced instruction set computing*](http://en.wikipedia.org/wiki/Reduced_instruction_set_computing) and [*Complex instructing set computing*](http://en.wikipedia.org/wiki/Complex_instruction_set_computing). RISC and CISC are both CPU design strategys.
+RISC and CISC stand for [*Reduced instruction set computing*](http://en.wikipedia.org/wiki/Reduced_instruction_set_computing) and [*Complex instructing set computing*](http://en.wikipedia.org/wiki/Complex_instruction_set_computing). RISC and CISC are both CPU design strategies.
 
 RISC | CISC
 ---|---
-RISC CPUs are less complex then CISC CPUs. What does this mean? This menans that the CPU can execute one commant ine one clock (8 MHz = 8000000 clocks per second). But it also means that there are less instructions then on a CISC CPU. So you have to write more complex assembly code. RISC CPUs are used where you have to save power e.g. your smartphone, microcontrollers, raspberry pi, arm cpus ... | CISC CPUs have much more instructions than a RISC CPU, but one complex CISC instruction can take multiple clocks. Advantages are that you dont have to write as much assembly code for some operations as in a RISC cpu. Intel uses the CISC arcitecture but also with some RISC features.
+RISC CPUs are less complex then CISC CPUs. What does this mean? This menans that the CPU can execute one command in one clock (8 MHz = 8000000 clocks per second). But it also means that there are less instructions then on a CISC CPU. So you have to write more complex assembly code. RISC CPUs are used where you have to save power e.g. your smartphone, microcontroller, raspberry pi, arm CPU, ... | CISC CPUs have much more instructions than a RISC CPU, but one complex CISC instruction can take multiple clocks. Advantages are that you dont have to write as much assembly code for some operations as in a RISC cpu. Intel uses the CISC arcitecture but also with some RISC features.
 
 ###Requirements
 
@@ -82,15 +81,15 @@ Because of this I recomend buying the [STK600](http://www.atmel.com/tools/stk600
 (which is actualy a programmer for vaious AVR MCUs and includes the ATMega2560 MCU) 
 or the Arduino which has its own programmer included (the arduino's microcontroller is also from AVR).
 If you have a Raspberry PI you can use it as well to learn assembly. The pi however has an ARM CPU
-so instead of learning the AVR assembly language you have to learn the AVR assembly language.
+so instead of learning the AVR assembly language you have to learn the ARM assembly language.
 
 - **Development Environement**
 
-For windows I would recomend the free IDE [AVR Studio 6](http://www.atmel.ch/microsite/atmel_studio6/).
+For Windows I would recommend the free IDE [AVR Studio 6](http://www.atmel.ch/microsite/atmel_studio6/).
 
 - **Know the assembly**
 
-The most important thing to learn the Assembly language for your CPU/MCU is to have a instruction-table. 
+The most important thing to learn the assembly language for your CPU/MCU is to have a instruction-table.
 You can find Instruction tables for your device on the Internet. 
 
 * [ATMega2560](http://www.atmel.ch/Images/doc2549.pdf) on page 416
@@ -99,9 +98,9 @@ You can find Instruction tables for your device on the Internet.
 
 ###RESET code
 
-For my projects I use the [header](https://github.com/randombenj/uController/blob/master/AVR_Header.asm) file wich we got from the µController-course.
+For my projects I use the [header](https://github.com/randombenj/uController/blob/master/AVR_Header.asm) file which we got from the µController-course.
 
-> **Documentation is verry important when writing assembly code.**
+> **Documentation is very important when writing assembly code.**
 
 A code comment in assembly beginss with `;`
 
@@ -113,7 +112,7 @@ A code comment in assembly beginss with `;`
 
 > Why use the header file?
 
-All my projects are based on the header file, this is because its a great entry point and all important Initialisations are already done e.g. stack initialisation.
+All my projects are based on the header file, this is because its a great entry point and all important initialisations are already done e.g. stack initialisation.
 
 ```nasm
 .include "m2560def.inc"
