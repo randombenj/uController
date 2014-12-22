@@ -246,3 +246,19 @@ void lcd_int16(int16_t number)
 
   lcd_char(((char)number + '0'));
 }
+
+void lcd_two_number(int8_t number)
+{
+  char string = '0';
+  if (number < 100)
+  {
+    while(number >=   10)
+    {
+      number -=   10;
+      string++;
+    }
+
+    lcd_char(string);
+    lcd_char(((char)number + '0'));
+  }
+}

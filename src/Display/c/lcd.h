@@ -221,4 +221,12 @@ void lcd_string(char string[]);
  */
 void lcd_int16(int16_t number);
 
+/**
+ * Puts a two digit number to the lcd
+ * (00 - 99). Number Format: "00"
+ * @param number
+ *  The two digit number
+ */
+void lcd_two_number(int8_t number);
+
 #endif // LCD_H_

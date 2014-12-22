@@ -26,7 +26,7 @@ menu_t menu[2] = {
       timerselect_enter,
     },
     .static_text = {
-      "[ / ]   :   -   :   ",
+      "[ /8]   :   -   :   ",
       "[ ]         |       "
     }
   }
@@ -41,12 +41,13 @@ int main()
 {
   lcd_init();
   home_init();
+  //timerselect_init();
   timer_init();
   while (1)
   {
     if (current_menu == 0)
     {
-      home_update_time();
+      home_redraw_time();
     }
   }
 

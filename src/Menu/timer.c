@@ -22,7 +22,7 @@ char weekday_shorts[7][3 + 1] = {
 
 timer_t timer[8] = {
   {
-    .active = true,
+    .active = false,
     .start_time = {
       .second = 0,
       .minute = 0,
@@ -37,7 +37,7 @@ timer_t timer[8] = {
     .port_mask = 0x00
   },
   {
-    .active = true,
+    .active = false,
     .start_time = {
       .second = 0,
       .minute = 0,
@@ -52,7 +52,7 @@ timer_t timer[8] = {
     .port_mask = 0x00
   },
   {
-    .active = true,
+    .active = false,
     .start_time = {
       .second = 0,
       .minute = 0,
@@ -67,7 +67,7 @@ timer_t timer[8] = {
     .port_mask = 0x00
   },
   {
-    .active = true,
+    .active = false,
     .start_time = {
       .second = 0,
       .minute = 0,
@@ -82,7 +82,7 @@ timer_t timer[8] = {
     .port_mask = 0x00
   },
   {
-    .active = true,
+    .active = false,
     .start_time = {
       .second = 0,
       .minute = 0,
@@ -97,7 +97,7 @@ timer_t timer[8] = {
     .port_mask = 0x00
   },
   {
-    .active = true,
+    .active = false,
     .start_time = {
       .second = 0,
       .minute = 0,
@@ -112,7 +112,7 @@ timer_t timer[8] = {
     .port_mask = 0x00
   },
   {
-    .active = true,
+    .active = false,
     .start_time = {
       .second = 0,
       .minute = 0,
@@ -127,7 +127,7 @@ timer_t timer[8] = {
     .port_mask = 0x00
   },
   {
-    .active = true,
+    .active = false,
     .start_time = {
       .second = 0,
       .minute = 0,
@@ -163,6 +163,31 @@ uint8_t get_weekday(date_t date)
   uint8_t yy = date.year - adjustment;
   return (date.day + (13 * mm - 1) / 5 +
   yy + yy / 4 - yy / 100 + yy / 400) % 7;
+}
+
+uint8_t get_weeknumber(date_t date)
+{
+  date_t date_jan_1 = {
+    .day = 1,
+    .month = 1,
+    .year = date.year
+  };
+
+  uint8_t month = date.month;
+  if (month < 3)
+  {
+    //y--;
+    month += 12;
+  }
+    //y * 365) + (y / 4) - (y / 100) + (y / 400) - 1200820
+  uint16_t julian_day = (month * 153 + 3) / 5 - 92 + date.day - 1;
+  uint8_t weeknumber = ((julian_day + 6) / 7);
+  return julian_day;
+  if(get_weekday(date) < get_weekday(date_jan_1))
+  {
+    ++weeknumber;
+  }
+  return weeknumber;
 }
 
 ISR (TIMER2_COMPA_vect)
@@ -258,7 +283,7 @@ void time_tick()
     }
   }
 
-  if(now.date.month == 12)
+  if(now.date.month == 13)
   {
     now.date.month = 0;
     now.date.year++;

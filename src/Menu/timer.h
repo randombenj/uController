@@ -56,6 +56,8 @@ typedef struct {
   uint8_t port_mask;
 } timer_t;
 
+extern timer_t timer[8];
+
 /**
  * Calculates the current week number
  */
