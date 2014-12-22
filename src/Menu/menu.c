@@ -34,6 +34,7 @@ menu_t menu[2] = {
 
 uint8_t x_cursor_position = 0;
 uint8_t y_cursor_position = 0;
+uint8_t current_menu = 0;
 view_state_t view_state = VIEW;
 
 int main()
@@ -41,9 +42,13 @@ int main()
   lcd_init();
   home_init();
   timer_init();
-  while (1) {
-    lcd_set_position(0, 0);
-    lcd_int16(now.second);
+  while (1)
+  {
+    if (current_menu == 0)
+    {
+      home_update_time();
+    }
   }
+
   return 0;
 }

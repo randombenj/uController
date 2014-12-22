@@ -1,14 +1,146 @@
 #include <avr/io.h>
 #include "timer.h"
+#include "../../lib/c/type.h"
 #include <avr/interrupt.h>
 
-time_t now = {
-  .second = 0,
-  .minute = 0,
-  .hour = 0,
-  .day = 0,
-  .month = 0,
-  .year = 0
+date_time_t now = {
+  .date = {
+    .day = 24,
+    .month = 12,
+    .year = 14
+  },
+  .time = {
+    .second = 0,
+    .minute = 0,
+    .hour = 12,
+  }
+};
+
+char weekday_shorts[7][3 + 1] = {
+  "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+};
+
+timer_t timer[8] = {
+  {
+    .active = true,
+    .start_time = {
+      .second = 0,
+      .minute = 0,
+      .hour = 0,
+    },
+    .end_time = {
+      .second = 0,
+      .minute = 0,
+      .hour = 0,
+    },
+    .weekday_mask = 0x00,
+    .port_mask = 0x00
+  },
+  {
+    .active = true,
+    .start_time = {
+      .second = 0,
+      .minute = 0,
+      .hour = 0,
+    },
+    .end_time = {
+      .second = 0,
+      .minute = 0,
+      .hour = 0,
+    },
+    .weekday_mask = 0x00,
+    .port_mask = 0x00
+  },
+  {
+    .active = true,
+    .start_time = {
+      .second = 0,
+      .minute = 0,
+      .hour = 0,
+    },
+    .end_time = {
+      .second = 0,
+      .minute = 0,
+      .hour = 0,
+    },
+    .weekday_mask = 0x00,
+    .port_mask = 0x00
+  },
+  {
+    .active = true,
+    .start_time = {
+      .second = 0,
+      .minute = 0,
+      .hour = 0,
+    },
+    .end_time = {
+      .second = 0,
+      .minute = 0,
+      .hour = 0,
+    },
+    .weekday_mask = 0x00,
+    .port_mask = 0x00
+  },
+  {
+    .active = true,
+    .start_time = {
+      .second = 0,
+      .minute = 0,
+      .hour = 0,
+    },
+    .end_time = {
+      .second = 0,
+      .minute = 0,
+      .hour = 0,
+    },
+    .weekday_mask = 0x00,
+    .port_mask = 0x00
+  },
+  {
+    .active = true,
+    .start_time = {
+      .second = 0,
+      .minute = 0,
+      .hour = 0,
+    },
+    .end_time = {
+      .second = 0,
+      .minute = 0,
+      .hour = 0,
+    },
+    .weekday_mask = 0x00,
+    .port_mask = 0x00
+  },
+  {
+    .active = true,
+    .start_time = {
+      .second = 0,
+      .minute = 0,
+      .hour = 0,
+    },
+    .end_time = {
+      .second = 0,
+      .minute = 0,
+      .hour = 0,
+    },
+    .weekday_mask = 0x00,
+    .port_mask = 0x00
+  },
+  {
+    .active = true,
+    .start_time = {
+      .second = 0,
+      .minute = 0,
+      .hour = 0,
+    },
+    .end_time = {
+      .second = 0,
+      .minute = 0,
+      .hour = 0,
+    },
+    .weekday_mask = 0x00,
+    .port_mask = 0x00
+  }
 };
 
 void timer_init()
@@ -24,10 +156,19 @@ void timer_init()
   sei();                                // enable global interupts
 }
 
+uint8_t get_weekday(date_t date)
+{
+  uint8_t adjustment = ((14 - date.month) / 12);
+  uint8_t mm = date.month + 12 * adjustment - 2;
+  uint8_t yy = date.year - adjustment;
+  return (date.day + (13 * mm - 1) / 5 +
+  yy + yy / 4 - yy / 100 + yy / 400) % 7;
+}
+
 ISR (TIMER2_COMPA_vect)
 {
   TCCR2B = TCCR2B;
-  now.second++;
+  now.time.second++;
   time_tick();
 
   while(ASSR & ((1<<TCN2UB) | (1<<OCR2AUB) | (1<<OCR2BUB) |
@@ -36,90 +177,90 @@ ISR (TIMER2_COMPA_vect)
 
 void time_tick()
 {
-  if(now.second == 60)
+  if(now.time.second == 60)
   {
-    now.minute++;
-    now.second = 0;
+    now.time.minute++;
+    now.time.second = 0;
   }
-  if(now.minute == 60)
+  if(now.time.minute == 60)
   {
-    now.hour++;
-    now.minute = 0;
+    now.time.hour++;
+    now.time.minute = 0;
   }
-  if(now.hour == 24)
+  if(now.time.hour == 24)
   {
-    now.hour = 0;
-    now.day++;
+    now.time.hour = 0;
+    now.date.day++;
   }
 
-  if(now.day >= 28)
+  if(now.date.day >= 28)
   {
-    if(now.month == 2)
+    if(now.date.month == 2)
     {
-      if(now.year % 4)
+      if(now.date.year % 4)
       {
         // leep jear
-        if(now.day == 29)
+        if(now.date.day == 29)
         {
-          now.day = 0;
-          now.month++;
+          now.date.day = 0;
+          now.date.month++;
         }
       }
       else
       {
-        if(now.day == 28)
+        if(now.date.day == 28)
         {
-          now.day = 0;
-          now.month++;
+          now.date.day = 0;
+          now.date.month++;
         }
       }
     }
     else
     {
-      if(now.month < 7)
+      if(now.date.month < 7)
       {
-        if(now.month % 2)
+        if(now.date.month % 2)
         {
-          if(now.day == 30)
+          if(now.date.day == 30)
           {
-            now.day = 0;
-            now.month++;
+            now.date.day = 0;
+            now.date.month++;
           }
         }
         else
         {
-          if(now.day == 31)
+          if(now.date.day == 31)
           {
-            now.day = 0;
-            now.month++;
+            now.date.day = 0;
+            now.date.month++;
           }
         }
       }
       else
       {
-        if(now.month % 2)
+        if(now.date.month % 2)
         {
-          if(now.day == 31)
+          if(now.date.day == 31)
           {
-            now.day = 0;
-            now.month++;
+            now.date.day = 0;
+            now.date.month++;
           }
         }
         else
         {
-          if(now.day == 30)
+          if(now.date.day == 30)
           {
-            now.day = 0;
-            now.month++;
+            now.date.day = 0;
+            now.date.month++;
           }
         }
       }
     }
   }
 
-  if(now.month == 12)
+  if(now.date.month == 12)
   {
-    now.month = 0;
-    now.year++;
+    now.date.month = 0;
+    now.date.year++;
   }
 }
