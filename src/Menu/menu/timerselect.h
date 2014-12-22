@@ -1,7 +1,6 @@
 #ifndef TIMERSELECT_MENU_H_
 #define TIMERSELECT_MENU_H_
 
-
 /**
 * TIMERSELECT MENU:
 */

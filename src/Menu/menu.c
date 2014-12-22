@@ -1,4 +1,5 @@
 #include <avr/io.h>
+#include "timer.h"
 #include "menu.h"
 #include "../Display/c/lcd.h"
 
@@ -35,11 +36,14 @@ uint8_t x_cursor_position = 0;
 uint8_t y_cursor_position = 0;
 view_state_t view_state = VIEW;
 
-
-
 int main()
 {
   lcd_init();
   home_init();
+  timer_init();
+  while (1) {
+    lcd_set_position(0, 0);
+    lcd_int16(now.second);
+  }
   return 0;
 }
