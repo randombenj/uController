@@ -1,5 +1,6 @@
 TARGET              = menu
 SRC                 = $(TARGET).c
+LIBS                = ../Display/c/lcd.c
 
 MCU                 = atmega2560
 AVRDUDE_PROGRAMMER  = stk600
@@ -20,7 +21,7 @@ all: builddir $(TARGET).elf lst text
 
 
 $(TARGET).elf: $(TARGET).o
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $(BUILD_DIRECTORY)/$@ $(BUILD_DIRECTORY)/$^
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(BUILD_DIRECTORY)/$@ $(BUILD_DIRECTORY)/$^ $(LIBS)
 
 builddir:
 	mkdir -p $(BUILD_DIRECTORY) # make build directory if not exists
