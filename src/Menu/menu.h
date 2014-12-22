@@ -19,25 +19,12 @@ typedef enum {
  */
 typedef struct {
   void_func_t actions[5];
-  char static_text[40 + 1];
+  char static_text[2][20 + 1];
 } menu_t;
 
-/**
- * HOME MENU:
- */
-void home_up();
-void home_down();
-void home_left();
-void home_right();
-void home_enter();
+extern menu_t menu[2];
 
-/**
- * TIMERSELECT MENU:
- */
-void timerselect_up();
-void timerselect_down();
-void timerselect_left();
-void timerselect_right();
-void timerselect_enter();
+#include "menu/home.h"
+#include "menu/timerselect.h"
 
 #endif // MENU_H_

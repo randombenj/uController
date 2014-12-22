@@ -11,7 +11,10 @@ menu_t menu[2] = {
       home_right,
       home_enter,
     },
-    .static_text = "      .  .     :        W   [        ]  "
+    .static_text = {
+      "      .  .     :    ",
+      "    W   [        ]  "
+    }
   },
   {
     .actions = {
@@ -21,7 +24,10 @@ menu_t menu[2] = {
       timerselect_right,
       timerselect_enter,
     },
-    .static_text = "[ / ]   :   -   :   [ ]         |       "
+    .static_text = {
+      "[ / ]   :   -   :   ",
+      "[ ]         |       "
+    }
   }
 };
 
@@ -29,26 +35,11 @@ uint8_t x_cursor_position = 0;
 uint8_t y_cursor_position = 0;
 view_state_t view_state = VIEW;
 
+
+
 int main()
 {
   lcd_init();
+  home_init();
   return 0;
 }
-
-/**
-* HOME MENU:
-*/
-void home_up() {}
-void home_down() {}
-void home_left() {}
-void home_right() {}
-void home_enter() {}
-
-/**
-* TIMERSELECT MENU:
-*/
-void timerselect_up() {}
-void timerselect_down() {}
-void timerselect_left() {}
-void timerselect_right() {}
-void timerselect_enter() {}

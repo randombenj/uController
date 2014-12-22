@@ -1,6 +1,6 @@
 TARGET              = menu
 SRC                 = $(TARGET).c
-LIBS                = ../Display/c/lcd.c
+LIBS                = ../Display/c/lcd.c menu/home.c menu/timerselect.c
 
 MCU                 = atmega2560
 AVRDUDE_PROGRAMMER  = stk600
