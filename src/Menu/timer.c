@@ -176,10 +176,9 @@ uint8_t get_weeknumber(date_t date)
   uint8_t month = date.month;
   if (month < 3)
   {
-    //y--;
     month += 12;
   }
-    //y * 365) + (y / 4) - (y / 100) + (y / 400) - 1200820
+
   uint16_t julian_day = (month * 153 + 3) / 5 - 92 + date.day - 1;
   uint8_t weeknumber = ((julian_day + 6) / 7);
   return julian_day;
@@ -195,9 +194,6 @@ ISR (TIMER2_COMPA_vect)
   TCCR2B = TCCR2B;
   now.time.second++;
   time_tick();
-
-  while(ASSR & ((1<<TCN2UB) | (1<<OCR2AUB) | (1<<OCR2BUB) |
-    (1<<TCR2AUB) | (1<<TCR2BUB)));
 }
 
 void time_tick()
