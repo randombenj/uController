@@ -27,6 +27,9 @@ typedef struct {
 
 extern menu_t menu[2];
 extern uint8_t current_menu;
+extern uint8_t x_cursor_position;
+extern uint8_t y_cursor_position;
+extern view_state_t view_state;
 
 #include "menu/home.h"
 #include "menu/timerselect.h"

@@ -18,16 +18,42 @@ void timerselect_init()
   timerselect_redraw_timer();
 }
 
-void timerselect_up() {}
-void timerselect_down() {}
+void timerselect_up()
+{
+  if (view_state == VIEW)
+  {
+    timerselect_timer_up();
+  }
+}
+void timerselect_down()
+{
+  if (view_state == VIEW)
+  {
+    timerselect_timer_down();
+  }
+}
 void timerselect_left()
 {
-  // swich to home menu
-  current_menu = 0;
-  home_init();
+  if (view_state == VIEW)
+  {
+    // swich to home menu
+    current_menu = 0;
+    x_cursor_position = 0;
+    y_cursor_position = 0;
+    home_init();
+  }
 }
+
 void timerselect_right() {}
-void timerselect_enter() {}
+
+void timerselect_enter()
+{
+  if (view_state == VIEW)
+  {
+    // toggle active of timer
+    timer[selected_menu_index].active = !timer[selected_menu_index].active;
+  }
+}
 
 void timerselect_timer_up()
 {

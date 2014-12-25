@@ -57,8 +57,13 @@ void home_down() {}
 void home_left() {}
 void home_right()
 {
-  // swich to timer menu
-  current_menu = 1;
-  timerselect_init();
+  if(view_state = VIEW)
+  {
+    // swich to timer menu
+    current_menu = 1;
+    x_cursor_position = 0;
+    y_cursor_position = 0;
+    timerselect_init();
+  }
 }
 void home_enter() {}
