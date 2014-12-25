@@ -39,17 +39,45 @@ view_state_t view_state = VIEW;
 
 int main()
 {
+  SWICH_D = 0x00; // read from swich
+
   lcd_init();
   home_init();
   //timerselect_init();
   timer_init();
+
   while (1)
   {
-    if (current_menu == 0)
-    {
-      home_redraw_time();
-    }
+    handle_menu();
   }
 
   return 0;
+}
+
+void handle_menu()
+{
+  uint8_t input_index = get_input_index();
+  if (input_index < 0xFF)
+  {
+    menu[current_menu].actions[input_index]();
+  }
+  if (current_menu == 0)
+  {
+    home_redraw_time();
+  }
+}
+
+uint8_t get_input_index()
+{
+  uint8_t i = 0;
+  uint8_t input = SWICH;
+  for(i = 0; i < 8; i++)
+  {
+    if (input % 2)
+    {
+      return i;
+    }
+    input /= 2;
+  }
+  return 0xFF;
 }

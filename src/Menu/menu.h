@@ -1,6 +1,9 @@
 #ifndef MENU_H_
 #define MENU_H_
 
+#define SWICH            PINB
+#define SWICH_D          DDRB
+
 /**
  * Function pointer returning void
  */
@@ -23,8 +26,16 @@ typedef struct {
 } menu_t;
 
 extern menu_t menu[2];
+extern uint8_t current_menu;
 
 #include "menu/home.h"
 #include "menu/timerselect.h"
+
+/**
+ * Handles menu actions
+ * call this function in an endless loop
+ */
+void handle_menu();
+uint8_t get_input_index();
 
 #endif // MENU_H_

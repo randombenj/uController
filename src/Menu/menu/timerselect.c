@@ -1,6 +1,7 @@
 #include <avr/io.h>
 #include "../menu.h"
 #include "../timer.h"
+#include "home.h"
 #include "../../Display/c/lcd.h"
 
 uint8_t selected_menu_index = 0;
@@ -19,7 +20,12 @@ void timerselect_init()
 
 void timerselect_up() {}
 void timerselect_down() {}
-void timerselect_left() {}
+void timerselect_left()
+{
+  // swich to home menu
+  current_menu = 0;
+  home_init();
+}
 void timerselect_right() {}
 void timerselect_enter() {}
 

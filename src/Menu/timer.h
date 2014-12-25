@@ -2,6 +2,9 @@
 #define TIMER_H_
 #include "../../lib/c/type.h"
 
+#define TIMER_PORT               PORTD
+#define TIMER_PORT_D             DDRD
+
 /**
  * Represents an enumeration of Weekdays
  */
@@ -77,5 +80,16 @@ void timer_init();
  * One tick in a time
  */
 void time_tick();
+
+/**
+ * Determines if a time is equal to another time
+ * @param a
+ *  Time a
+ * @param b
+ *  Time b
+ * @return
+ *  if time a is equal to time b
+ */
+bool time_equals(time_t a, time_t b);
 
 #endif // TIMER_H_

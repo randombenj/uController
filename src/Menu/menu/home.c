@@ -1,6 +1,7 @@
 #include <avr/io.h>
 #include "../menu.h"
 #include "../timer.h"
+#include "home.h"
 #include "../../Display/c/lcd.h"
 
 /**
@@ -30,7 +31,8 @@ void home_redraw_time()
   lcd_set_position(16, 0);
   lcd_two_number(now.time.second);
   lcd_set_position(5, 1);
-  lcd_two_number(get_weeknumber(now.date));
+  lcd_hex(SWICH);
+  //lcd_two_number(get_weeknumber(now.date));
 }
 
 void home_redraw_avtive()
@@ -53,5 +55,10 @@ void home_redraw_avtive()
 void home_up() {}
 void home_down() {}
 void home_left() {}
-void home_right() {}
+void home_right()
+{
+  // swich to timer menu
+  current_menu = 1;
+  timerselect_init();
+}
 void home_enter() {}

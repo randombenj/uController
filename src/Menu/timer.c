@@ -2,6 +2,7 @@
 #include "timer.h"
 #include "../../lib/c/type.h"
 #include <avr/interrupt.h>
+#include "../../lib/c/bitmanipulation.h"
 
 date_time_t now = {
   .date = {
@@ -145,6 +146,8 @@ timer_t timer[8] = {
 
 void timer_init()
 {
+  // set timer port to output
+  TIMER_PORT_D = 0xFF;
   // configure timer 2
   GTCCR |= (1 << TSM) | (1 << PSRASY);  // stop timer, reset prescaler
   ASSR |= (1 << AS2);                   // enable async mode
@@ -154,6 +157,13 @@ void timer_init()
   TIMSK2 |= (1<<OCIE2A);                // enable compare interrupt
   GTCCR &= ~(1 << TSM);                 // start timer
   sei();                                // enable global interupts
+}
+
+bool time_equals(time_t a, time_t b)
+{
+  return a.second == b.second &&
+    a.minute == b.minute &&
+    a.hour == b.hour;
 }
 
 uint8_t get_weekday(date_t date)
@@ -196,12 +206,34 @@ ISR (TIMER2_COMPA_vect)
   time_tick();
 }
 
+void update_timer()
+{
+  uint8_t i = 0;
+  for(i = 0; i < 8; i++)
+  {
+    if(IS_BIT_SET(timer[i].weekday_mask, get_weekday(now.date)) &&
+      time_equals(now.time, timer[i].start_time))
+    {
+      // start alarm
+      TIMER_PORT = timer[i].port_mask;
+    }
+    if(IS_BIT_SET(timer[i].weekday_mask, get_weekday(now.date)) &&
+      time_equals(now.time, timer[i].start_time) &&
+      !time_equals(timer[i].start_time, timer[i].end_time))
+    {
+      // stop alarm
+      TIMER_PORT = 0x00;
+    }
+  }
+}
+
 void time_tick()
 {
   if(now.time.second == 60)
   {
     now.time.minute++;
     now.time.second = 0;
+    update_timer(); // show if a timer has to be triggered
   }
   if(now.time.minute == 60)
   {
@@ -223,7 +255,7 @@ void time_tick()
         // leep jear
         if(now.date.day == 29)
         {
-          now.date.day = 0;
+          now.date.day = 1;
           now.date.month++;
         }
       }
@@ -231,7 +263,7 @@ void time_tick()
       {
         if(now.date.day == 28)
         {
-          now.date.day = 0;
+          now.date.day = 1;
           now.date.month++;
         }
       }
@@ -244,7 +276,7 @@ void time_tick()
         {
           if(now.date.day == 30)
           {
-            now.date.day = 0;
+            now.date.day = 1;
             now.date.month++;
           }
         }
@@ -252,7 +284,7 @@ void time_tick()
         {
           if(now.date.day == 31)
           {
-            now.date.day = 0;
+            now.date.day = 1;
             now.date.month++;
           }
         }
@@ -263,7 +295,7 @@ void time_tick()
         {
           if(now.date.day == 31)
           {
-            now.date.day = 0;
+            now.date.day = 1;
             now.date.month++;
           }
         }
@@ -271,7 +303,7 @@ void time_tick()
         {
           if(now.date.day == 30)
           {
-            now.date.day = 0;
+            now.date.day = 1;
             now.date.month++;
           }
         }
@@ -281,7 +313,7 @@ void time_tick()
 
   if(now.date.month == 13)
   {
-    now.date.month = 0;
+    now.date.month = 1;
     now.date.year++;
   }
 }
