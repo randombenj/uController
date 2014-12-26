@@ -15,5 +15,12 @@ void home_enter();
 void home_init();
 void home_redraw_time();
 void home_redraw_avtive();
+void change_year(uint8_t i);
+void change_month(uint8_t i);
+void change_day(uint8_t i);
+void change_hour(uint8_t i);
+void change_minute(uint8_t i);
+void toggle_active(uint8_t timer_index);
+
 
 #endif // HOME_MENU_H_
