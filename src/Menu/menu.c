@@ -1,6 +1,8 @@
 #include <avr/io.h>
 #include "timer.h"
 #include "menu.h"
+#include "menu/home.h"
+#include "menu/timerselect.h"
 #include "../Display/c/lcd.h"
 
 menu_t menu[2] = {
@@ -43,7 +45,6 @@ int main()
 
   lcd_init();
   home_init();
-  //timerselect_init();
   timer_init();
 
   while (1)
@@ -70,7 +71,7 @@ void handle_menu()
 uint8_t get_input_index()
 {
   uint8_t i = 0;
-  uint8_t input = SWICH;
+  uint8_t input = ~SWICH;
   for(i = 0; i < 8; i++)
   {
     if (input % 2)

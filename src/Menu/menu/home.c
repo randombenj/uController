@@ -31,8 +31,7 @@ void home_redraw_time()
   lcd_set_position(16, 0);
   lcd_two_number(now.time.second);
   lcd_set_position(5, 1);
-  lcd_hex(SWICH);
-  //lcd_two_number(get_weeknumber(now.date));
+  lcd_two_number(get_weeknumber(now.date));
 }
 
 void home_redraw_avtive()
@@ -57,7 +56,7 @@ void home_down() {}
 void home_left() {}
 void home_right()
 {
-  if(view_state = VIEW)
+  if (view_state == VIEW)
   {
     // swich to timer menu
     current_menu = 1;
