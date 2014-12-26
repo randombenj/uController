@@ -37,7 +37,7 @@ menu_t menu[2] = {
 uint8_t x_cursor_position = 0;
 uint8_t y_cursor_position = 0;
 uint8_t current_menu = 0;
-view_state_t view_state = EDIT;
+view_state_t view_state = VIEW;
 
 int main()
 {

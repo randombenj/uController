@@ -58,36 +58,7 @@ void home_up()
 {
   if (view_state == EDIT)
   {
-    uint8_t step_size = 1;
-    if(y_cursor_position == 0)
-    {
-      if(x_cursor_position == 3)
-      {
-        change_day(step_size);
-      }
-      if(x_cursor_position == 6)
-      {
-        change_month(step_size);
-      }
-      if(x_cursor_position == 9)
-      {
-        change_year(step_size);
-      }
-
-      if(x_cursor_position == 12)
-      {
-        change_hour(step_size);
-      }
-      if(x_cursor_position == 15)
-      {
-        change_minute(step_size);
-      }
-    }
-    else
-    {
-      toggle_active(x_cursor_position - 10);
-      home_redraw_avtive();
-    }
+    edit_home(1);
   }
 }
 
@@ -95,38 +66,41 @@ void home_down()
 {
   if (view_state == EDIT)
   {
-    uint8_t step_size = -1;
-    if(y_cursor_position == 0)
-    {
-      if(x_cursor_position == 3)
-      {
-        change_day(step_size);
-      }
-      if(x_cursor_position == 6)
-      {
-        change_month(step_size);
-      }
-      if(x_cursor_position == 9)
-      {
-        change_year(step_size);
-      }
+    edit_home(-1);
+  }
+}
 
-      if(x_cursor_position == 12)
-      {
-        change_hour(step_size);
-      }
-      if(x_cursor_position == 15)
-      {
-        change_minute(step_size);
-      }
-    }
-    else
+void edit_home(uint8_t step_size)
+{
+  if(y_cursor_position == 0)
+  {
+    if(x_cursor_position == 3)
     {
-      toggle_active(x_cursor_position - 10);
-      home_redraw_avtive();
+      change_day(step_size);
+    }
+    if(x_cursor_position == 6)
+    {
+      change_month(step_size);
+    }
+    if(x_cursor_position == 9)
+    {
+      change_year(step_size);
+    }
+
+    if(x_cursor_position == 12)
+    {
+      change_hour(step_size);
+    }
+    if(x_cursor_position == 15)
+    {
+      change_minute(step_size);
     }
   }
-
+  else
+  {
+    toggle_active(x_cursor_position - 10);
+    home_redraw_avtive();
+  }
 }
 
 void home_left()
