@@ -3,6 +3,7 @@
 #include "../timer.h"
 #include "home.h"
 #include "../../Display/c/lcd.h"
+#include "../../../lib/c/bitmanipulation.h"
 #include <avr/delay.h>
 
 uint8_t selected_menu_index = 0;
@@ -17,6 +18,8 @@ void timerselect_init()
   lcd_set_position(0, 1);
   lcd_string(menu[1].static_text[1]);
   timerselect_redraw_timer();
+  y_cursor_position = 0;
+  x_cursor_position = 6;
 }
 
 void timerselect_up()
@@ -25,6 +28,10 @@ void timerselect_up()
   {
     timerselect_timer_up();
   }
+  if (view_state == EDIT)
+  {
+    edit_timerselect(-1);
+  }
 }
 void timerselect_down()
 {
@@ -32,7 +39,50 @@ void timerselect_down()
   {
     timerselect_timer_down();
   }
+  if (view_state == EDIT)
+  {
+    edit_timerselect(-1);
+  }
 }
+
+void edit_timerselect(int8_t step_size)
+{
+  if (y_cursor_position == 0)
+  {
+    // start time
+    if (x_cursor_position == 6)
+    {
+      change_time_hour(&timer[selected_menu_index].start_time, step_size);
+    }
+    if (x_cursor_position == 9)
+    {
+      change_time_minute(&timer[selected_menu_index].start_time, step_size);
+    }
+    // end time
+    if (x_cursor_position == 11)
+    {
+      change_time_hour(&timer[selected_menu_index].end_time, step_size);
+    }
+    if (x_cursor_position == 14)
+    {
+      change_time_minute(&timer[selected_menu_index].end_time, step_size);
+    }
+  }
+  else
+  {
+    if (x_cursor_position >= 5 && x_cursor_position <= 12)
+    {
+      toggle_portmask(x_cursor_position - 5);
+      timerselect_redraw_portmask();
+    }
+    if (x_cursor_position >= 14 && x_cursor_position <= 20)
+    {
+      toggle_weekdaymask(x_cursor_position - 14);
+      timerselect_redraw_weekdays();
+    }
+  }
+}
+
 void timerselect_left()
 {
   if (view_state == VIEW)
@@ -43,9 +93,81 @@ void timerselect_left()
     y_cursor_position = 0;
     home_init();
   }
+  if (view_state == EDIT)
+  {
+    if (y_cursor_position == 0)
+    {
+      if (x_cursor_position == 9 || x_cursor_position == 17)
+      {
+        x_cursor_position -= 3;
+      }
+      if (x_cursor_position == 14)
+      {
+        x_cursor_position -= 5;
+      }
+    }
+    else
+    {
+      if (x_cursor_position == 4)
+      {
+        // edit portmask
+        y_cursor_position = 0;
+        x_cursor_position = 18;
+      }
+      if(x_cursor_position >= 13 && x_cursor_position <= 20)
+      {
+        x_cursor_position--;
+      }
+      if (x_cursor_position == 13)
+      {
+        x_cursor_position = 11;
+      }
+      if (x_cursor_position >= 4 && x_cursor_position <= 11)
+      {
+        x_cursor_position--;
+      }
+    }
+  }
 }
 
-void timerselect_right() {}
+void timerselect_right()
+{
+  if (view_state == EDIT)
+  {
+    if (y_cursor_position == 0)
+    {
+      if (x_cursor_position == 6 || x_cursor_position == 14)
+      {
+        x_cursor_position += 3;
+      }
+      if (x_cursor_position == 9)
+      {
+        x_cursor_position += 5;
+      }
+      if (x_cursor_position == 17)
+      {
+        // edit portmask
+        y_cursor_position = 1;
+        x_cursor_position = 4;
+      }
+    }
+    else
+    {
+      if (x_cursor_position >= 4 && x_cursor_position <= 11)
+      {
+        x_cursor_position++;
+      }
+      if (x_cursor_position == 11)
+      {
+        x_cursor_position = 13;
+      }
+      if(x_cursor_position >= 13 && x_cursor_position <= 20)
+      {
+        x_cursor_position++;
+      }
+    }
+  }
+}
 
 void timerselect_enter()
 {
@@ -139,5 +261,39 @@ void timerselect_redraw_weekdays()
       lcd_char('_');
     }
     weekday_mask = weekday_mask / 2;
+  }
+}
+
+void change_time_minute(time_t *time, int8_t i)
+{
+  (*time).minute += i;
+}
+
+void change_time_hour(time_t *time, int8_t i)
+{
+  (*time).hour += i;
+}
+
+void toggle_portmask(int8_t mask_index)
+{
+  if (IS_BIT_SET(timer[selected_menu_index].port_mask, mask_index))
+  {
+    CLEAR_BIT(timer[selected_menu_index].port_mask, mask_index);
+  }
+  else
+  {
+    SET_BIT(timer[selected_menu_index].port_mask, mask_index);
+  }
+}
+
+void toggle_weekdaymask(int8_t mask_index)
+{
+  if (IS_BIT_SET(timer[selected_menu_index].weekday_mask, mask_index))
+  {
+    CLEAR_BIT(timer[selected_menu_index].weekday_mask, mask_index);
+  }
+  else
+  {
+    SET_BIT(timer[selected_menu_index].weekday_mask, mask_index);
   }
 }

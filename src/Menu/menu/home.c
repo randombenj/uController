@@ -70,7 +70,7 @@ void home_down()
   }
 }
 
-void edit_home(uint8_t step_size)
+void edit_home(int8_t step_size)
 {
   if(y_cursor_position == 0)
   {
@@ -170,37 +170,37 @@ void home_enter()
 
 }
 
-void change_year(uint8_t i)
+void change_year(int8_t i)
 {
   now.date.year += i;
   _delay_ms(500);
 }
 
-void change_month(uint8_t i)
+void change_month(int8_t i)
 {
   now.date.month += i;
   _delay_ms(500);
 }
 
-void change_day(uint8_t i)
+void change_day(int8_t i)
 {
   now.date.day += i;
   _delay_ms(500);
 }
 
-void change_hour(uint8_t i)
+void change_hour(int8_t i)
 {
   now.time.hour += i;
   _delay_ms(500);
 }
 
-void change_minute(uint8_t i)
+void change_minute(int8_t i)
 {
   now.time.minute += i;
   _delay_ms(500);
 }
 
-void toggle_active(uint8_t timer_index)
+void toggle_active(int8_t timer_index)
 {
   timer[timer_index].active = !timer[timer_index].active;
   _delay_ms(500);

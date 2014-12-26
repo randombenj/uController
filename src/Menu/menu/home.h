@@ -15,13 +15,13 @@ void home_enter();
 void home_init();
 void home_redraw_time();
 void home_redraw_avtive();
-void edit_home(uint8_t step_size);
-void change_year(uint8_t i);
-void change_month(uint8_t i);
-void change_day(uint8_t i);
-void change_hour(uint8_t i);
-void change_minute(uint8_t i);
-void toggle_active(uint8_t timer_index);
+void edit_home(int8_t step_size);
+void change_year(int8_t i);
+void change_month(int8_t i);
+void change_day(int8_t i);
+void change_hour(int8_t i);
+void change_minute(int8_t i);
+void toggle_active(int8_t timer_index);
 
 
 #endif // HOME_MENU_H_
