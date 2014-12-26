@@ -22,3 +22,7 @@ end time of the timer, the weekdays on which it will be triggered can be set.
 +---+---+---+--+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
 
 ```
+
+## Requirements
+
+ > The LCD Timer depends on the [LCD Library](https://github.com/randombenj/uController/blob/master/doc/lcd-driver/lcd-driver.md).
