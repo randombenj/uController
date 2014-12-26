@@ -3,6 +3,7 @@
 #include "../timer.h"
 #include "home.h"
 #include "../../Display/c/lcd.h"
+#include <avr/delay.h>
 
 uint8_t selected_menu_index = 0;
 
@@ -53,6 +54,7 @@ void timerselect_enter()
     // toggle active of timer
     timer[selected_menu_index].active = !timer[selected_menu_index].active;
   }
+  timerselect_redraw_timer();
 }
 
 void timerselect_timer_up()
@@ -60,15 +62,17 @@ void timerselect_timer_up()
   if (selected_menu_index > 0)
   {
     selected_menu_index--;
+    _delay_ms(1000);
   }
   timerselect_redraw_timer();
 }
 
 void timerselect_timer_down()
 {
-  if (selected_menu_index <= 8)
+  if (selected_menu_index < 7)
   {
     selected_menu_index++;
+    _delay_ms(1000);
   }
   timerselect_redraw_timer();
 }
