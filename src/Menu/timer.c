@@ -172,17 +172,75 @@ uint8_t get_weekday(date_t date)
   uint8_t mm = date.month + 12 * adjustment - 2;
   uint8_t yy = date.year - adjustment;
   return (date.day + (13 * mm - 1) / 5 +
-  yy + yy / 4 - yy / 100 + yy / 400) % 7;
+    yy + yy / 4 - yy / 100 + yy / 400) % 7;
 }
 
 uint8_t get_weeknumber(date_t date)
 {
+  uint16_t days = date.day;
+  uint8_t month = date.month;
+
+  while (--month)
+  {
+    if(month == 2)
+    {
+      if((date.year % 4) == 0)
+      {
+        // leep year
+        days += 29;
+      }
+      else
+      {
+        days += 28;
+      }
+    }
+    else
+    {
+      if(month < 7)
+      {
+        if((month % 2) == 0)
+        {
+          days += 30;
+        }
+        else
+        {
+          days += 31;
+        }
+      }
+      else
+      {
+        if((month % 2) == 0)
+        {
+          days += 31;
+        }
+        else
+        {
+          days += 30;
+        }
+      }
+    }
+  }
+
   date_t date_jan_1 = {
     .day = 1,
     .month = 1,
     .year = date.year
   };
 
+  uint8_t weekday = get_weekday(date_jan_1);
+  if(weekday == 0)
+  {
+    weekday = 6;
+  }
+  else
+  {
+    weekday--;
+  }
+
+  uint8_t weeknumber = (days + weekday) / 7;
+  return weeknumber + 1;
+
+/*
   uint8_t month = date.month;
   if (month < 3)
   {
@@ -196,7 +254,7 @@ uint8_t get_weeknumber(date_t date)
   {
     ++weeknumber;
   }
-  return weeknumber;
+  return weeknumber;*/
 }
 
 ISR (TIMER2_COMPA_vect)

@@ -74,24 +74,24 @@ void edit_home(int8_t step_size)
 {
   if(y_cursor_position == 0)
   {
-    if(x_cursor_position == 3)
+    if(x_cursor_position == 5)
     {
       change_day(step_size);
     }
-    if(x_cursor_position == 6)
+    if(x_cursor_position == 8)
     {
       change_month(step_size);
     }
-    if(x_cursor_position == 9)
+    if(x_cursor_position == 11)
     {
       change_year(step_size);
     }
 
-    if(x_cursor_position == 12)
+    if(x_cursor_position == 14)
     {
       change_hour(step_size);
     }
-    if(x_cursor_position == 15)
+    if(x_cursor_position == 17)
     {
       change_minute(step_size);
     }
@@ -101,6 +101,7 @@ void edit_home(int8_t step_size)
     toggle_active(x_cursor_position - 10);
     home_redraw_avtive();
   }
+  _delay_ms(1000);
 }
 
 void home_left()
@@ -109,7 +110,7 @@ void home_left()
   {
     if(y_cursor_position == 0)
     {
-      if(x_cursor_position > 3)
+      if(x_cursor_position > 5)
       {
         x_cursor_position -= 3;
       }
@@ -124,10 +125,11 @@ void home_left()
       {
         // start editing time
         y_cursor_position = 0;
-        x_cursor_position = 15;
+        x_cursor_position = 17;
       }
     }
   }
+  _delay_ms(1000);
 }
 
 void home_right()
@@ -144,25 +146,26 @@ void home_right()
   {
     if(y_cursor_position == 0)
     {
-      if(x_cursor_position >= 15)
-      {
-        x_cursor_position += 3;
-      }
-      else
+      if(x_cursor_position >= 17)
       {
         // start editing active timer
         y_cursor_position = 1;
         x_cursor_position = 9;
       }
+      else
+      {
+        x_cursor_position += 3;
+      }
     }
     else
     {
-      if(x_cursor_position > 9)
+      if(x_cursor_position >= 9 && x_cursor_position <= 16)
       {
         x_cursor_position++;
       }
     }
   }
+  _delay_ms(500);
 }
 
 void home_enter()
