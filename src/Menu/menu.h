@@ -1,6 +1,9 @@
 #ifndef MENU_H_
 #define MENU_H_
 
+/**
+ * Defines the Input switch
+ */
 #define SWICH            PINB
 #define SWICH_D          DDRB
 
@@ -25,10 +28,29 @@ typedef struct {
   char static_text[2][20 + 1];
 } menu_t;
 
+/**
+ * Global menu
+ */
 extern menu_t menu[2];
+
+/**
+ * The current menu index
+ */
 extern uint8_t current_menu;
+
+/**
+ * Cursor X position on LCD
+ */
 extern uint8_t x_cursor_position;
+
+/**
+ * Cursor Y position on LCD
+ */
 extern uint8_t y_cursor_position;
+
+/**
+ * The current viewstate
+ */
 extern view_state_t view_state;
 
 #include "menu/home.h"
@@ -39,6 +61,11 @@ extern view_state_t view_state;
  * call this function in an endless loop
  */
 void handle_menu();
+
+/**
+ * Gets the index of the
+ * pressed input keys
+ */
 uint8_t get_input_index();
 
 #endif // MENU_H_

@@ -6,7 +6,7 @@
 #include "../../../lib/c/bitmanipulation.h"
 #include <avr/delay.h>
 
-uint8_t selected_menu_index = 0;
+uint8_t selected_timer_index = 0;
 
 /**
 * TIMERSELECT MENU:
@@ -30,7 +30,7 @@ void timerselect_up()
   }
   if (view_state == EDIT)
   {
-    edit_timerselect(-1);
+    edit_timerselect(1);
   }
 }
 
@@ -53,20 +53,20 @@ void edit_timerselect(int8_t step_size)
     // start time
     if (x_cursor_position == 6)
     {
-      change_time_hour(&timer[selected_menu_index].start_time, step_size);
+      change_time_hour(&timer[selected_timer_index].start_time, step_size);
     }
     if (x_cursor_position == 9)
     {
-      change_time_minute(&timer[selected_menu_index].start_time, step_size);
+      change_time_minute(&timer[selected_timer_index].start_time, step_size);
     }
     // end time
     if (x_cursor_position == 11)
     {
-      change_time_hour(&timer[selected_menu_index].end_time, step_size);
+      change_time_hour(&timer[selected_timer_index].end_time, step_size);
     }
     if (x_cursor_position == 14)
     {
-      change_time_minute(&timer[selected_menu_index].end_time, step_size);
+      change_time_minute(&timer[selected_timer_index].end_time, step_size);
     }
   }
   else
@@ -175,16 +175,16 @@ void timerselect_enter()
   if (view_state == VIEW)
   {
     // toggle active of timer
-    timer[selected_menu_index].active = !timer[selected_menu_index].active;
+    timer[selected_timer_index].active = !timer[selected_timer_index].active;
   }
   timerselect_redraw_timer();
 }
 
 void timerselect_timer_up()
 {
-  if (selected_menu_index > 0)
+  if (selected_timer_index > 0)
   {
-    selected_menu_index--;
+    selected_timer_index--;
     _delay_ms(1000);
   }
   timerselect_redraw_timer();
@@ -192,9 +192,9 @@ void timerselect_timer_up()
 
 void timerselect_timer_down()
 {
-  if (selected_menu_index < 7)
+  if (selected_timer_index < 7)
   {
-    selected_menu_index++;
+    selected_timer_index++;
     _delay_ms(1000);
   }
   timerselect_redraw_timer();
@@ -203,18 +203,18 @@ void timerselect_timer_down()
 void timerselect_redraw_timer()
 {
   lcd_set_position(1, 0);
-  lcd_int16(selected_menu_index + 1);
+  lcd_int16(selected_timer_index + 1);
   lcd_set_position(6, 0);
-  lcd_two_number(timer[selected_menu_index].start_time.hour);
+  lcd_two_number(timer[selected_timer_index].start_time.hour);
   lcd_set_position(9, 0);
-  lcd_two_number(timer[selected_menu_index].start_time.minute);
+  lcd_two_number(timer[selected_timer_index].start_time.minute);
   lcd_set_position(14, 0);
-  lcd_two_number(timer[selected_menu_index].end_time.hour);
+  lcd_two_number(timer[selected_timer_index].end_time.hour);
   lcd_set_position(17, 0);
-  lcd_two_number(timer[selected_menu_index].end_time.minute);
+  lcd_two_number(timer[selected_timer_index].end_time.minute);
 
   lcd_set_position(1, 1);
-  if (timer[selected_menu_index].active)
+  if (timer[selected_timer_index].active)
   {
     lcd_char('X');
   }
@@ -230,7 +230,7 @@ void timerselect_redraw_timer()
 void timerselect_redraw_portmask()
 {
   lcd_set_position(4, 1);
-  uint8_t port_mask = timer[selected_menu_index].port_mask;
+  uint8_t port_mask = timer[selected_timer_index].port_mask;
   uint8_t i = 0;
   for(i = 0; i < 8; i++)
   {
@@ -249,7 +249,7 @@ void timerselect_redraw_portmask()
 void timerselect_redraw_weekdays()
 {
   lcd_set_position(13, 1);
-  uint8_t weekday_mask = timer[selected_menu_index].weekday_mask;
+  uint8_t weekday_mask = timer[selected_timer_index].weekday_mask;
   uint8_t i = 0;
   for(i = 0; i < 8; i++)
   {
@@ -283,24 +283,24 @@ void change_time_hour(time_t *time, int8_t i)
 
 void toggle_portmask(int8_t mask_index)
 {
-  if (IS_BIT_SET(timer[selected_menu_index].port_mask, mask_index))
+  if (IS_BIT_SET(timer[selected_timer_index].port_mask, mask_index))
   {
-    CLEAR_BIT(timer[selected_menu_index].port_mask, mask_index);
+    CLEAR_BIT(timer[selected_timer_index].port_mask, mask_index);
   }
   else
   {
-    SET_BIT(timer[selected_menu_index].port_mask, mask_index);
+    SET_BIT(timer[selected_timer_index].port_mask, mask_index);
   }
 }
 
 void toggle_weekdaymask(int8_t mask_index)
 {
-  if (IS_BIT_SET(timer[selected_menu_index].weekday_mask, mask_index))
+  if (IS_BIT_SET(timer[selected_timer_index].weekday_mask, mask_index))
   {
-    CLEAR_BIT(timer[selected_menu_index].weekday_mask, mask_index);
+    CLEAR_BIT(timer[selected_timer_index].weekday_mask, mask_index);
   }
   else
   {
-    SET_BIT(timer[selected_menu_index].weekday_mask, mask_index);
+    SET_BIT(timer[selected_timer_index].weekday_mask, mask_index);
   }
 }

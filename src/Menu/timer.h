@@ -2,6 +2,9 @@
 #define TIMER_H_
 #include "../../lib/c/type.h"
 
+/**
+ * Port wich gets activated by the timer
+ */
 #define TIMER_PORT               PORTD
 #define TIMER_PORT_D             DDRD
 
@@ -59,6 +62,9 @@ typedef struct {
   uint8_t port_mask;
 } timer_t;
 
+/**
+ * All timers
+ */
 extern timer_t timer[8];
 
 /**

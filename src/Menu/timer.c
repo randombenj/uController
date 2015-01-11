@@ -4,6 +4,22 @@
 #include <avr/interrupt.h>
 #include "../../lib/c/bitmanipulation.h"
 
+#define DEFAULT_TIMER {   \
+  .active = false,        \
+  .start_time = {         \
+    .second = 0,          \
+    .minute = 0,          \
+    .hour = 0,            \
+  },                      \
+  .end_time = {           \
+    .second = 0,          \
+    .minute = 0,          \
+    .hour = 0,            \
+  },                      \
+  .weekday_mask = 0x00,   \
+  .port_mask = 0x00       \
+}
+
 date_time_t now = {
   .date = {
     .day = 24,
@@ -22,126 +38,14 @@ char weekday_shorts[7][3 + 1] = {
 };
 
 timer_t timer[8] = {
-  {
-    .active = false,
-    .start_time = {
-      .second = 0,
-      .minute = 0,
-      .hour = 0,
-    },
-    .end_time = {
-      .second = 0,
-      .minute = 0,
-      .hour = 0,
-    },
-    .weekday_mask = 0x00,
-    .port_mask = 0x00
-  },
-  {
-    .active = false,
-    .start_time = {
-      .second = 0,
-      .minute = 0,
-      .hour = 0,
-    },
-    .end_time = {
-      .second = 0,
-      .minute = 0,
-      .hour = 0,
-    },
-    .weekday_mask = 0x00,
-    .port_mask = 0x00
-  },
-  {
-    .active = false,
-    .start_time = {
-      .second = 0,
-      .minute = 0,
-      .hour = 0,
-    },
-    .end_time = {
-      .second = 0,
-      .minute = 0,
-      .hour = 0,
-    },
-    .weekday_mask = 0x00,
-    .port_mask = 0x00
-  },
-  {
-    .active = false,
-    .start_time = {
-      .second = 0,
-      .minute = 0,
-      .hour = 0,
-    },
-    .end_time = {
-      .second = 0,
-      .minute = 0,
-      .hour = 0,
-    },
-    .weekday_mask = 0x00,
-    .port_mask = 0x00
-  },
-  {
-    .active = false,
-    .start_time = {
-      .second = 0,
-      .minute = 0,
-      .hour = 0,
-    },
-    .end_time = {
-      .second = 0,
-      .minute = 0,
-      .hour = 0,
-    },
-    .weekday_mask = 0x00,
-    .port_mask = 0x00
-  },
-  {
-    .active = false,
-    .start_time = {
-      .second = 0,
-      .minute = 0,
-      .hour = 0,
-    },
-    .end_time = {
-      .second = 0,
-      .minute = 0,
-      .hour = 0,
-    },
-    .weekday_mask = 0x00,
-    .port_mask = 0x00
-  },
-  {
-    .active = false,
-    .start_time = {
-      .second = 0,
-      .minute = 0,
-      .hour = 0,
-    },
-    .end_time = {
-      .second = 0,
-      .minute = 0,
-      .hour = 0,
-    },
-    .weekday_mask = 0x00,
-    .port_mask = 0x00
-  },
-  {
-    .active = false,
-    .start_time = {
-      .second = 0,
-      .minute = 0,
-      .hour = 0,
-    },
-    .end_time = {
-      .second = 0,
-      .minute = 0,
-      .hour = 0,
-    },
-    .weekday_mask = 0x00,
-    .port_mask = 0x00
-  }
+  DEFAULT_TIMER,
+  DEFAULT_TIMER,
+  DEFAULT_TIMER,
+  DEFAULT_TIMER,
+  DEFAULT_TIMER,
+  DEFAULT_TIMER,
+  DEFAULT_TIMER,
+  DEFAULT_TIMER,
 };
 
 void timer_init()
