@@ -23,6 +23,24 @@ end time of the timer, the weekdays on which it will be triggered can be set.
 
 ```
 
+## Dependencies
+
+> The LCD Timer depends on the [LCD Library](https://github.com/randombenj/uController/blob/master/doc/lcd-driver/lcd-driver.md).
+
+* [timer.c](https://github.com/randombenj/uController/blob/master/src/Menu/timer.c) implements a clock which works with the timer overflow interupt.
+
+### AVR-libc Dependencies
+
+ * AVR standard I/O [avr/io.h](https://github.com/vancegroup-mirrors/avr-libc/blob/master/avr-libc/include/avr/io.h)
+ * Delay [avr/delay.h](https://github.com/vancegroup-mirrors/avr-libc/blob/master/avr-libc/include/avr/delay.h)
+ * Interrupts [avr/interupt.h](https://github.com/vancegroup-mirrors/avr-libc/blob/master/avr-libc/include/avr/interrupt.h)
+
 ## Requirements
 
- > The LCD Timer depends on the [LCD Library](https://github.com/randombenj/uController/blob/master/doc/lcd-driver/lcd-driver.md).
+ * Working clock
+ * 8 Timers
+ * Set weekdays of timer
+ * Set port output of timer
+ * Edit timer
+ * Edit time
+ * Activate/Deactivate timer
