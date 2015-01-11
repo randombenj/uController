@@ -275,7 +275,7 @@ void change_time_minute(time_t *time, int8_t i)
 
 void change_time_hour(time_t *time, int8_t i)
 {
-  if (((*time).hour + i) >= 0 && ((*time).hour + i) < 60)
+  if (((*time).hour + i) >= 0 && ((*time).hour + i) < 24)
   {
     (*time).hour += i;
   }
