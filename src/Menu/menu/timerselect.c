@@ -33,6 +33,7 @@ void timerselect_up()
     edit_timerselect(-1);
   }
 }
+
 void timerselect_down()
 {
   if (view_state == VIEW)
@@ -266,12 +267,18 @@ void timerselect_redraw_weekdays()
 
 void change_time_minute(time_t *time, int8_t i)
 {
-  (*time).minute += i;
+  if (((*time).minute + i) >= 0 && ((*time).minute + i) < 60)
+  {
+    (*time).minute += i;
+  }
 }
 
 void change_time_hour(time_t *time, int8_t i)
 {
-  (*time).hour += i;
+  if (((*time).hour + i) >= 0 && ((*time).hour + i) < 60)
+  {
+    (*time).hour += i;
+  }
 }
 
 void toggle_portmask(int8_t mask_index)

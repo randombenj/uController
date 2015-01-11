@@ -175,31 +175,48 @@ void home_enter()
 
 void change_year(int8_t i)
 {
-  now.date.year += i;
+  if((now.date.year + i) >= 0)
+  {
+    now.date.year += i;
+  }
   _delay_ms(500);
 }
 
 void change_month(int8_t i)
 {
-  now.date.month += i;
+  if((now.date.month + i) >= 0 && (now.date.month + i) <= 12)
+  {
+    now.date.month += i;
+  }
   _delay_ms(500);
 }
 
 void change_day(int8_t i)
 {
+  if((now.date.day + i) > 0 && (now.date.day + i) <= get_month_days(now.date))
+  {
+    now.date.day += i;
+  }
+
   now.date.day += i;
   _delay_ms(500);
 }
 
 void change_hour(int8_t i)
 {
-  now.time.hour += i;
+  if((now.time.hour + i) >= 0 && (now.time.hour + i) <= 24)
+  {
+    now.time.hour += i;
+  }
   _delay_ms(500);
 }
 
 void change_minute(int8_t i)
 {
-  now.time.minute += i;
+  if((now.time.minute + i) >= 0 && (now.time.minute + i) <= 60)
+  {
+    now.time.minute += i;
+  }
   _delay_ms(500);
 }
 

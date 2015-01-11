@@ -178,47 +178,10 @@ uint8_t get_weekday(date_t date)
 uint8_t get_weeknumber(date_t date)
 {
   uint16_t days = date.day;
-  uint8_t month = date.month;
 
-  while (--month)
+  while (--date.month)
   {
-    if(month == 2)
-    {
-      if((date.year % 4) == 0)
-      {
-        // leep year
-        days += 29;
-      }
-      else
-      {
-        days += 28;
-      }
-    }
-    else
-    {
-      if(month < 7)
-      {
-        if((month % 2) == 0)
-        {
-          days += 30;
-        }
-        else
-        {
-          days += 31;
-        }
-      }
-      else
-      {
-        if((month % 2) == 0)
-        {
-          days += 31;
-        }
-        else
-        {
-          days += 30;
-        }
-      }
-    }
+    days += get_month_days(date);
   }
 
   date_t date_jan_1 = {
@@ -239,22 +202,6 @@ uint8_t get_weeknumber(date_t date)
 
   uint8_t weeknumber = (days + weekday) / 7;
   return weeknumber + 1;
-
-/*
-  uint8_t month = date.month;
-  if (month < 3)
-  {
-    month += 12;
-  }
-
-  uint16_t julian_day = (month * 153 + 3) / 5 - 92 + date.day - 1;
-  uint8_t weeknumber = ((julian_day + 6) / 7);
-  return julian_day;
-  if(get_weekday(date) < get_weekday(date_jan_1))
-  {
-    ++weeknumber;
-  }
-  return weeknumber;*/
 }
 
 ISR (TIMER2_COMPA_vect)
@@ -293,85 +240,69 @@ void time_tick()
     now.time.second = 0;
     update_timer(); // show if a timer has to be triggered
   }
+
   if(now.time.minute == 60)
   {
     now.time.hour++;
     now.time.minute = 0;
   }
+
   if(now.time.hour == 24)
   {
     now.time.hour = 0;
     now.date.day++;
   }
 
-  if(now.date.day >= 28)
+  if(now.date.day == get_month_days(now.date))
   {
-    if(now.date.month == 2)
-    {
-      if(now.date.year % 4)
-      {
-        // leep jear
-        if(now.date.day == 29)
-        {
-          now.date.day = 1;
-          now.date.month++;
-        }
-      }
-      else
-      {
-        if(now.date.day == 28)
-        {
-          now.date.day = 1;
-          now.date.month++;
-        }
-      }
-    }
-    else
-    {
-      if(now.date.month < 7)
-      {
-        if(now.date.month % 2)
-        {
-          if(now.date.day == 30)
-          {
-            now.date.day = 1;
-            now.date.month++;
-          }
-        }
-        else
-        {
-          if(now.date.day == 31)
-          {
-            now.date.day = 1;
-            now.date.month++;
-          }
-        }
-      }
-      else
-      {
-        if(now.date.month % 2)
-        {
-          if(now.date.day == 31)
-          {
-            now.date.day = 1;
-            now.date.month++;
-          }
-        }
-        else
-        {
-          if(now.date.day == 30)
-          {
-            now.date.day = 1;
-            now.date.month++;
-          }
-        }
-      }
-    }
+    now.date.day = 1;
+    now.date.month++;
   }
 
   if(now.date.month == 13)
   {
     now.date.month = 1;
     now.date.year++;
+  }
+}
+
+uint8_t get_month_days(date_t date)
+{
+  if(date.month == 2)
+  {
+    if((date.year % 4) == 0)
+    {
+      // leep year
+      return 29;
+    }
+    else
+    {
+      return 28;
+    }
+  }
+  else
+  {
+    if(date.month < 7)
+    {
+      if((date.month % 2) == 0)
+      {
+        return 30;
+      }
+      else
+      {
+        return 31;
+      }
+    }
+    else
+    {
+      if((date.month % 2) == 0)
+      {
+        return 31;
+      }
+      else
+      {
+        return 30;
+      }
+    }
   }
 }

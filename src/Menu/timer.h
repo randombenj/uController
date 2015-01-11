@@ -82,6 +82,12 @@ void timer_init();
 void time_tick();
 
 /**
+ * Gets the days of a Month
+ * e.g Nov: 30, Dec: 31 ...
+ */
+uint8_t get_month_days(date_t date);
+
+/**
  * Determines if a time is equal to another time
  * @param a
  *  Time a
