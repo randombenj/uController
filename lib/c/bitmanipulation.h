@@ -19,7 +19,7 @@
 /**
  * Check if bit at position is set
  */
-#define IS_BIT_SET(value, bit_position) (value | (1 << bit_position))
+#define IS_BIT_SET(value, bit_position) (value & (1 << bit_position))
 
 /**
  * Swap Nibbles of a byte

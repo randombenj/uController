@@ -56,18 +56,12 @@ void home_redraw_avtive()
 
 void home_up()
 {
-  if (view_state == EDIT)
-  {
-    edit_home(1);
-  }
+  edit_home(1);
 }
 
 void home_down()
 {
-  if (view_state == EDIT)
-  {
-    edit_home(-1);
-  }
+  edit_home(-1);
 }
 
 void edit_home(int8_t step_size)
@@ -106,27 +100,24 @@ void edit_home(int8_t step_size)
 
 void home_left()
 {
-  if (view_state == EDIT)
+  if(y_cursor_position == 0)
   {
-    if(y_cursor_position == 0)
+    if(x_cursor_position > 5)
     {
-      if(x_cursor_position > 5)
-      {
-        x_cursor_position -= 3;
-      }
+      x_cursor_position -= 3;
+    }
+  }
+  else
+  {
+    if(x_cursor_position > 9)
+    {
+      x_cursor_position--;
     }
     else
     {
-      if(x_cursor_position > 9)
-      {
-        x_cursor_position--;
-      }
-      else
-      {
-        // start editing time
-        y_cursor_position = 0;
-        x_cursor_position = 17;
-      }
+      // start editing time
+      y_cursor_position = 0;
+      x_cursor_position = 17;
     }
   }
   _delay_ms(1000);
@@ -134,35 +125,24 @@ void home_left()
 
 void home_right()
 {
-  if (view_state == VIEW)
+  if(y_cursor_position == 0)
   {
-    // swich to timer menu
-    current_menu = 1;
-    x_cursor_position = 0;
-    y_cursor_position = 0;
-    timerselect_init();
-  }
-  if (view_state == EDIT)
-  {
-    if(y_cursor_position == 0)
+    if(x_cursor_position >= 17)
     {
-      if(x_cursor_position >= 17)
-      {
-        // start editing active timer
-        y_cursor_position = 1;
-        x_cursor_position = 9;
-      }
-      else
-      {
-        x_cursor_position += 3;
-      }
+      // start editing active timer
+      y_cursor_position = 1;
+      x_cursor_position = 9;
     }
     else
     {
-      if(x_cursor_position >= 9 && x_cursor_position <= 16)
-      {
-        x_cursor_position++;
-      }
+      x_cursor_position += 3;
+    }
+  }
+  else
+  {
+    if(x_cursor_position >= 9 && x_cursor_position <= 16)
+    {
+      x_cursor_position++;
     }
   }
   _delay_ms(500);
@@ -170,7 +150,12 @@ void home_right()
 
 void home_enter()
 {
-
+  // swich to timer menu
+  current_menu = 1;
+  x_cursor_position = 1;
+  y_cursor_position = 0;
+  timerselect_init();
+  _delay_ms(1000);
 }
 
 void change_year(int8_t i)
@@ -184,7 +169,7 @@ void change_year(int8_t i)
 
 void change_month(int8_t i)
 {
-  if((now.date.month + i) >= 0 && (now.date.month + i) <= 12)
+  if((now.date.month + i) > 0 && (now.date.month + i) <= 12)
   {
     now.date.month += i;
   }

@@ -19,37 +19,34 @@ void timerselect_init()
   lcd_string(menu[1].static_text[1]);
   timerselect_redraw_timer();
   y_cursor_position = 0;
-  x_cursor_position = 6;
+  x_cursor_position = 1;
 }
 
 void timerselect_up()
 {
-  if (view_state == VIEW)
-  {
-    timerselect_timer_up();
-  }
-  if (view_state == EDIT)
-  {
-    edit_timerselect(1);
-  }
+  edit_timerselect(1);
 }
 
 void timerselect_down()
 {
-  if (view_state == VIEW)
-  {
-    timerselect_timer_down();
-  }
-  if (view_state == EDIT)
-  {
-    edit_timerselect(-1);
-  }
+  edit_timerselect(-1);
 }
 
 void edit_timerselect(int8_t step_size)
 {
   if (y_cursor_position == 0)
   {
+    if (x_cursor_position == 1)
+    {
+      if (step_size > 0)
+      {
+        timerselect_timer_up();
+      }
+      else
+      {
+        timerselect_timer_down();
+      }
+    }
     // start time
     if (x_cursor_position == 6)
     {
@@ -60,124 +57,136 @@ void edit_timerselect(int8_t step_size)
       change_time_minute(&timer[selected_timer_index].start_time, step_size);
     }
     // end time
-    if (x_cursor_position == 11)
+    if (x_cursor_position == 14)
     {
       change_time_hour(&timer[selected_timer_index].end_time, step_size);
     }
-    if (x_cursor_position == 14)
+    if (x_cursor_position == 17)
     {
       change_time_minute(&timer[selected_timer_index].end_time, step_size);
     }
   }
   else
   {
-    if (x_cursor_position >= 5 && x_cursor_position <= 12)
+    if (x_cursor_position == 1)
     {
-      toggle_portmask(x_cursor_position - 5);
+      // toggle active of timer
+      timer[selected_timer_index].active = !timer[selected_timer_index].active;
+      timerselect_redraw_timer();
+    }
+    if (x_cursor_position >= 4 && x_cursor_position <= 11)
+    {
+      toggle_portmask(x_cursor_position - 4);
       timerselect_redraw_portmask();
     }
-    if (x_cursor_position >= 14 && x_cursor_position <= 20)
+    if (x_cursor_position >= 13 && x_cursor_position <= 19)
     {
-      toggle_weekdaymask(x_cursor_position - 14);
+      toggle_weekdaymask(x_cursor_position - 13);
       timerselect_redraw_weekdays();
     }
   }
+  timerselect_redraw_timer();
+  _delay_ms(1000);
 }
 
 void timerselect_left()
 {
-  if (view_state == VIEW)
+  if (y_cursor_position == 0)
   {
-    // swich to home menu
-    current_menu = 0;
-    x_cursor_position = 0;
-    y_cursor_position = 0;
-    home_init();
-  }
-  if (view_state == EDIT)
-  {
-    if (y_cursor_position == 0)
+    if (x_cursor_position == 6)
     {
-      if (x_cursor_position == 9 || x_cursor_position == 17)
-      {
-        x_cursor_position -= 3;
-      }
-      if (x_cursor_position == 14)
-      {
-        x_cursor_position -= 5;
-      }
+      x_cursor_position = 1;
     }
-    else
+    if (x_cursor_position == 9 || x_cursor_position == 17)
     {
-      if (x_cursor_position == 4)
-      {
-        // edit portmask
-        y_cursor_position = 0;
-        x_cursor_position = 18;
-      }
-      if(x_cursor_position >= 13 && x_cursor_position <= 20)
-      {
-        x_cursor_position--;
-      }
-      if (x_cursor_position == 13)
-      {
-        x_cursor_position = 11;
-      }
-      if (x_cursor_position >= 4 && x_cursor_position <= 11)
-      {
-        x_cursor_position--;
-      }
+      x_cursor_position -= 3;
+    }
+    if (x_cursor_position == 14)
+    {
+      x_cursor_position -= 5;
     }
   }
+  else
+  {
+    if (x_cursor_position == 1)
+    {
+      // edit portmask
+      y_cursor_position = 0;
+      x_cursor_position = 18;
+    }
+    if (x_cursor_position == 4)
+    {
+      x_cursor_position = 1;
+    }
+    if(x_cursor_position >= 13 && x_cursor_position <= 20)
+    {
+      x_cursor_position--;
+    }
+    if (x_cursor_position == 13)
+    {
+      x_cursor_position = 11;
+    }
+    if (x_cursor_position >= 4 && x_cursor_position <= 11)
+    {
+      x_cursor_position--;
+    }
+  }
+  _delay_ms(1000);
 }
 
 void timerselect_right()
 {
-  if (view_state == EDIT)
+  if (y_cursor_position == 0)
   {
-    if (y_cursor_position == 0)
+    if (x_cursor_position == 1)
     {
-      if (x_cursor_position == 6 || x_cursor_position == 14)
-      {
-        x_cursor_position += 3;
-      }
-      if (x_cursor_position == 9)
-      {
-        x_cursor_position += 5;
-      }
-      if (x_cursor_position == 17)
-      {
-        // edit portmask
-        y_cursor_position = 1;
-        x_cursor_position = 4;
-      }
+      x_cursor_position = 6;
     }
-    else
+    if (x_cursor_position == 6 || x_cursor_position == 14)
     {
-      if (x_cursor_position >= 4 && x_cursor_position <= 11)
-      {
-        x_cursor_position++;
-      }
-      if (x_cursor_position == 11)
-      {
-        x_cursor_position = 13;
-      }
-      if(x_cursor_position >= 13 && x_cursor_position <= 20)
-      {
-        x_cursor_position++;
-      }
+      x_cursor_position += 3;
+    }
+    if (x_cursor_position == 9)
+    {
+      x_cursor_position += 5;
+    }
+    if (x_cursor_position == 17)
+    {
+      // edit portmask
+      y_cursor_position = 1;
+      x_cursor_position = 4;
     }
   }
+  else
+  {
+    if (x_cursor_position == 1)
+    {
+      x_cursor_position = 4;
+    }
+    if (x_cursor_position >= 4 && x_cursor_position <= 10)
+    {
+      x_cursor_position++;
+    }
+    if (x_cursor_position == 11)
+    {
+      x_cursor_position = 13;
+    }
+    if(x_cursor_position >= 13 && x_cursor_position <= 18)
+    {
+      x_cursor_position++;
+    }
+  }
+  _delay_ms(1000);
 }
 
 void timerselect_enter()
 {
-  if (view_state == VIEW)
-  {
-    // toggle active of timer
-    timer[selected_timer_index].active = !timer[selected_timer_index].active;
-  }
-  timerselect_redraw_timer();
+  // swich to home menu
+  current_menu = 0;
+  x_cursor_position = 0;
+  y_cursor_position = 0;
+  home_init();
+  _delay_ms(1000);
 }
 
 void timerselect_timer_up()
@@ -185,7 +194,6 @@ void timerselect_timer_up()
   if (selected_timer_index > 0)
   {
     selected_timer_index--;
-    _delay_ms(1000);
   }
   timerselect_redraw_timer();
 }
@@ -195,7 +203,6 @@ void timerselect_timer_down()
   if (selected_timer_index < 7)
   {
     selected_timer_index++;
-    _delay_ms(1000);
   }
   timerselect_redraw_timer();
 }

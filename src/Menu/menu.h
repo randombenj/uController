@@ -13,14 +13,6 @@
 typedef void (*void_func_t)(void);
 
 /**
- * Represents an enumeration of View States
- */
-typedef enum {
- VIEW = 0,
- EDIT = 1
-} view_state_t;
-
-/**
  * Represents a menu type
  */
 typedef struct {
@@ -47,11 +39,6 @@ extern uint8_t x_cursor_position;
  * Cursor Y position on LCD
  */
 extern uint8_t y_cursor_position;
-
-/**
- * The current viewstate
- */
-extern view_state_t view_state;
 
 #include "menu/home.h"
 #include "menu/timerselect.h"
