@@ -21,6 +21,7 @@ typedef enum {
   SUNDAY = 7
 } weekday_t;
 
+extern bool_t time_has_changed;
 extern char weekday_shorts[7][3 + 1];
 
 /**

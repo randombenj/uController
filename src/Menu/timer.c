@@ -37,6 +37,8 @@ char weekday_shorts[7][3 + 1] = {
   "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 };
 
+bool_t time_has_changed = false;
+
 timer_t timer[8] = {
   DEFAULT_TIMER,
   DEFAULT_TIMER,
@@ -52,14 +54,20 @@ void timer_init()
 {
   // set timer port to output
   TIMER_PORT_D = 0xFF;
-  // configure timer 2
-  GTCCR |= (1 << TSM) | (1 << PSRASY);  // stop timer, reset prescaler
-  ASSR |= (1 << AS2);                   // enable async mode
-  TCCR2A = (1 << WGM21);                // CTC Modus
-  TCCR2B |= (1 << CS22) | (1 << CS21);  // prescaler 256
-  OCR2A = (128 / 4) - 1;
-  TIMSK2 |= (1<<OCIE2A);                // enable compare interrupt
-  GTCCR &= ~(1 << TSM);                 // start timer
+
+  TCCR1A = 0;     // set entire TCCR1A register to 0
+  TCCR1B = 0;     // same for TCCR1B
+
+  // set compare match register to desired timer count:
+  OCR1A = 15624 / 2;
+  // turn on CTC mode:
+  TCCR1B |= (1 << WGM12);
+  // Set CS10 and CS12 bits for 1024 prescaler:
+  TCCR1B |= (1 << CS10);
+  TCCR1B |= (1 << CS12);
+  // enable timer compare interrupt:
+  TIMSK1 |= (1 << OCIE1A);
+
   sei();                                // enable global interupts
 }
 
@@ -108,9 +116,9 @@ uint8_t get_weeknumber(date_t date)
   return weeknumber + 1;
 }
 
-ISR (TIMER2_COMPA_vect)
+ISR (TIMER1_COMPA_vect)
 {
-  TCCR2B = TCCR2B;
+  update_timer();
   now.time.second++;
   time_tick();
 }
@@ -138,6 +146,7 @@ void update_timer()
 
 void time_tick()
 {
+  time_has_changed = true;
   if(now.time.second == 60)
   {
     now.time.minute++;

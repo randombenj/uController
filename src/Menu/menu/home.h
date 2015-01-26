@@ -1,6 +1,8 @@
 #ifndef HOME_MENU_H_
 #define HOME_MENU_H_
 
+#define DEFAULT_DELAY 2000
+
 // HOME MENU:
 /**
  * OnClick handler for 'up' key

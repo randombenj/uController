@@ -10,13 +10,15 @@
 */
 void home_init()
 {
-  uint8_t x_cursor_position = 5;
-  uint8_t y_cursor_position = 0;
+  x_cursor_position = 5;
+  y_cursor_position = 0;
   lcd_set_position(0, 0);
   lcd_string(menu[0].static_text[0]);
   lcd_set_position(0, 1);
   lcd_string(menu[0].static_text[1]);
   home_redraw_avtive();
+  home_redraw_time();
+  lcd_set_position(x_cursor_position, y_cursor_position);
 }
 
 void home_redraw_time()
@@ -32,9 +34,10 @@ void home_redraw_time()
   lcd_set_position(13, 0);
   lcd_two_number(now.time.hour);
   lcd_set_position(16, 0);
-  lcd_two_number(now.time.minute);
+  lcd_two_number(now.time.second);
   lcd_set_position(5, 1);
   lcd_two_number(get_weeknumber(now.date));
+  lcd_set_position(x_cursor_position, y_cursor_position);
 }
 
 void home_redraw_avtive()
@@ -92,10 +95,10 @@ void edit_home(int8_t step_size)
   }
   else
   {
-    toggle_active(x_cursor_position - 10);
+    toggle_active(x_cursor_position - 9);
     home_redraw_avtive();
   }
-  _delay_ms(1000);
+  _delay_ms(DEFAULT_DELAY);
 }
 
 void home_left()
@@ -120,7 +123,7 @@ void home_left()
       x_cursor_position = 17;
     }
   }
-  _delay_ms(1000);
+  _delay_ms(DEFAULT_DELAY);
 }
 
 void home_right()
@@ -140,12 +143,12 @@ void home_right()
   }
   else
   {
-    if(x_cursor_position >= 9 && x_cursor_position <= 16)
+    if(x_cursor_position >= 9 && x_cursor_position < 16)
     {
       x_cursor_position++;
     }
   }
-  _delay_ms(500);
+  _delay_ms(DEFAULT_DELAY);
 }
 
 void home_enter()
@@ -155,7 +158,7 @@ void home_enter()
   x_cursor_position = 1;
   y_cursor_position = 0;
   timerselect_init();
-  _delay_ms(1000);
+  _delay_ms(DEFAULT_DELAY);
 }
 
 void change_year(int8_t i)
@@ -164,7 +167,7 @@ void change_year(int8_t i)
   {
     now.date.year += i;
   }
-  _delay_ms(500);
+  _delay_ms(DEFAULT_DELAY);
 }
 
 void change_month(int8_t i)
@@ -173,7 +176,7 @@ void change_month(int8_t i)
   {
     now.date.month += i;
   }
-  _delay_ms(500);
+  _delay_ms(DEFAULT_DELAY);
 }
 
 void change_day(int8_t i)
@@ -184,7 +187,7 @@ void change_day(int8_t i)
   }
 
   now.date.day += i;
-  _delay_ms(500);
+  _delay_ms(DEFAULT_DELAY);
 }
 
 void change_hour(int8_t i)
@@ -193,7 +196,7 @@ void change_hour(int8_t i)
   {
     now.time.hour += i;
   }
-  _delay_ms(500);
+  _delay_ms(DEFAULT_DELAY);
 }
 
 void change_minute(int8_t i)
@@ -202,11 +205,11 @@ void change_minute(int8_t i)
   {
     now.time.minute += i;
   }
-  _delay_ms(500);
+  _delay_ms(DEFAULT_DELAY);
 }
 
 void toggle_active(int8_t timer_index)
 {
   timer[timer_index].active = !timer[timer_index].active;
-  _delay_ms(500);
+  _delay_ms(DEFAULT_DELAY);
 }

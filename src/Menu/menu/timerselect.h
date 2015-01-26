@@ -3,6 +3,8 @@
 
 #include "../timer.h"
 
+#define DEFAULT_DELAY 2000
+
 /**
  * The index of the selected timer
  */

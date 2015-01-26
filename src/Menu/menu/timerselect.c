@@ -86,7 +86,7 @@ void edit_timerselect(int8_t step_size)
     }
   }
   timerselect_redraw_timer();
-  _delay_ms(1000);
+  _delay_ms(DEFAULT_DELAY);
 }
 
 void timerselect_left()
@@ -131,7 +131,7 @@ void timerselect_left()
       x_cursor_position--;
     }
   }
-  _delay_ms(1000);
+  _delay_ms(DEFAULT_DELAY);
 }
 
 void timerselect_right()
@@ -176,7 +176,7 @@ void timerselect_right()
       x_cursor_position++;
     }
   }
-  _delay_ms(1000);
+  _delay_ms(DEFAULT_DELAY);
 }
 
 void timerselect_enter()
@@ -186,7 +186,7 @@ void timerselect_enter()
   x_cursor_position = 0;
   y_cursor_position = 0;
   home_init();
-  _delay_ms(1000);
+  _delay_ms(DEFAULT_DELAY);
 }
 
 void timerselect_timer_up()
