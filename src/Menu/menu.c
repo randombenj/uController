@@ -3,6 +3,7 @@
 #include "menu.h"
 #include "menu/home.h"
 #include "menu/timerselect.h"
+#include "dcf77.h"
 #include "../Display/c/lcd.h"
 #include "../../lib/c/bitmanipulation.h"
 
@@ -42,15 +43,24 @@ uint8_t current_menu = 0;
 int main()
 {
   SWICH_D = 0x00; // read from swich
-
+  init_dcf77_interupt();
   lcd_init();
   lcd_cursor_on();
-  home_init();
-  timer_init();
+  /*home_init();
+  timer_init();*/
 
+  uint8_t second = 0;
   while (1)
   {
-    handle_menu();
+    if (TCNT1 <= TICKS_1_SECOND)
+    {
+      second++;
+      /* handle_menu(); */
+      lcd_clear();
+      lcd_int16(second);
+
+    }
+
   }
 
   return 0;

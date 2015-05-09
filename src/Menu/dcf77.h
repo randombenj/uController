@@ -1,6 +1,8 @@
 #ifndef DCF77_H_
 #define DCF77_H_
 
+#include "../../lib/c/bool.h"
+
 #define IS_IN_MEZ_SEZ_RANGE(second) (second >= 15 && second <= 20)
 #define MEZ_SEZ_LOOKUP_INDEX(second) (second - 15)
 
@@ -21,6 +23,14 @@
 
 #define IS_IN_YEAR_RANGE(second) (second >= 50 && second <= 57)
 #define YEAR_LOOKUP_INDEX(second) (second - 50)
+
+#define DCF77_INPUT PIND
+#define DCF77_INPUT_D DDRD
+#define DCF77_INPUT_PORT PD1
+
+#define TICKS_1_SECOND 7812.5
+
+extern bool_t is_clock_running;
 
 /**
  * Decodes the dcf77 signal and alters the current time
