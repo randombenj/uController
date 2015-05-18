@@ -24,9 +24,14 @@
 #define IS_IN_YEAR_RANGE(second) (second >= 50 && second <= 57)
 #define YEAR_LOOKUP_INDEX(second) (second - 50)
 
-#define DCF77_INPUT PIND
-#define DCF77_INPUT_D DDRD
-#define DCF77_INPUT_PORT PD1
+/*
+* Has to be PORTB! Reference: ATmega2560 datasheet.
+* PCINT0 -> PB0 (PORTB 0)
+* If we use the switches, the interrupt is on SW0.
+*/
+#define DCF77_INPUT PINB
+#define DCF77_INPUT_D DDRB
+#define DCF77_INPUT_PORT PB0
 
 #define TICKS_1_SECOND 7812.5
 

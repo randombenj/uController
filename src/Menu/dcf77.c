@@ -42,7 +42,7 @@ void decode_signal(uint8_t second, uint8_t signal_info)
 
 void init_dcf77_interupt()
 {
-  DCF77_INPUT_D = 0xFF; // all bits to output
+  DCF77_INPUT_D = 0x00; // all bits to input
   CLEAR_BIT(DCF77_INPUT_D, DCF77_INPUT_PORT); // input port to 'read'
   // Enable INT0 External Interrupt
   SET_BIT(EIMSK, INT0);
@@ -52,18 +52,10 @@ void init_dcf77_interupt()
   SET_BIT(TCCR1B, CS10);
   SET_BIT(TCCR1B, CS12);
   TCNT1 = 0x0000;
-
-  /* DEBUG */
-  DDRC = 0xFF;
-  /* DEBUG_END */
 }
 
 ISR(INT0_vect)
 {
-  /* DEBUG */
-  PORTC = !PORTC;
-  /* DEBUG_END */
-
   if (IS_BIT_SET(DCF77_INPUT, DCF77_INPUT_PORT))
   {
     // signal high
@@ -77,7 +69,7 @@ ISR(INT0_vect)
     {
       now.time.second++;
     }
-    TCNT1 = 0x0000;
+    //TCNT1 = 0x0000;
   }
   else
   {

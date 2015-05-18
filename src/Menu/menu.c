@@ -46,21 +46,13 @@ int main()
   init_dcf77_interupt();
   lcd_init();
   lcd_cursor_on();
-  /*home_init();
-  timer_init();*/
+  home_init();
+  timer_init();
+  lcd_set_position(0,0);
 
-  uint8_t second = 0;
   while (1)
   {
-    if (TCNT1 <= TICKS_1_SECOND)
-    {
-      second++;
-      /* handle_menu(); */
-      lcd_clear();
-      lcd_int16(second);
-
-    }
-
+    //handle_menu();
   }
 
   return 0;
