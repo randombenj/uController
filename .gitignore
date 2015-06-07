@@ -3,6 +3,7 @@
 # User-specific files
 *.atsuo
 *.user
+.atom-build.json
 
 # BAK files from the struktogrammer
 *.BAK

@@ -19,12 +19,15 @@ OBJDUMP             = avr-objdump
 
 all: builddir $(TARGET).elf lst text
 
-
 $(TARGET).elf: $(TARGET).o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(BUILD_DIRECTORY)/$@ $(BUILD_DIRECTORY)/$^ $(LIBS)
 
 builddir:
 	mkdir -p $(BUILD_DIRECTORY) # make build directory if not exists
+
+# In debug, define DEBUG constant
+debug: CFLAGS += -DDEBUG
+debug:  all
 
 clean:
 	rm -R $(BUILD_DIRECTORY)
