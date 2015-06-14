@@ -29,13 +29,15 @@
 * PCINT0 -> PB0 (PORTB 0)
 * If we use the switches, the interrupt is on SW0.
 */
-#define DCF77_INPUT PINB
-#define DCF77_INPUT_D DDRB
-#define DCF77_INPUT_PORT PB0
+#define DCF77_INPUT PIND
+#define DCF77_PORT PORTD
+#define DCF77_INPUT_D DDRD
+#define DCF77_INPUT_PORT PD0
 
 #define TICKS_1_SECOND 7812.5
 
 extern bool_t is_clock_running;
+extern date_time_t sync_time;
 
 /**
  * Decodes the dcf77 signal and alters the current time
@@ -45,5 +47,7 @@ extern bool_t is_clock_running;
  *  The state of the signal 0 = low; 1 = high
  */
 void decode_signal(uint8_t second, uint8_t signal_info);
+
+void reset_synctime();
 
 #endif // DCF77_H_

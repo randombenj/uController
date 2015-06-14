@@ -22,14 +22,14 @@
 
 date_time_t now = {
   .date = {
-    .day = 24,
-    .month = 12,
-    .year = 14
+    .day = 0,
+    .month = 0,
+    .year = 0
   },
   .time = {
     .second = 0,
     .minute = 0,
-    .hour = 12,
+    .hour = 0,
   }
 };
 

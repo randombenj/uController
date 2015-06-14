@@ -5,8 +5,8 @@
 /**
  * Port wich gets activated by the timer
  */
-#define TIMER_PORT               PORTD
-#define TIMER_PORT_D             DDRD
+#define TIMER_PORT               PORTC
+#define TIMER_PORT_D             DDRC
 
 /**
  * Represents an enumeration of Weekdays

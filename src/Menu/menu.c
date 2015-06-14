@@ -42,17 +42,17 @@ uint8_t current_menu = 0;
 
 int main()
 {
-  SWICH_D = 0x00; // read from swich
-  init_dcf77_interupt();
+  //SWICH_D = 0x00; // read from swich
   lcd_init();
   lcd_cursor_on();
-  home_init();
-  timer_init();
   lcd_set_position(0,0);
+  init_dcf77_interupt();
+  home_init();
+  /*timer_init();*/
 
   while (1)
   {
-    //handle_menu();
+    handle_menu();
   }
 
   return 0;

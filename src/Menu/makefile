@@ -11,7 +11,7 @@ BUILD_DIRECTORY     = build
 
 # Override is only needed by avr-lib build system.
 
-override CFLAGS     = -g -Wall $(AVRDUDE_OPTIMIZE) -mmcu=$(MCU)
+override CFLAGS     = -g -w $(AVRDUDE_OPTIMIZE) -mmcu=$(MCU)
 override LDFLAGS    = -Wl,-Map,$(BUILD_DIRECTORY)/$(TARGET).map
 
 OBJCOPY             = avr-objcopy
