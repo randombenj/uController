@@ -51,29 +51,6 @@ void decode_signal(uint8_t second, uint8_t signal_info)
       sync_time.date.year += lookup[YEAR_LOOKUP_INDEX(second)];
     }
   }
-
-#ifdef DEBUG
-  lcd_clear();
-  lcd_set_position(0,0);
-  lcd_set_position(0, 0);
-  lcd_two_number(now.date.day);
-  lcd_set_position(3, 0);
-  lcd_two_number(now.date.month);
-  lcd_set_position(6, 0);
-  lcd_two_number(now.date.year);
-  lcd_set_position(10, 0);
-  lcd_two_number(now.time.hour);
-  lcd_set_position(13, 0);
-  lcd_int16(now.time.minute);
-  lcd_set_position(16, 0);
-  lcd_two_number(now.time.second);
-  // input value
-  lcd_set_position(0, 1);
-  lcd_two_number(signal_info);
-  lcd_char('@');
-  lcd_two_number(second);
-#endif // DEBUG
-
 }
 
 void init_dcf77_interupt()
@@ -103,13 +80,6 @@ ISR(INT0_vect)
       sync_time.time.second = 0;
       is_clock_running = true;
       reset_synctime();
-
-#ifdef DEBUG
-      lcd_clear();
-      lcd_set_position(0,0);
-      lcd_string("START!");
-#endif
-
     }
     else
     {
@@ -140,19 +110,7 @@ ISR(INT0_vect)
         is_clock_running = false;
         // reset time
         reset_synctime();
-
-#ifdef DEBUG
-        lcd_set_position(0,0);
-        lcd_string("fail!");
-#endif
-
       }
-
-      #ifdef DEBUG
-              lcd_set_position(6,1);
-              lcd_int16(TCNT1);
-              lcd_string("ms");
-      #endif
     }
   }
 }
