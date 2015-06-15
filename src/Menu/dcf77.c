@@ -21,35 +21,31 @@ date_time_t sync_time = {
   }
 };
 
-void decode_signal(uint8_t second, uint8_t signal_info)
+void decode_signal(uint8_t second,)
 {
-  //now.time.second++;
-  if (signal_info > 0)
+  if (IS_IN_MEZ_SEZ_RANGE(second))
   {
-    if (IS_IN_MEZ_SEZ_RANGE(second))
-    {
-      // TODO: MEZ and SEZ
-    }
-    if (IS_IN_MINUTE_RANGE(second))
-    {
-      sync_time.time.minute += lookup[MINUTE_LOOKUP_INDEX(second)];
-    }
-    if (IS_IN_HOUR_RANGE(second))
-    {
-      sync_time.time.hour += lookup[HOUR_LOOKUP_INDEX(second)];
-    }
-    if (IS_IN_DAY_RANGE(second))
-    {
-      sync_time.date.day += lookup[DAY_LOOKUP_INDEX(second)];
-    }
-    if (IS_IN_MONTH_RANGE(second))
-    {
-      sync_time.date.month += lookup[MONTH_LOOKUP_INDEX(second)];
-    }
-    if (IS_IN_YEAR_RANGE(second))
-    {
-      sync_time.date.year += lookup[YEAR_LOOKUP_INDEX(second)];
-    }
+    // TODO: MEZ and SEZ
+  }
+  if (IS_IN_MINUTE_RANGE(second))
+  {
+    sync_time.time.minute += lookup[MINUTE_LOOKUP_INDEX(second)];
+  }
+  if (IS_IN_HOUR_RANGE(second))
+  {
+    sync_time.time.hour += lookup[HOUR_LOOKUP_INDEX(second)];
+  }
+  if (IS_IN_DAY_RANGE(second))
+  {
+    sync_time.date.day += lookup[DAY_LOOKUP_INDEX(second)];
+  }
+  if (IS_IN_MONTH_RANGE(second))
+  {
+    sync_time.date.month += lookup[MONTH_LOOKUP_INDEX(second)];
+  }
+  if (IS_IN_YEAR_RANGE(second))
+  {
+    sync_time.date.year += lookup[YEAR_LOOKUP_INDEX(second)];
   }
 }
 
@@ -74,7 +70,7 @@ ISR(INT0_vect)
     // signal high
     if (TCNT1 >= (TICKS_1_SECOND * 1.4)) // more than 1.4 second has passed
     {
-      // Synchronistation has finished$
+      // Synchronistation has finished
       now = sync_time;
       // new minute begins
       sync_time.time.second = 0;
@@ -96,15 +92,10 @@ ISR(INT0_vect)
     {
       if (TCNT1 > (TICKS_1_SECOND * 0.18) && TCNT1 < (TICKS_1_SECOND * 0.5))
       {
-        // between 190 ms & 240 ms (signalinfo = 1)
-        decode_signal(sync_time.time.second, 1);
+        // between 180 ms & 500 ms
+        decode_signal(sync_time.time.second);
       }
-      else if (TCNT1 > (TICKS_1_SECOND * 0.00) && TCNT1 < (TICKS_1_SECOND * 0.13))
-      {
-        // between 80 ms and 150 ms (signalinfo = 0)
-        decode_signal(sync_time.time.second, 0);
-      }
-      else
+      else if (!(TCNT1 > (TICKS_1_SECOND * 0.00) && TCNT1 < (TICKS_1_SECOND * 0.13)))
       {
         // decoding has failed -> start from beginning
         is_clock_running = false;
