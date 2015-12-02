@@ -21,7 +21,7 @@ date_time_t sync_time = {
   }
 };
 
-void decode_signal(uint8_t second,)
+void decode_signal(uint8_t second)
 {
   if (IS_IN_MEZ_SEZ_RANGE(second))
   {

@@ -75,10 +75,8 @@ extern date_time_t sync_time;
  * Decodes the dcf77 signal and alters the current time
  * @param: second
  *  Second count (which second in a minute)
- * @param: signal_info
- *  The state of the signal 0 = low; 1 = high
  */
-void decode_signal(uint8_t second, uint8_t signal_info);
+void decode_signal(uint8_t second);
 
 /**
  * Resets the synchronisation time
