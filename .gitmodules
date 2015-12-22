@@ -1,0 +1,7 @@
+[submodule "lib/c/ethercard"]
+	path = lib/c/ethercard
+	url = https://github.com/jcw/ethercard.git
+
+[submodule "lib/arduino"]
+	path = lib/arduino
+	url = https://github.com/arduino/Arduino.git

@@ -11,3 +11,6 @@
 # Build results
 **/[Dd]ebug/
 **/[Bb]uild/
+
+# Shared librarys
+*.a
